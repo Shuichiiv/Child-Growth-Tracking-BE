@@ -70,7 +70,6 @@ dkms.conf
 *.suo
 *.user
 *.cache
-*.pdb
 *.aps
 *.res
 *.ncb
@@ -87,3 +86,15 @@ dkms.conf
 Thumbs.db
 Desktop.ini
 $RECYCLE.BIN/
+
+# Ignore các thư mục build
+bin/
+obj/
+
+# Ignore file cấu hình của IDE
+*.swp
+*.iml
+
+# Ignore các file cache và tạm thời
+*.log
+
