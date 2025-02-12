@@ -50,3 +50,40 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Rider
+.idea/
+*.sln.iml
+/.idea/workspace.xml
+/.idea/tasks.xml
+/.idea/gradle.xml
+/.idea/libraries
+/.idea/shelf
+/.idea/modules.xml
+/out/
+/.gradle
+
+# Visual Studio
+.vs/
+*.csproj.user
+*.csproj.userprefs
+*.suo
+*.user
+*.cache
+*.pdb
+*.aps
+*.res
+*.ncb
+*.sdf
+*.opendb
+*.VC.db
+
+# MacOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows system files
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
