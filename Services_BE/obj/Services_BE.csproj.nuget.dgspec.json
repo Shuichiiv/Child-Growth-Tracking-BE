@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/toanphuc/Desktop/SWP/SWP391_G3_BE/Services_BE/Services_BE.csproj": {}
+    "/Users/toanphuc/Desktop/SWP/Child-Growth-Tracking-BE/Services_BE/Services_BE.csproj": {}
   },
   "projects": {
-    "/Users/toanphuc/Desktop/SWP/SWP391_G3_BE/DataObjects_BE/DataObjects_BE.csproj": {
+    "/Users/toanphuc/Desktop/SWP/Child-Growth-Tracking-BE/DataObjects_BE/DataObjects_BE.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/toanphuc/Desktop/SWP/SWP391_G3_BE/DataObjects_BE/DataObjects_BE.csproj",
+        "projectUniqueName": "/Users/toanphuc/Desktop/SWP/Child-Growth-Tracking-BE/DataObjects_BE/DataObjects_BE.csproj",
         "projectName": "DataObjects_BE",
-        "projectPath": "/Users/toanphuc/Desktop/SWP/SWP391_G3_BE/DataObjects_BE/DataObjects_BE.csproj",
+        "projectPath": "/Users/toanphuc/Desktop/SWP/Child-Growth-Tracking-BE/DataObjects_BE/DataObjects_BE.csproj",
         "packagesPath": "/Users/toanphuc/.nuget/packages/",
-        "outputPath": "/Users/toanphuc/Desktop/SWP/SWP391_G3_BE/DataObjects_BE/obj/",
+        "outputPath": "/Users/toanphuc/Desktop/SWP/Child-Growth-Tracking-BE/DataObjects_BE/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/toanphuc/.nuget/NuGet/NuGet.Config"
@@ -85,14 +85,14 @@
         }
       }
     },
-    "/Users/toanphuc/Desktop/SWP/SWP391_G3_BE/Repositories_BE/Repositories_BE.csproj": {
+    "/Users/toanphuc/Desktop/SWP/Child-Growth-Tracking-BE/Repositories_BE/Repositories_BE.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/toanphuc/Desktop/SWP/SWP391_G3_BE/Repositories_BE/Repositories_BE.csproj",
+        "projectUniqueName": "/Users/toanphuc/Desktop/SWP/Child-Growth-Tracking-BE/Repositories_BE/Repositories_BE.csproj",
         "projectName": "Repositories_BE",
-        "projectPath": "/Users/toanphuc/Desktop/SWP/SWP391_G3_BE/Repositories_BE/Repositories_BE.csproj",
+        "projectPath": "/Users/toanphuc/Desktop/SWP/Child-Growth-Tracking-BE/Repositories_BE/Repositories_BE.csproj",
         "packagesPath": "/Users/toanphuc/.nuget/packages/",
-        "outputPath": "/Users/toanphuc/Desktop/SWP/SWP391_G3_BE/Repositories_BE/obj/",
+        "outputPath": "/Users/toanphuc/Desktop/SWP/Child-Growth-Tracking-BE/Repositories_BE/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/toanphuc/.nuget/NuGet/NuGet.Config"
@@ -108,8 +108,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/Users/toanphuc/Desktop/SWP/SWP391_G3_BE/DataObjects_BE/DataObjects_BE.csproj": {
-                "projectPath": "/Users/toanphuc/Desktop/SWP/SWP391_G3_BE/DataObjects_BE/DataObjects_BE.csproj"
+              "/Users/toanphuc/Desktop/SWP/Child-Growth-Tracking-BE/DataObjects_BE/DataObjects_BE.csproj": {
+                "projectPath": "/Users/toanphuc/Desktop/SWP/Child-Growth-Tracking-BE/DataObjects_BE/DataObjects_BE.csproj"
               }
             }
           }
@@ -170,14 +170,14 @@
         }
       }
     },
-    "/Users/toanphuc/Desktop/SWP/SWP391_G3_BE/Services_BE/Services_BE.csproj": {
+    "/Users/toanphuc/Desktop/SWP/Child-Growth-Tracking-BE/Services_BE/Services_BE.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/toanphuc/Desktop/SWP/SWP391_G3_BE/Services_BE/Services_BE.csproj",
+        "projectUniqueName": "/Users/toanphuc/Desktop/SWP/Child-Growth-Tracking-BE/Services_BE/Services_BE.csproj",
         "projectName": "Services_BE",
-        "projectPath": "/Users/toanphuc/Desktop/SWP/SWP391_G3_BE/Services_BE/Services_BE.csproj",
+        "projectPath": "/Users/toanphuc/Desktop/SWP/Child-Growth-Tracking-BE/Services_BE/Services_BE.csproj",
         "packagesPath": "/Users/toanphuc/.nuget/packages/",
-        "outputPath": "/Users/toanphuc/Desktop/SWP/SWP391_G3_BE/Services_BE/obj/",
+        "outputPath": "/Users/toanphuc/Desktop/SWP/Child-Growth-Tracking-BE/Services_BE/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/toanphuc/.nuget/NuGet/NuGet.Config"
@@ -193,8 +193,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/Users/toanphuc/Desktop/SWP/SWP391_G3_BE/Repositories_BE/Repositories_BE.csproj": {
-                "projectPath": "/Users/toanphuc/Desktop/SWP/SWP391_G3_BE/Repositories_BE/Repositories_BE.csproj"
+              "/Users/toanphuc/Desktop/SWP/Child-Growth-Tracking-BE/Repositories_BE/Repositories_BE.csproj": {
+                "projectPath": "/Users/toanphuc/Desktop/SWP/Child-Growth-Tracking-BE/Repositories_BE/Repositories_BE.csproj"
               }
             }
           }

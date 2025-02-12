@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Repositories_BE
-build_property.ProjectDir = /Users/toanphuc/Desktop/SWP/SWP391_G3_BE/Repositories_BE/
+build_property.ProjectDir = /Users/toanphuc/Desktop/SWP/Child-Growth-Tracking-BE/Repositories_BE/
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
