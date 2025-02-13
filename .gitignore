@@ -97,4 +97,5 @@ obj/
 
 # Ignore các file cache và tạm thời
 *.log
+*.js
 
