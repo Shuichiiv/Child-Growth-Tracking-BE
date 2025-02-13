@@ -8,5 +8,6 @@ namespace DTOs_BE.UserDTOs
 {
     public class UserResponseDTO
     {
+        public int UserId {  get; set; }
     }
 }
