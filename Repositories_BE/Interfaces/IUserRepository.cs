@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DataObjects_BE.Entities;
+using DTOs_BE.UserDTOs;
 
 namespace Repositories_BE.Interfaces
 {
-    internal class IUserRepository
+    public interface IUserRepository: IGenericRepository<Account>
     {
+        Task<ResponseLoginModel> LoginByEmailAndPassword(UserLoginModel user);
+        
     }
 }
