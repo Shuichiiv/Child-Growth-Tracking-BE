@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DataObjects_BE\DataObjects_BE.csproj" />
+    <ProjectReference Include="..\DTOs_BE\DTOs_BE.csproj" />
   </ItemGroup>
 
 </Project>

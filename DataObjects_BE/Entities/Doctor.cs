@@ -20,6 +20,5 @@ namespace DataObjects_BE.Entities
         [ForeignKey("AccountId")]
         public virtual Account Account { get; set; }
         public virtual ICollection<Feedback> Feedbacks { get; set; }
-
     }
 }
