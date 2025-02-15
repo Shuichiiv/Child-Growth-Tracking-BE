@@ -8,21 +8,28 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using WebAPI_BE.Injection;
+using WebAPI_BE.MiddleWare;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
-builder.Services.AddScoped<IDoctorService, DoctorService>();
-builder.Services.AddScoped<IEmailService, EmailService>();
 
 
-builder.Services.AddControllers();
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+    });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddDbContext<SWP391G3DbContext>(options =>
+/*builder.Services.AddDbContext<SWP391G3DbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
         b => b.MigrationsAssembly("DataObjects_BE"))); // Chạy Migration vào DataObjects_BE
-
+*/
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -50,6 +57,7 @@ builder.Services.AddSwaggerGen(config =>
         { jwtSecurityScheme, Array.Empty<string>() }
     });
 });
+builder.Services.ServicesInjection(builder.Configuration);
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -78,7 +86,7 @@ builder.Services.AddCors(opt =>
 });
 
 var app = builder.Build();
-//builder.Services.AddHttpContextAccessor();
+builder.Services.AddHttpContextAccessor();
 app.UseCors("CorsPolicyDevelopement");
 
 
@@ -95,5 +103,10 @@ app.UseAuthorization();
 app.UseAuthentication();
 
 app.MapControllers();
+app.UseStaticFiles();
+
+app.UseMiddleware<GlobalExceptionMiddleware>();
+app.UseMiddleware<PerformanceTimeMiddleware>();
+app.UseMiddleware<UserStatusMiddleware>();
 
 app.Run();
