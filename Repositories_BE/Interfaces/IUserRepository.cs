@@ -10,7 +10,8 @@ namespace Repositories_BE.Interfaces
 {
     public interface IUserRepository: IGenericRepository<Account>
     {
-        Task<ResponseLoginModel> LoginByEmailAndPassword(UserLoginModel user);
-        
+        Task<Account> GetByEmail(string email);
+
+
     }
 }
