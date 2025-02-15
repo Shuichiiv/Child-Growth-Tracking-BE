@@ -16,7 +16,7 @@ namespace DataObjects_BE.Entities
         public string ReportMark { get; set; }
         public string ReportContent { get; set; }
         public DateTime ReprotCreateDate { get; set; }
-        public string ReportIsActive { get; set; }
+        public string ReportIsActive { get; set; } // Active, Pending, Inactive
         public string ReportName { get; set; }
         public double Height { get; set; }
         public double Weight { get; set; }
