@@ -28,7 +28,22 @@ namespace Repositories_BE.Repositories
         }
         public async Task<Account> GetByEmail(string email)
         {
+            //Tìm user bằng email
             return await _context.Accounts.FirstOrDefaultAsync(x => x.Email == email);
+        }
+        
+        public async Task<bool> CheckEmailExists(string email)
+        {
+            //kiểm tra email đã tồn tại
+            return await _context.Accounts.AnyAsync(x => x.Email == email);
+        }
+
+        public async Task<Account> CreateAccount(Account account)
+        {
+            //Thêm account mới vào database
+            await _context.Accounts.AddAsync(account);
+            await _context.SaveChangesAsync();
+            return account;
         }
 
     }
