@@ -28,7 +28,30 @@ namespace Repositories_BE.Repositories
         }
         public async Task<Account> GetByEmail(string email)
         {
+            //Tìm user bằng email
             return await _context.Accounts.FirstOrDefaultAsync(x => x.Email == email);
+        }
+        
+        public async Task<bool> CheckEmailExists(string email)
+        {
+            //kiểm tra email đã tồn tại
+            return await _context.Accounts.AnyAsync(x => x.Email == email);
+        }
+
+        public async Task<Account> CreateAccount(Account account)
+        {
+            // Kiểm tra dữ liệu đầu vào
+            if (account == null)
+                throw new ArgumentNullException(nameof(account), "Account cannot be null");
+
+            // Kiểm tra email đã tồn tại
+            if (await CheckEmailExists(account.Email))
+                throw new InvalidOperationException("Email already exists");
+
+            //Thêm account mới vào database
+            await _context.Accounts.AddAsync(account);
+            await _context.SaveChangesAsync();
+            return account;
         }
 
     }
