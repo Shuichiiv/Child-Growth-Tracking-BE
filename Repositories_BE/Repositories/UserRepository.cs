@@ -40,6 +40,14 @@ namespace Repositories_BE.Repositories
 
         public async Task<Account> CreateAccount(Account account)
         {
+            // Kiểm tra dữ liệu đầu vào
+            if (account == null)
+                throw new ArgumentNullException(nameof(account), "Account cannot be null");
+
+            // Kiểm tra email đã tồn tại
+            if (await CheckEmailExists(account.Email))
+                throw new InvalidOperationException("Email already exists");
+
             //Thêm account mới vào database
             await _context.Accounts.AddAsync(account);
             await _context.SaveChangesAsync();
