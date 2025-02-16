@@ -10,5 +10,6 @@ namespace Services_BE.Interfaces
     public interface IUserService
     {
         Task<ResponseLoginModel> LoginByEmailAndPassword(UserLoginModel user);
+        Task<RegisterResponseModel> Register(UserRegisterModel registerModel);
     }
 }
