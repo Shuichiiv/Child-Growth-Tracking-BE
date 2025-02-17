@@ -93,7 +93,8 @@ namespace Services_BE.Services
                 1 => "User",
                 _ => "Doctor" // Mặc định user role = 1
             };
-            claims.Add(new Claim(ClaimTypes.Role, role));
+            claims.Add(new Claim("role", role)); 
+            //claims.Add(new Claim(ClaimTypes.Role, role));
 
             // Tạo và lưu Refresh Token
             var refreshToken = TokenTools.GenerateRefreshToken();
