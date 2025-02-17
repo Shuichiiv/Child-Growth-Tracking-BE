@@ -13,7 +13,14 @@ namespace WebAPI_BE.DoctorController
         {
             _doctorService = doctorService;
         }
-
+        
+        [HttpGet("get-all")]
+        public async Task<IActionResult> GetAllDoctors()
+        {
+            var doctors = await _doctorService.GetAllDoctorsAsync();
+            return Ok(doctors);
+        }
+        
         [HttpGet("{accountId}")]
         public async Task<IActionResult> GetDoctorInfo(Guid accountId)
         {
@@ -48,6 +55,37 @@ namespace WebAPI_BE.DoctorController
         public IActionResult Logout()
         {
             return Ok("Logged out successfully");
+        }
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<DoctorDto>>> SearchDoctors([FromQuery] string keyword)
+        {
+            var doctors = await _doctorService.SearchDoctorsAsync(keyword);
+            return Ok(doctors);
+        }
+
+        [HttpGet("specialty/{specialty}")]
+        public async Task<ActionResult<IEnumerable<DoctorDto>>> GetDoctorsBySpecialty(string specialty)
+        {
+            var doctors = await _doctorService.GetDoctorsBySpecialtyAsync(specialty);
+            return Ok(doctors);
+        }
+
+        [HttpDelete("{accountId}")]
+        public async Task<ActionResult> DeleteDoctor(Guid accountId)
+        {
+            var result = await _doctorService.DeleteDoctorAsync(accountId);
+            if (!result)
+            {
+                return NotFound(new { message = "Doctor not found." });
+            }
+            return NoContent();
+        }
+
+        [HttpGet("count")]
+        public async Task<ActionResult<int>> CountDoctors()
+        {
+            var count = await _doctorService.CountDoctorsAsync();
+            return Ok(count);
         }
     }
 }
