@@ -14,6 +14,11 @@ namespace Services_BE.Services
             _doctorRepository = doctorRepository;
         }
 
+        public async Task<IEnumerable<DoctorDto>> GetAllDoctorsAsync()
+        {
+            return await _doctorRepository.GetAllDoctorsAsync();
+        }
+
         public async Task<DoctorDto?> GetDoctorInfoAsync(Guid accountId)
         {
             return await _doctorRepository.GetDoctorInfoAsync(accountId);
@@ -27,6 +32,25 @@ namespace Services_BE.Services
         public async Task<bool> ChangePasswordAsync(Guid accountId, string oldPassword, string newPassword)
         {
             return await _doctorRepository.ChangePasswordAsync(accountId, oldPassword, newPassword);
+        }
+        public async Task<IEnumerable<DoctorDto>> SearchDoctorsAsync(string keyword)
+        {
+            return await _doctorRepository.SearchDoctorsAsync(keyword);
+        }
+
+        public async Task<IEnumerable<DoctorDto>> GetDoctorsBySpecialtyAsync(string specialty)
+        {
+            return await _doctorRepository.GetDoctorsBySpecialtyAsync(specialty);
+        }
+
+        public async Task<bool> DeleteDoctorAsync(Guid accountId)
+        {
+            return await _doctorRepository.DeleteDoctorAsync(accountId);
+        }
+
+        public async Task<int> CountDoctorsAsync()
+        {
+            return await _doctorRepository.CountDoctorsAsync();
         }
     }
 }

@@ -15,6 +15,27 @@ namespace Repositories_BE.Repositories
             _context = context;
         }
 
+        public async Task<IEnumerable<DoctorDto>> GetAllDoctorsAsync()
+        {
+            return await _context.Doctors
+                .Include(d => d.Account)
+                .Select(d => new DoctorDto
+                {
+                    FirstName = d.Account.FirstName,
+                    LastName = d.Account.LastName, 
+                    DoctorId = d.DoctorId,
+                    AccountId = d.AccountId,
+                    FullName = d.Account.FirstName + " " + d.Account.LastName,
+                    Email = d.Account.Email,
+                    PhoneNumber = d.Account.PhoneNumber,
+                    Specialization = d.Specialization,
+                    ExperienceYears = d.ExperienceYears,
+                    HospitalAddressWork = d.HospitalAddressWork,
+                    ImageUrl = d.Account.ImageUrl
+                })
+                .ToListAsync();
+        }
+
         public async Task<DoctorDto?> GetDoctorInfoAsync(Guid accountId)
         {
             var result = _context.Doctors
@@ -36,15 +57,12 @@ namespace Repositories_BE.Repositories
                     })
                 .Where(dto => dto.AccountId == accountId)
                 .AsQueryable();
-
-            // Tính StarRating từ bảng Rating thông qua Feedback
+            
             var starRating = await _context.Ratings
                 .Where(r => _context.Feedbacks
                     .Any(f => f.FeedbackId == r.FeedbackId && f.DoctorId == accountId))
                 .Select(r => (double?)r.RatingValue)
                 .AverageAsync() ?? 0;
-
-            // Lấy thông tin bác sĩ
             var doctor = await result.FirstOrDefaultAsync(); 
             if (doctor != null)
             {
@@ -76,14 +94,77 @@ namespace Repositories_BE.Repositories
             return true;
         }
 
+        // Ma hoa password di Phuc oi
         public async Task<bool> ChangePasswordAsync(Guid accountId, string oldPassword, string newPassword)
         {
             var account = await _context.Accounts.FindAsync(accountId);
             if (account == null || account.Password != oldPassword) return false;
 
-            account.Password = newPassword; // Thực tế cần mã hóa password
+            account.Password = newPassword;
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<IEnumerable<DoctorDto>> SearchDoctorsAsync(string keyword)
+        {
+            return await _context.Doctors
+                .Include(d => d.Account)
+                .Where(d => d.Account.FirstName.Contains(keyword) ||
+                            d.Account.LastName.Contains(keyword) ||
+                            d.Specialization.Contains(keyword))
+                .Select(d => new DoctorDto
+                {
+                    DoctorId = d.DoctorId,
+                    AccountId = d.AccountId,
+                    FirstName = d.Account.FirstName,
+                    LastName = d.Account.LastName,
+                    FullName = d.Account.FirstName + " " + d.Account.LastName,
+                    Email = d.Account.Email,
+                    PhoneNumber = d.Account.PhoneNumber,
+                    Specialization = d.Specialization,
+                    ExperienceYears = d.ExperienceYears,
+                    HospitalAddressWork = d.HospitalAddressWork,
+                    ImageUrl = d.Account.ImageUrl
+                })
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<DoctorDto>> GetDoctorsBySpecialtyAsync(string specialty)
+        {
+            return await _context.Doctors
+                .Include(d => d.Account)
+                .Where(d => d.Specialization == specialty)
+                .Select(d => new DoctorDto
+                {
+                    DoctorId = d.DoctorId,
+                    AccountId = d.AccountId,
+                    FirstName = d.Account.FirstName,
+                    LastName = d.Account.LastName,
+                    FullName = d.Account.FirstName + " " + d.Account.LastName,
+                    Email = d.Account.Email,
+                    PhoneNumber = d.Account.PhoneNumber,
+                    Specialization = d.Specialization,
+                    ExperienceYears = d.ExperienceYears,
+                    HospitalAddressWork = d.HospitalAddressWork,
+                    ImageUrl = d.Account.ImageUrl
+                })
+                .ToListAsync();
+        }
+
+        public async Task<bool> DeleteDoctorAsync(Guid accountId)
+        {
+            var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.AccountId == accountId);
+            if (doctor == null)
+                return false;
+
+            _context.Doctors.Remove(doctor);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<int> CountDoctorsAsync()
+        {
+            return await _context.Doctors.CountAsync();
         }
     }
 }
