@@ -12,5 +12,8 @@ public class DoctorDto
         public int ExperienceYears { get; set; }
         public string HospitalAddressWork { get; set; }
         public string ImageUrl { get; set; }
-        public double StarRating { get; set; } // Rate from patient
+    
+        public string FullName { get; set; }
+
+        public double StarRating { get; set; } = 0; // Default rating
 }
