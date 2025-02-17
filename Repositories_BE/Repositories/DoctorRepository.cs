@@ -57,14 +57,12 @@ namespace Repositories_BE.Repositories
                     })
                 .Where(dto => dto.AccountId == accountId)
                 .AsQueryable();
-
-            // Tính StarRating từ bảng Rating thông qua Feedback
+            
             var starRating = await _context.Ratings
                 .Where(r => _context.Feedbacks
                     .Any(f => f.FeedbackId == r.FeedbackId && f.DoctorId == accountId))
                 .Select(r => (double?)r.RatingValue)
                 .AverageAsync() ?? 0;
-            // Lay bacs si
             var doctor = await result.FirstOrDefaultAsync(); 
             if (doctor != null)
             {
@@ -96,12 +94,13 @@ namespace Repositories_BE.Repositories
             return true;
         }
 
+        // Ma hoa password di Phuc oi
         public async Task<bool> ChangePasswordAsync(Guid accountId, string oldPassword, string newPassword)
         {
             var account = await _context.Accounts.FindAsync(accountId);
             if (account == null || account.Password != oldPassword) return false;
 
-            account.Password = newPassword; // Chua mã hóa password
+            account.Password = newPassword;
             await _context.SaveChangesAsync();
             return true;
         }
