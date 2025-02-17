@@ -32,6 +32,13 @@ namespace Services_BE.Services
                 return result;
             }catch (Exception ex) { throw ex; }
         }
+        public async Task<ServiceOrderResponseDTO> CreateService(CreateServiceModel model)
+        {
+            try
+            {
+                
+            }catch (Exception ex) { throw ex; }
+        }
 
     }
 }
