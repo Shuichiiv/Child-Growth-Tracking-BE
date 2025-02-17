@@ -4,17 +4,20 @@ using System.Net.Mail;
 using System.Threading.Tasks;
 using DTOs_BE.DoctorDTOs;
 using Microsoft.Extensions.Configuration;
+using MimeKit;
+using MailKit.Security;
 using Services_BE.Interfaces;
+using SmtpClient = MailKit.Net.Smtp.SmtpClient;
 
 namespace Services_BE.Services
 {
     public class EmailService : IEmailService
     {
         private readonly IConfiguration _config;
-
+        
         public EmailService(IConfiguration config)
         {
-            _config = config;
+            _config = config ?? throw new ArgumentNullException(nameof(config));
         }
 
         public async Task<bool> SendFeedbackEmailAsync(EmailDto emailDto)
@@ -28,35 +31,34 @@ namespace Services_BE.Services
                 int smtpPort = int.Parse(smtpSettings["Port"]);
                 bool enableSsl = bool.Parse(smtpSettings["EnableSsl"]);
 
-                using (var client = new SmtpClient(smtpHost, smtpPort))
+                var email = new MimeMessage();
+                email.From.Add(new MailboxAddress("Admin", fromEmail));
+                email.To.Add(new MailboxAddress("", fromEmail));
+                email.Subject = $"[Feedback] {emailDto.Subject}";
+
+                var bodyBuilder = new BodyBuilder
                 {
-                    client.Credentials = new NetworkCredential(fromEmail, password);
-                    client.EnableSsl = enableSsl;
+                    HtmlBody = GenerateEmailBody(emailDto)
+                };
+                email.Body = bodyBuilder.ToMessageBody();
 
-                    string mailBody = GenerateEmailBody(emailDto);
-
-                    var mailMessage = new MailMessage
-                    {
-                        From = new MailAddress(fromEmail),
-                        Subject = $"[Feedback] {emailDto.Subject}",
-                        Body = mailBody,
-                        IsBodyHtml = true // Cho phép HTML trong email
-                    };
-
-                    mailMessage.To.Add(fromEmail); // Gửi về chính bạn
-
-                    await client.SendMailAsync(mailMessage);
+                using (var smtp = new SmtpClient())
+                {
+                    await smtp.ConnectAsync(smtpHost, smtpPort, SecureSocketOptions.StartTls);
+                    await smtp.AuthenticateAsync(fromEmail, password);
+                    await smtp.SendAsync(email);
+                    await smtp.DisconnectAsync(true);
                 }
 
                 return true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Lỗi gửi mail: {ex.Message}");
+                Console.WriteLine($"Lỗi gửi email: {ex.Message}");
                 return false;
             }
         }
-
+        
         private static string GenerateEmailBody(EmailDto emailDto)
         {
             return $@"
@@ -72,5 +74,65 @@ namespace Services_BE.Services
                     <p style='margin-top: 20px; font-size: 14px; color: gray;'>Đây là email tự động, vui lòng không trả lời.</p>
                 </div>";
         }
+        public async Task SendVerifymailAsync(string toEmail, string subject, string body)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(toEmail))
+                    throw new ArgumentException("Email không hợp lệ.");
+        
+                if (string.IsNullOrEmpty(subject))
+                    throw new ArgumentException("Subject không hợp lệ.");
+        
+                if (string.IsNullOrEmpty(body))
+                    throw new ArgumentException("Body không hợp lệ.");
+
+                var smtpSettings = _config.GetSection("SmtpSettings");
+                if (smtpSettings == null)
+                    throw new Exception("Cấu hình SMTP không tìm thấy.");
+                string fromEmail = smtpSettings["Username"];
+                string password = smtpSettings["Password"];
+                string smtpHost = smtpSettings["Host"];
+                int smtpPort = int.Parse(smtpSettings["Port"]);
+                bool enableSsl = bool.Parse(smtpSettings["EnableSsl"]);
+
+                Console.WriteLine($"SMTP Host: {smtpHost}");
+                Console.WriteLine($"Sender Email: {fromEmail}");
+                Console.WriteLine($"Sender Password: {password}");
+
+
+                if (string.IsNullOrEmpty(fromEmail) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(smtpHost))
+                    throw new Exception("Cấu hình SMTP không hợp lệ.");
+
+                var email = new MimeMessage();
+                email.From.Add(new MailboxAddress("Admin", fromEmail));
+                email.To.Add(new MailboxAddress("", toEmail));
+                email.Subject = subject;
+
+                var bodyBuilder = new BodyBuilder { HtmlBody = body };
+                email.Body = bodyBuilder.ToMessageBody();
+
+                using (var smtp = new SmtpClient())
+                {
+                    await smtp.ConnectAsync(smtpHost, smtpPort, SecureSocketOptions.StartTls);
+                    await smtp.AuthenticateAsync(fromEmail, password);
+                    await smtp.SendAsync(email);
+                    await smtp.DisconnectAsync(true);
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine($"Argument Exception: {ex.Message}");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+                throw;
+            }
+        }
+
+
+        
     }
 }
