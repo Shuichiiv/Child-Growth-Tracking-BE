@@ -27,5 +27,11 @@ namespace DataObjects_BE.Entities
         public virtual Manager Manager { get; set; }
         public virtual Doctor Doctor { get; set; }
         public virtual Parent Parent { get; set; }
+        
+        //For Gmail OTP
+        public string? Otp { get; set; }
+        public DateTime? OtpCreatedAt { get; set; }
+        
+        public Boolean IsActive { get; set; }
     }
 }

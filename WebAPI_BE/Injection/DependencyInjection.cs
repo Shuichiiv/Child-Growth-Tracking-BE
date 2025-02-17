@@ -40,6 +40,8 @@ namespace WebAPI_BE.Injection
             
 
             //Injection services of project
+            services.AddSingleton<IEmailService, EmailService>();
+            services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IServiceService, ServiceService>();
             services.AddScoped<IDoctorService, DoctorService>();
             services.AddScoped<IUserService, UserService>();
