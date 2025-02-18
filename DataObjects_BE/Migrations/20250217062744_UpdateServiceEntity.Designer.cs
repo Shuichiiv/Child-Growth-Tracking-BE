@@ -4,6 +4,7 @@ using DataObjects_BE;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataObjects_BE.Migrations
 {
     [DbContext(typeof(SWP391G3DbContext))]
-    partial class SWP391G3DbContextModelSnapshot : ModelSnapshot
+    [Migration("20250217062744_UpdateServiceEntity")]
+    partial class UpdateServiceEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,18 +53,9 @@ namespace DataObjects_BE.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Otp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("OtpCreatedAt")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Password")
                         .IsRequired()
