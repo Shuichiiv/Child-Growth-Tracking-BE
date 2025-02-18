@@ -14,5 +14,6 @@ namespace Services_BE.Interfaces
         Task<ServiceResponseDTO> GetServiceById(int id);
         Task<ServiceResponseDTO> CreateService(CreateServiceModel model);
         Task<ServiceResponseDTO> UpdateService(UpdateServiceModel model, int id);
+        Task<ServiceResponseDTO> SoftRemoveService(int id);
     }
 }

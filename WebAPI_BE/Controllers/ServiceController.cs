@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DTOs_BE.ServiceDTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services_BE.Interfaces;
 
@@ -32,6 +33,8 @@ namespace WebAPI_BE.Controllers
             var response = await _service.GetServiceById(id);
             return Ok(response);
         }
+
+        [Authorize(Roles = "Manager")]
         [HttpPost("create-service")]
         public async Task<IActionResult> CreateService([FromBody] CreateServiceModel model)
         {
@@ -48,6 +51,7 @@ namespace WebAPI_BE.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+        [Authorize(Roles = "Manager")]
         [HttpPut("update-service/{id}")]
         public async Task<IActionResult> UpdateService([FromBody] UpdateServiceModel model, int id)
         {
@@ -61,6 +65,19 @@ namespace WebAPI_BE.Controllers
                 return Ok(serviceResponse);
             }
             catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        [Authorize(Roles = "Manager")]
+        [HttpPut("soft-remove/{id}")]
+        public async Task<IActionResult> SoftRemoveService(int id)
+        {
+            try 
+            {
+                var serviceResponse = await _service.SoftRemoveService(id);
+                return Ok(serviceResponse);
+            }catch(Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }

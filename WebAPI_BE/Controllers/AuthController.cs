@@ -1,6 +1,8 @@
-﻿using DTOs_BE.UserDTOs;
+﻿using AutoMapper;
+using DTOs_BE.UserDTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Repositories_BE.Interfaces;
 using Services_BE.Services;
 using Services_BE.Interfaces;
 
@@ -11,6 +13,7 @@ namespace WebAPI_BE.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IUserRepository _userRepository;
 
         public AuthController(IUserService userService)
         {
@@ -38,5 +41,37 @@ namespace WebAPI_BE.Controllers
             }
             return BadRequest(result);
         }
+        
+        [HttpPost("activate-account")]
+        public async Task<IActionResult> ActivateAccount([FromBody] VerifyOtpModel otpModel)
+        {
+            if (otpModel == null)
+                return BadRequest("Invalid OTP details");
+
+            var result = await _userService.ActivateAccountAsync(otpModel);
+            if (!result)
+                return BadRequest("Account activation failed");
+
+            return Ok("Account activated successfully");
+        }
+        
+        [HttpPost("resend-otp")]
+        public async Task<IActionResult> ResendOtp([FromBody] ResendOtpRequestModel model)
+        {
+            if (string.IsNullOrEmpty(model.Email))
+            {
+                return BadRequest("Email is required.");
+            }
+
+            var response = await _userService.ResendOtp(model.Email);
+            if (response.Success)
+            {
+                return Ok(response.Message);
+            }
+
+            return BadRequest(response.Message);
+        }
+        
+       
     }
 }

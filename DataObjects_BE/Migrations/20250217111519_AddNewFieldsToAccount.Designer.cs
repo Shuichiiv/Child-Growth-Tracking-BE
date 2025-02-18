@@ -4,6 +4,7 @@ using DataObjects_BE;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataObjects_BE.Migrations
 {
     [DbContext(typeof(SWP391G3DbContext))]
-    partial class SWP391G3DbContextModelSnapshot : ModelSnapshot
+    [Migration("20250217111519_AddNewFieldsToAccount")]
+    partial class AddNewFieldsToAccount
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -414,11 +417,10 @@ namespace DataObjects_BE.Migrations
 
                     b.Property<string>("ServiceName")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("ServicePrice")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<float>("ServicePrice")
+                        .HasColumnType("real");
 
                     b.HasKey("ServiceId");
 

@@ -14,5 +14,15 @@ namespace Repositories_BE.Interfaces
         Task<bool> CheckEmailExists(string email); //Kiểm tra email đã tồn tại trong hệ thống chưa
         Task<Account> CreateAccount(Account account); //Tạo tài khoản mới trong database
 
+        //OTP Gmail
+        Task SaveOtp(string email, string otp);
+        Task<string> GetOtpAsync(string email);
+        Task<bool> VerifyOtpAsync(string email, string otp);
+        Task UpdateUserAsync(Account user);
+        Task<Account> GetUserByEmailAsync(string email);
+        
+        Task SaveOtp(string email, string otp, DateTime otpCreatedAt);
+        Task<OtpInfo> GetOtpInfoAsync(string email);
+
     }
 }

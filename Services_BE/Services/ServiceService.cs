@@ -86,6 +86,23 @@ namespace Services_BE.Services
             }
             catch (Exception ex) { throw ex; }
         }
+        public async Task<ServiceResponseDTO> SoftRemoveService(int id)
+        {
+            try
+            {
+                var serviceExisting = _serviceRepositoy.GetByID(id);
+                if(serviceExisting == null)
+                {
+                    throw new Exception("Service is not existing!!!");
+                }
+
+                serviceExisting.IsActive = false;
+                var result = _mapper.Map<ServiceResponseDTO>(serviceExisting);
+                _serviceRepositoy.Update(serviceExisting);
+                _serviceRepositoy.Save();
+                return result;
+            }catch(Exception ex) { throw ex; }  
+        }
         
     }
 }

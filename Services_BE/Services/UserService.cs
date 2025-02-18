@@ -15,18 +15,21 @@ using Services_BE.Interfaces;
 
 namespace Services_BE.Services
 {
-    public class UserService: IUserService
+    public class UserService : IUserService
     {
         private readonly IConfiguration _configuration;
         private readonly IUserRepository _userRepository;
         private readonly ICurrentTime _timeService;
         private readonly PasswordHasher<string> _passwordHasher;
+        private readonly IEmailService _emailService;
 
-        public UserService(IConfiguration configuration, IUserRepository userRepository, ICurrentTime timeService)
+        public UserService(IConfiguration configuration, IUserRepository userRepository, ICurrentTime timeService,
+            IEmailService emailService)
         {
             _configuration = configuration;
             _userRepository = userRepository;
             _timeService = timeService;
+            _emailService = emailService;
             _passwordHasher = new PasswordHasher<string>();
         }
 
@@ -69,9 +72,19 @@ namespace Services_BE.Services
                     Message = "User does not exist."
                 };
             }
-
+            //Check OTP
+            if (!userExist.IsActive)
+            {
+                return new ResponseLoginModel
+                {
+                    Status = false,
+                    Message = "Your account has been deactivated. Please contact support."
+                };
+            }
+            
             // So sánh mật khẩu đã băm
-            var passwordVerification = _passwordHasher.VerifyHashedPassword(user.Email, userExist.Password, user.Password);
+            var passwordVerification =
+                _passwordHasher.VerifyHashedPassword(user.Email, userExist.Password, user.Password);
             if (passwordVerification == PasswordVerificationResult.Failed)
             {
                 return new ResponseLoginModel
@@ -93,14 +106,14 @@ namespace Services_BE.Services
                 1 => "User",
                 _ => "Doctor" // Mặc định user role = 1
             };
-            claims.Add(new Claim("role", role)); 
+            claims.Add(new Claim("role", role));
             //claims.Add(new Claim(ClaimTypes.Role, role));
 
             // Tạo và lưu Refresh Token
             var refreshToken = TokenTools.GenerateRefreshToken();
             if (!int.TryParse(_configuration["JWT:RefreshTokenValidityInDays"], out int refreshTokenValidityInDays))
             {
-                refreshTokenValidityInDays = 7;  // Default to 7 days if config is invalid
+                refreshTokenValidityInDays = 7; // Default to 7 days if config is invalid
             }
 
             // Tạo JWT Token
@@ -117,9 +130,169 @@ namespace Services_BE.Services
             };
         }
 
+        public async Task<RegisterResponseModel> Register(UserRegisterModel registerModel)
+        {
+            if (await _userRepository.CheckEmailExists(registerModel.Email))
+            {
+                return new RegisterResponseModel { Success = false, Message = "Email đã được sử dụng" };
+            }
+
+            if (!IsValidEmail(registerModel.Email))
+            {
+                return new RegisterResponseModel { Success = false, Message = "Email không hợp lệ" };
+            }
+
+            if (string.IsNullOrWhiteSpace(registerModel.Password) || registerModel.Password.Length < 6)
+            {
+                return new RegisterResponseModel { Success = false, Message = "Mật khẩu phải có ít nhất 6 ký tự" };
+            }
+
+            var account = new Account
+            {
+                AccountId = Guid.NewGuid(),
+                UserName = registerModel.Email,
+                Email = registerModel.Email,
+                Password = _passwordHasher.HashPassword(registerModel.Email, registerModel.Password),
+                FirstName = registerModel.FirstName,
+                LastName = registerModel.LastName,
+                PhoneNumber = registerModel.PhoneNumber ?? "",
+                Address = registerModel.Address ?? "",
+                ImageUrl = "abc",
+                Role = 1,
+                DateCreateAt = DateTime.UtcNow,
+                Otp = null,
+                OtpCreatedAt = null,
+                IsActive = false,
+                DateUpdateAt = DateTime.UtcNow
+            };
+            var createAccount = await _userRepository.CreateAccount(account);
+
+
+            if (createAccount == null)
+            {
+                return new RegisterResponseModel { Success = false, Message = "Tạo tài khoản thất bại" };
+            }
+
+
+            string otp = new Random().Next(100000, 999999).ToString();
+            //DateTime otpCreatedAt = DateTime.UtcNow;
+            await _userRepository.SaveOtp(registerModel.Email, otp);
+
+            string emailBody = $"Mã OTP của bạn là: <b>{otp}</b>. Vui lòng nhập mã này để kích hoạt tài khoản.";
+            try
+            {
+                await _emailService.SendVerifymailAsync(registerModel.Email, "Xác nhận đăng ký", emailBody);
+            }
+            catch (Exception ex)
+            {
+                return new RegisterResponseModel { Success = false, Message = $"Lỗi gửi email: {ex.Message}" };
+            }
+            
+
+
+            return new RegisterResponseModel
+            {
+                
+                Success = true,
+                Message = "Đăng kí thành công. Vui lòng kiểm tra email để nhập mã OTP.",
+                AccountId = account.AccountId
+            };
+        }
+
+        private bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+
+        /*public async Task<bool> VerifyOtpAsync(VerifyOtpModel model)
+        {
+            return await _userRepository.VerifyOtpAsync(model.Email, model.Otp);
+        }*/
+        
+        public async Task<bool> VerifyOtpAsync(VerifyOtpModel model)
+        {
+            var otpInfo = await _userRepository.GetOtpInfoAsync(model.Email);
+            if (otpInfo == null) return false;
+            if (otpInfo.OtpCreatedAt == null)
+            {
+                return false;
+            }
+            
+            var elapsedTime = DateTime.UtcNow - otpInfo.OtpCreatedAt.Value;
+            
+            if (elapsedTime.TotalMinutes > 5)
+            {
+                return false;
+            }
+
+            return otpInfo.OtpCode == model.Otp;
+        }
+
+        
+        public async Task<bool> ActivateAccountAsync(VerifyOtpModel model)
+        {
+            var user = await _userRepository.GetUserByEmailAsync(model.Email);
+            if (user == null) return false;
+
+            bool isOtpValid = await _userRepository.VerifyOtpAsync(model.Email, model.Otp);
+            if (!isOtpValid) return false;
+
+            user.IsActive = true;
+            await _userRepository.UpdateUserAsync(user);
+
+            return true;
+        }
+        
+        public async Task<RegisterResponseModel> ResendOtp(string email)
+        {
+
+            var user = await _userRepository.GetUserByEmailAsync(email);
+            if (user == null)
+            {
+                return new RegisterResponseModel { Success = false, Message = "Email không tồn tại" };
+            }
+
+            var otpInfo = await _userRepository.GetOtpInfoAsync(email);
+            
+            if (otpInfo == null || otpInfo.OtpCreatedAt == null || (DateTime.UtcNow - otpInfo.OtpCreatedAt.Value).TotalMinutes > 5)
+            {
+                string otp = new Random().Next(100000, 999999).ToString();
+                await _userRepository.SaveOtp(email, otp);
+                
+                string emailBody = $"Mã OTP của bạn là: <b>{otp}</b>. Vui lòng nhập mã này để kích hoạt tài khoản.";
+                try
+                {
+                    await _emailService.SendVerifymailAsync(email, "Xác nhận đăng ký", emailBody);
+                }
+                catch (Exception ex)
+                {
+                    return new RegisterResponseModel { Success = false, Message = $"Lỗi gửi email: {ex.Message}" };
+                }
+
+                return new RegisterResponseModel
+                {
+                    Success = true,
+                    Message = "OTP mới đã được gửi đến email của bạn."
+                };
+            }
+
+            return new RegisterResponseModel { Success = false, Message = "OTP chưa hết hạn" };
+        }
+
+
+
 
         //Register Account
-        public async Task<RegisterResponseModel> Register(UserRegisterModel registerModel)
+        /*public async Task<RegisterResponseModel> Register(UserRegisterModel registerModel)
         {
             //Kiểm tra email đã tồn tại hay chưa
             if (await _userRepository.CheckEmailExists(registerModel.Email))
@@ -155,6 +328,6 @@ namespace Services_BE.Services
                 Message = "Đăng kí thành công",
                 AccountId = account.AccountId
             };
-        }
+        }*/
     }
 }

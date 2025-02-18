@@ -41,19 +41,78 @@ namespace Repositories_BE.Repositories
 
         public async Task<Account> CreateAccount(Account account)
         {
-            // Kiểm tra dữ liệu đầu vào
             if (account == null)
                 throw new ArgumentNullException(nameof(account), "Account cannot be null");
-
-            // Kiểm tra email đã tồn tại
             if (await CheckEmailExists(account.Email))
                 throw new InvalidOperationException("Email already exists");
-
-            //Thêm account mới vào database
             await _context.Accounts.AddAsync(account);
             await _context.SaveChangesAsync();
             return account;
         }
+        public async Task SaveOtp(string email, string otp)
+        {
+            var user = await _context.Accounts.FirstOrDefaultAsync(u => u.Email == email);
+            if (user != null)
+            {
+                user.Otp = otp;
+                user.OtpCreatedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+            }
+        }
 
+        public async Task<string> GetOtpAsync(string email)
+        {
+            var user = await _context.Accounts.FirstOrDefaultAsync(u => u.Email == email);
+            return user?.Otp;
+        }
+
+        public async Task<bool> VerifyOtpAsync(string email, string otp)
+        {
+            var user = await _context.Accounts.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null) return false;
+
+            // 5 min
+            if (user.Otp == otp && user.OtpCreatedAt > DateTime.UtcNow.AddMinutes(-5))
+            {
+                user.Otp = null;
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
+        
+        public async Task UpdateUserAsync(Account user)
+        {
+            _context.Accounts.Update(user);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<Account> GetUserByEmailAsync(string email)
+        {
+            return await _context.Accounts.FirstOrDefaultAsync(a => a.Email == email);
+        }
+        
+        public async Task SaveOtp(string email, string otp, DateTime otpCreatedAt)
+        {
+            var user = await _context.Accounts.FirstOrDefaultAsync(u => u.Email == email);
+            if (user != null)
+            {
+                user.Otp = otp;
+                user.OtpCreatedAt = otpCreatedAt;
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<OtpInfo> GetOtpInfoAsync(string email)
+        {
+            var user = await _context.Accounts.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null) return null;
+
+            return new OtpInfo 
+            { 
+                OtpCode = user.Otp, 
+                CreatedAt = user.OtpCreatedAt
+            };
+        }
     }
 }
