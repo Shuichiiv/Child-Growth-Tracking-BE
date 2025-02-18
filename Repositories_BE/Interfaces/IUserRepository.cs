@@ -20,6 +20,9 @@ namespace Repositories_BE.Interfaces
         Task<bool> VerifyOtpAsync(string email, string otp);
         Task UpdateUserAsync(Account user);
         Task<Account> GetUserByEmailAsync(string email);
+        
+        Task SaveOtp(string email, string otp, DateTime otpCreatedAt);
+        Task<OtpInfo> GetOtpInfoAsync(string email);
 
     }
 }
