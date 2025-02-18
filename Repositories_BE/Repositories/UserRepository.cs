@@ -91,5 +91,28 @@ namespace Repositories_BE.Repositories
         {
             return await _context.Accounts.FirstOrDefaultAsync(a => a.Email == email);
         }
+        
+        public async Task SaveOtp(string email, string otp, DateTime otpCreatedAt)
+        {
+            var user = await _context.Accounts.FirstOrDefaultAsync(u => u.Email == email);
+            if (user != null)
+            {
+                user.Otp = otp;
+                user.OtpCreatedAt = otpCreatedAt;
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<OtpInfo> GetOtpInfoAsync(string email)
+        {
+            var user = await _context.Accounts.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null) return null;
+
+            return new OtpInfo 
+            { 
+                OtpCode = user.Otp, 
+                CreatedAt = user.OtpCreatedAt
+            };
+        }
     }
 }

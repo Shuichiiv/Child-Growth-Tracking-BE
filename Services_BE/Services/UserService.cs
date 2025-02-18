@@ -156,7 +156,6 @@ namespace Services_BE.Services
                 IsActive = false,
                 DateUpdateAt = DateTime.UtcNow
             };
-
             var createAccount = await _userRepository.CreateAccount(account);
 
 
@@ -165,7 +164,9 @@ namespace Services_BE.Services
                 return new RegisterResponseModel { Success = false, Message = "Tạo tài khoản thất bại" };
             }
 
+
             string otp = new Random().Next(100000, 999999).ToString();
+            //DateTime otpCreatedAt = DateTime.UtcNow;
             await _userRepository.SaveOtp(registerModel.Email, otp);
 
             string emailBody = $"Mã OTP của bạn là: <b>{otp}</b>. Vui lòng nhập mã này để kích hoạt tài khoản.";
@@ -177,9 +178,12 @@ namespace Services_BE.Services
             {
                 return new RegisterResponseModel { Success = false, Message = $"Lỗi gửi email: {ex.Message}" };
             }
+            
+
 
             return new RegisterResponseModel
             {
+                
                 Success = true,
                 Message = "Đăng kí thành công. Vui lòng kiểm tra email để nhập mã OTP.",
                 AccountId = account.AccountId
@@ -200,11 +204,31 @@ namespace Services_BE.Services
         }
 
 
-        public async Task<bool> VerifyOtpAsync(VerifyOtpModel model)
+        /*public async Task<bool> VerifyOtpAsync(VerifyOtpModel model)
         {
             return await _userRepository.VerifyOtpAsync(model.Email, model.Otp);
+        }*/
+        
+        public async Task<bool> VerifyOtpAsync(VerifyOtpModel model)
+        {
+            var otpInfo = await _userRepository.GetOtpInfoAsync(model.Email);
+            if (otpInfo == null) return false;
+            if (otpInfo.OtpCreatedAt == null)
+            {
+                return false;
+            }
+            
+            var elapsedTime = DateTime.UtcNow - otpInfo.OtpCreatedAt.Value;
+            
+            if (elapsedTime.TotalMinutes > 5)
+            {
+                return false;
+            }
+
+            return otpInfo.OtpCode == model.Otp;
         }
 
+        
         public async Task<bool> ActivateAccountAsync(VerifyOtpModel model)
         {
             var user = await _userRepository.GetUserByEmailAsync(model.Email);
@@ -218,6 +242,44 @@ namespace Services_BE.Services
 
             return true;
         }
+        
+        public async Task<RegisterResponseModel> ResendOtp(string email)
+        {
+
+            var user = await _userRepository.GetUserByEmailAsync(email);
+            if (user == null)
+            {
+                return new RegisterResponseModel { Success = false, Message = "Email không tồn tại" };
+            }
+
+            var otpInfo = await _userRepository.GetOtpInfoAsync(email);
+            
+            if (otpInfo == null || otpInfo.OtpCreatedAt == null || (DateTime.UtcNow - otpInfo.OtpCreatedAt.Value).TotalMinutes > 5)
+            {
+                string otp = new Random().Next(100000, 999999).ToString();
+                await _userRepository.SaveOtp(email, otp);
+                
+                string emailBody = $"Mã OTP của bạn là: <b>{otp}</b>. Vui lòng nhập mã này để kích hoạt tài khoản.";
+                try
+                {
+                    await _emailService.SendVerifymailAsync(email, "Xác nhận đăng ký", emailBody);
+                }
+                catch (Exception ex)
+                {
+                    return new RegisterResponseModel { Success = false, Message = $"Lỗi gửi email: {ex.Message}" };
+                }
+
+                return new RegisterResponseModel
+                {
+                    Success = true,
+                    Message = "OTP mới đã được gửi đến email của bạn."
+                };
+            }
+
+            return new RegisterResponseModel { Success = false, Message = "OTP chưa hết hạn" };
+        }
+
+
 
 
         //Register Account
