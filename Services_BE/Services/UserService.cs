@@ -72,7 +72,16 @@ namespace Services_BE.Services
                     Message = "User does not exist."
                 };
             }
-
+            //Check OTP
+            if (!userExist.IsActive)
+            {
+                return new ResponseLoginModel
+                {
+                    Status = false,
+                    Message = "Your account has been deactivated. Please contact support."
+                };
+            }
+            
             // So sánh mật khẩu đã băm
             var passwordVerification =
                 _passwordHasher.VerifyHashedPassword(user.Email, userExist.Password, user.Password);
