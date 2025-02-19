@@ -24,6 +24,7 @@ namespace DataObjects_BE.Entities
         [ForeignKey("ChildId")]
         public virtual Child Child { get; set; }
         public virtual ICollection<Feedback> Feedbacks { get; set; }
-        public virtual ProductList ProductList { get; set; }
+        //public virtual ProductList ProductList { get; set; }
+        public virtual ICollection<ReportProduct> ReportProducts { get; set; }
     }
 }
