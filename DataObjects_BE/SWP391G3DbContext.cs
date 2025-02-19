@@ -23,6 +23,7 @@ namespace DataObjects_BE
         public DbSet<Report> Reports { get; set; }
         public DbSet<Service> Services { get; set; }
         public DbSet<ServiceOrder> ServiceOrders { get; set; }
+        public DbSet<ReportProduct> ReportProducts { get; set; }
 
         public SWP391G3DbContext(DbContextOptions options): base(options)
         {
@@ -35,7 +36,7 @@ namespace DataObjects_BE
             modelBuilder.Entity<Account>()
                 .HasOne(a => a.Manager)
                 .WithOne(m => m.Account)
-                .HasForeignKey<Manager>(m => m.AccountId) 
+                .HasForeignKey<Manager>(m => m.AccountId)
                 .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Account>()
                 .HasOne(a => a.Doctor)
@@ -47,7 +48,7 @@ namespace DataObjects_BE
                 .WithOne(p => p.Account)
                 .HasForeignKey<Parent>(p => p.AccountId)
                 .OnDelete(DeleteBehavior.Restrict);
-            
+
             modelBuilder.Entity<Feedback>()
                 .HasOne(f => f.Doctor)
                 .WithMany(d => d.Feedbacks)
@@ -71,13 +72,9 @@ namespace DataObjects_BE
             modelBuilder.Entity<Report>()
                 .HasOne(r => r.Child)
                 .WithMany(c => c.Reports)
-                .HasForeignKey (r => r.ChildId)
+                .HasForeignKey(r => r.ChildId)
                 .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<Report>()
-                .HasOne(r => r.ProductList)
-                .WithOne(p => p.Report)
-                .HasForeignKey<ProductList>(p => p.ReportId)
-                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Report>();
             modelBuilder.Entity<Feedback>()
                 .HasOne(f => f.Report)
                 .WithMany(r => r.Feedbacks)
@@ -96,7 +93,32 @@ namespace DataObjects_BE
             modelBuilder.Entity<ProductList>()
                 .Property(p => p.Price)
                 .HasPrecision(18, 4); // Thay đổi precision và scale phù hợp với yêu cầu của bạn
+            modelBuilder.Entity<Service>(entity =>
+            {
+                entity.HasKey(e => e.ServiceId);
 
+                entity.Property(e => e.ServiceId)
+                      .ValueGeneratedOnAdd() // Set Identity (1,1)
+                      .UseIdentityColumn(1, 1);
+
+                entity.Property(e => e.ServiceName)
+                      .IsRequired()
+                      .HasMaxLength(255);
+
+                entity.Property(e => e.ServicePrice)
+                      .HasColumnType("decimal(18,2)");
+            });
+            modelBuilder.Entity<ReportProduct>()
+                .HasOne(rp => rp.Report)
+                .WithMany(r => r.ReportProducts)
+                .HasForeignKey(rp => rp.ReportId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ReportProduct>()
+                .HasOne(rp => rp.ProductList)
+                .WithMany(p => p.ReportProducts)
+                .HasForeignKey(rp => rp.ProductListId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

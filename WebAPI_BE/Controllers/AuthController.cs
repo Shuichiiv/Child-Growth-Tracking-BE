@@ -55,6 +55,23 @@ namespace WebAPI_BE.Controllers
             return Ok("Account activated successfully");
         }
         
+        [HttpPost("resend-otp")]
+        public async Task<IActionResult> ResendOtp([FromBody] ResendOtpRequestModel model)
+        {
+            if (string.IsNullOrEmpty(model.Email))
+            {
+                return BadRequest("Email is required.");
+            }
+
+            var response = await _userService.ResendOtp(model.Email);
+            if (response.Success)
+            {
+                return Ok(response.Message);
+            }
+
+            return BadRequest(response.Message);
+        }
+        
        
     }
 }

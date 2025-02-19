@@ -13,5 +13,6 @@ namespace Services_BE.Interfaces
         Task<RegisterResponseModel> Register(UserRegisterModel registerModel);
         Task<bool> VerifyOtpAsync(VerifyOtpModel otpModel);
         Task<bool> ActivateAccountAsync(VerifyOtpModel otpModel);
+        Task<RegisterResponseModel> ResendOtp(string email);
     }
 }

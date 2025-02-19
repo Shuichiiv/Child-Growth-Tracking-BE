@@ -1,4 +1,5 @@
 ﻿using DataObjects_BE.Entities;
+using DTOs_BE.ServiceDTOs;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -19,6 +20,6 @@ namespace DTOs_BE.ServiceOrderDTOs
         public DateTime CreateDate { get; set; }
         public DateTime EndDate { get; set; }
         public virtual Parent Parent { get; set; }
-        public virtual Service Service { get; set; }
+        public virtual ServiceResponseDTO Service { get; set; }
     }
 }

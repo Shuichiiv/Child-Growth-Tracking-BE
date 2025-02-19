@@ -12,7 +12,7 @@ namespace DataObjects_BE.Entities
         [Key]
         public int ServiceId { get; set; }
         public string ServiceName { get; set; } 
-        public float ServicePrice { get; set; }
+        public decimal ServicePrice { get; set; }
         public string ServiceDescription { get; set; }
         public float ServiceDuration { get; set; }
         public DateTime ServiceCreateDate { get; set; }

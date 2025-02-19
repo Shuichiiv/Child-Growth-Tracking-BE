@@ -4,6 +4,7 @@ using DataObjects_BE;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataObjects_BE.Migrations
 {
     [DbContext(typeof(SWP391G3DbContext))]
-    partial class SWP391G3DbContextModelSnapshot : ModelSnapshot
+    [Migration("20250217062744_UpdateServiceEntity")]
+    partial class UpdateServiceEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,18 +53,9 @@ namespace DataObjects_BE.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Otp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("OtpCreatedAt")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -295,10 +289,6 @@ namespace DataObjects_BE.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ProductType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<double>("Rating")
                         .HasColumnType("float");
 
@@ -306,11 +296,17 @@ namespace DataObjects_BE.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("ReportId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("SafetyFeature")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ProductListId");
+
+                    b.HasIndex("ReportId")
+                        .IsUnique();
 
                     b.ToTable("ProductLists");
                 });
@@ -387,27 +383,6 @@ namespace DataObjects_BE.Migrations
                     b.HasIndex("ChildId");
 
                     b.ToTable("Reports");
-                });
-
-            modelBuilder.Entity("DataObjects_BE.Entities.ReportProduct", b =>
-                {
-                    b.Property<Guid>("ReportProductId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ProductListId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ReportId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("ReportProductId");
-
-                    b.HasIndex("ProductListId");
-
-                    b.HasIndex("ReportId");
-
-                    b.ToTable("ReportProducts");
                 });
 
             modelBuilder.Entity("DataObjects_BE.Entities.Service", b =>
@@ -554,6 +529,17 @@ namespace DataObjects_BE.Migrations
                     b.Navigation("ServiceOrder");
                 });
 
+            modelBuilder.Entity("DataObjects_BE.Entities.ProductList", b =>
+                {
+                    b.HasOne("DataObjects_BE.Entities.Report", "Report")
+                        .WithOne("ProductList")
+                        .HasForeignKey("DataObjects_BE.Entities.ProductList", "ReportId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Report");
+                });
+
             modelBuilder.Entity("DataObjects_BE.Entities.Rating", b =>
                 {
                     b.HasOne("DataObjects_BE.Entities.Feedback", "Feedback")
@@ -582,25 +568,6 @@ namespace DataObjects_BE.Migrations
                         .IsRequired();
 
                     b.Navigation("Child");
-                });
-
-            modelBuilder.Entity("DataObjects_BE.Entities.ReportProduct", b =>
-                {
-                    b.HasOne("DataObjects_BE.Entities.ProductList", "ProductList")
-                        .WithMany("ReportProducts")
-                        .HasForeignKey("ProductListId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("DataObjects_BE.Entities.Report", "Report")
-                        .WithMany("ReportProducts")
-                        .HasForeignKey("ReportId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("ProductList");
-
-                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("DataObjects_BE.Entities.ServiceOrder", b =>
@@ -658,16 +625,12 @@ namespace DataObjects_BE.Migrations
                     b.Navigation("ServiceOrders");
                 });
 
-            modelBuilder.Entity("DataObjects_BE.Entities.ProductList", b =>
-                {
-                    b.Navigation("ReportProducts");
-                });
-
             modelBuilder.Entity("DataObjects_BE.Entities.Report", b =>
                 {
                     b.Navigation("Feedbacks");
 
-                    b.Navigation("ReportProducts");
+                    b.Navigation("ProductList")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("DataObjects_BE.Entities.Service", b =>
