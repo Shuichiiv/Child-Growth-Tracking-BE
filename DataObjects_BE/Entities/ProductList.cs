@@ -12,7 +12,7 @@ namespace DataObjects_BE.Entities
     {
         [Key]
         public Guid ProductListId { get; set; }
-        public Guid ReportId { get; set; }
+        //public Guid? ReportId { get; set; }
         public string ProductName { get; set; }
         public string ProductDescription { get; set; }
         public decimal Price { get; set; }
@@ -24,7 +24,11 @@ namespace DataObjects_BE.Entities
         public string ImageUrl { get; set; }
         public string Brand { get; set; }
         public bool IsActive { get; set; }
-        [ForeignKey("ReportId")]
-        public virtual Report Report { get; set; }
+        
+                
+        public string ProductType { get; set; }
+        
+        public virtual ICollection<ReportProduct> ReportProducts { get; set; }
+
     }
 }

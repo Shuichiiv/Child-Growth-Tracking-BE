@@ -23,6 +23,7 @@ namespace DataObjects_BE
         public DbSet<Report> Reports { get; set; }
         public DbSet<Service> Services { get; set; }
         public DbSet<ServiceOrder> ServiceOrders { get; set; }
+        public DbSet<ReportProduct> ReportProducts { get; set; }
 
         public SWP391G3DbContext(DbContextOptions options): base(options)
         {
@@ -73,11 +74,7 @@ namespace DataObjects_BE
                 .WithMany(c => c.Reports)
                 .HasForeignKey(r => r.ChildId)
                 .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<Report>()
-                .HasOne(r => r.ProductList)
-                .WithOne(p => p.Report)
-                .HasForeignKey<ProductList>(p => p.ReportId)
-                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Report>();
             modelBuilder.Entity<Feedback>()
                 .HasOne(f => f.Report)
                 .WithMany(r => r.Feedbacks)
@@ -111,6 +108,17 @@ namespace DataObjects_BE
                 entity.Property(e => e.ServicePrice)
                       .HasColumnType("decimal(18,2)");
             });
+            modelBuilder.Entity<ReportProduct>()
+                .HasOne(rp => rp.Report)
+                .WithMany(r => r.ReportProducts)
+                .HasForeignKey(rp => rp.ReportId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ReportProduct>()
+                .HasOne(rp => rp.ProductList)
+                .WithMany(p => p.ReportProducts)
+                .HasForeignKey(rp => rp.ProductListId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
