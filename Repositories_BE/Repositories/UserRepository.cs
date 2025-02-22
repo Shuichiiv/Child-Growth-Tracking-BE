@@ -114,5 +114,16 @@ namespace Repositories_BE.Repositories
                 CreatedAt = user.OtpCreatedAt
             };
         }
+        
+        public async Task<Account> GetByIdAsync(Guid accountId)
+        {
+            return await _context.Accounts.FindAsync(accountId);
+        }
+
+        public async Task UpdateAsync(Account account)
+        {
+            _context.Accounts.Update(account);
+            await _context.SaveChangesAsync();
+        }
     }
 }

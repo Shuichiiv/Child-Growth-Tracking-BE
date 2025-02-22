@@ -14,5 +14,7 @@ namespace Services_BE.Interfaces
         Task<bool> VerifyOtpAsync(VerifyOtpModel otpModel);
         Task<bool> ActivateAccountAsync(VerifyOtpModel otpModel);
         Task<RegisterResponseModel> ResendOtp(string email);
+        
+        Task<bool> ChangeUserRoleAsync(Guid accountId, int newRole);
     }
 }
