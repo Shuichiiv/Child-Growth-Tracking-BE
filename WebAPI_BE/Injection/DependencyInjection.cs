@@ -39,16 +39,24 @@ namespace WebAPI_BE.Injection
             services.AddScoped<IDoctorRepository, DoctorRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IReportRepository, ReportRepository>();
+            services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+            services.AddScoped<IParentRepository, ParentRepository>();
+            services.AddScoped<IChildRepository, ChildRepository>();
+
             
 
             //Injection services of project
             services.AddSingleton<IEmailService, EmailService>();
             services.AddScoped<IReportService, ReportService>();
+            services.AddScoped<IVietQRService, VietQRService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IServiceService, ServiceService>();
             services.AddScoped<IServiceOrderService, ServiceOrderService>();
             services.AddScoped<IDoctorService, DoctorService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAppointmentService, AppointmentService>();
+            services.AddScoped<IParentService, ParentService>();
+            services.AddScoped<IChildService, ChildService>();
             return services;
         }
     }

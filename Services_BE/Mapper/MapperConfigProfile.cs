@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DTOs_BE.AppointmentDtos;
 
 namespace Services_BE.Mapper
 {
@@ -16,6 +17,14 @@ namespace Services_BE.Mapper
         {
             CreateMap<ServiceResponseDTO, Service>().ReverseMap();
             CreateMap<ServiceOrderResponseDTO, ServiceOrder>().ReverseMap();
+            
+            CreateMap<Appointment, AppointmentDto>()
+                .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.Doctor.Account.UserName))
+                .ForMember(dest => dest.ParentName, opt => opt.MapFrom(src => src.Parent.Account.UserName))
+                .ForMember(dest => dest.ChildName, opt => opt.MapFrom(src => src.Child.FirstName + " " + src.Child.LastName));
+
+            CreateMap<AppointmentCreateDto, Appointment>();
+            CreateMap<AppointmentUpdateDto, Appointment>();
         }
     }
 }
