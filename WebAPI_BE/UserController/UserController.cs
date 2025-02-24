@@ -21,7 +21,7 @@ namespace WebAPI_BE.Controllers
             _userService = userService;
         }
 
-        [HttpPost("change-password/{accountId}")]
+        /*[HttpPost("change-password/{accountId}")]
         public async Task<IActionResult> ChangePassword(Guid accountId, [FromBody] ChangePasswordModel model)
         {
             var result = await _userService.ChangePasswordAsync(accountId, model);
@@ -29,6 +29,6 @@ namespace WebAPI_BE.Controllers
                 return BadRequest("Incorrect old password or account not found");
 
             return Ok("Password changed successfully");
-        }
+        }*/
     }
 }

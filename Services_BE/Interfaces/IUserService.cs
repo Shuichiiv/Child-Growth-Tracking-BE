@@ -16,5 +16,6 @@ namespace Services_BE.Interfaces
         Task<RegisterResponseModel> ResendOtp(string email);
         
         Task<bool> ChangeUserRoleAsync(Guid accountId, int newRole);
+        Task<bool> ChangePasswordAsync(Guid accountId, ChangePasswordModel model);
     }
 }
