@@ -35,6 +35,7 @@ namespace WebAPI_BE.Injection
 
             //Injection repositories of project
             services.AddScoped<IServiceRepositoy, ServiceRepository>();
+            services.AddScoped<IServiceOrderRepository, ServiceOrderRepository>();
             services.AddScoped<IDoctorRepository, DoctorRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IReportRepository, ReportRepository>();
@@ -45,6 +46,7 @@ namespace WebAPI_BE.Injection
             services.AddScoped<IReportService, ReportService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IServiceService, ServiceService>();
+            services.AddScoped<IServiceOrderService, ServiceOrderService>();
             services.AddScoped<IDoctorService, DoctorService>();
             services.AddScoped<IUserService, UserService>();
             return services;

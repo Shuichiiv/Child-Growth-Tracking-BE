@@ -12,5 +12,6 @@ namespace Services_BE.Interfaces
         Task<ServiceOrderResponseDTO> GetServiceOrderById(string orderId);
         Task<List<ServiceOrderResponseDTO>> GetListServiceOrder();
         Task<ServiceOrderResponseDTO> CreateServiceOrder(CreateServiceOrderModel model);
+        Task<ServiceOrderResponseDTO> UpdateServiceOrder(UpdateServiceOrderModel model, string orderId);
     }
 }

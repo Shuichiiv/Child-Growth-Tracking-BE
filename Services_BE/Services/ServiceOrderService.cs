@@ -67,20 +67,53 @@ namespace Services_BE.Services
                 {
                     throw new Exception("Service is not existing!!!");
                 }
+                var price = float.Parse(serviceExisting.ServicePrice.ToString());
                 ServiceOrder newOrder = new ServiceOrder()
                 {
                     ServiceOrderId = Guid.NewGuid(),
                     ParentId = model.ParentId,
                     ServiceId = model.ServiceId,
                     Quantity = model.Quantity,
-                    UnitPrice = model.UnitPrice,
-                    TotalPrice = model.TotalPrice,
+                    UnitPrice = price,
+                    TotalPrice = model.Quantity * price,
                     CreateDate = _currentTime.GetCurrentTime().Date,
-                    EndDate = _currentTime.GetCurrentTime().Date.AddDays(serviceExisting.ServiceDuration),
+                    EndDate = _currentTime.GetCurrentTime().Date.AddDays(serviceExisting.ServiceDuration*model.Quantity),
                 };
                 await _serviceOrderRepository.AddAsync(newOrder);
                 _serviceOrderRepository.Save();
                 var result = _mapper.Map<ServiceOrderResponseDTO>(newOrder);
+                return result;
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public async Task<ServiceOrderResponseDTO> UpdateServiceOrder(UpdateServiceOrderModel model, string orderId)
+        {
+            try
+            {
+                Guid id = Guid.Parse(orderId);
+                var orderExisting = _serviceOrderRepository.GetOrderById(id);
+                if(orderExisting == null)
+                {
+                    throw new Exception("ServiceOrder is not existing!!!");
+                }
+                var timecurrent = _currentTime.GetCurrentTime().Date;
+                if(orderExisting.EndDate< timecurrent)
+                {
+                    orderExisting.Quantity = orderExisting.Quantity + model.Quantity;
+                    orderExisting.TotalPrice = orderExisting.UnitPrice * orderExisting.Quantity;
+                    orderExisting.EndDate = _currentTime.GetCurrentTime().Date.AddDays(orderExisting.Service.ServiceDuration * model.Quantity);
+                }
+                else
+                {
+                    orderExisting.Quantity = orderExisting.Quantity + model.Quantity;
+                    orderExisting.TotalPrice = orderExisting.UnitPrice * orderExisting.Quantity;
+                    orderExisting.EndDate = orderExisting.EndDate.AddDays(orderExisting.Service.ServiceDuration * model.Quantity);
+                }
+               
+                _serviceOrderRepository.Update(orderExisting);
+                var result = _mapper.Map<ServiceOrderResponseDTO>(orderExisting);
                 return result;
             }catch(Exception ex)
             {
