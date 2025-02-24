@@ -18,10 +18,12 @@ namespace Services_BE.Services
         private readonly IMapper _mapper;
         private readonly ICurrentTime _currentTime;
         private readonly IServiceRepositoy _serviceRepositoy;
-        public ServiceOrderService(IServiceOrderRepository serviceOrderRepository, IMapper mapper, ICurrentTime currentTime, IServiceRepositoy serviceRepositoy)
+        private readonly IParentRepository _parentRepository;
+        public ServiceOrderService(IServiceOrderRepository serviceOrderRepository, IMapper mapper, ICurrentTime currentTime, IServiceRepositoy serviceRepositoy, IParentRepository parentRepository)
         {
             _serviceOrderRepository = serviceOrderRepository;
             _serviceRepositoy = serviceRepositoy;
+            _parentRepository = parentRepository;
             _mapper = mapper;
             _currentTime = currentTime;
         }
@@ -67,6 +69,7 @@ namespace Services_BE.Services
                 {
                     throw new Exception("Service is not existing!!!");
                 }
+                var parent = _parentRepository.GetByID(model.ParentId);
                 var price = float.Parse(serviceExisting.ServicePrice.ToString());
                 ServiceOrder newOrder = new ServiceOrder()
                 {
@@ -79,6 +82,7 @@ namespace Services_BE.Services
                     CreateDate = _currentTime.GetCurrentTime().Date,
                     EndDate = _currentTime.GetCurrentTime().Date.AddDays(serviceExisting.ServiceDuration*model.Quantity),
                 };
+                
                 await _serviceOrderRepository.AddAsync(newOrder);
                 _serviceOrderRepository.Save();
                 var result = _mapper.Map<ServiceOrderResponseDTO>(newOrder);
@@ -113,6 +117,7 @@ namespace Services_BE.Services
                 }
                
                 _serviceOrderRepository.Update(orderExisting);
+                _serviceOrderRepository.Save();
                 var result = _mapper.Map<ServiceOrderResponseDTO>(orderExisting);
                 return result;
             }catch(Exception ex)
