@@ -44,5 +44,12 @@ namespace Repositories_BE.Repositories
             _context.Parents.Remove(parent);
             return await _context.SaveChangesAsync() > 0;
         }
+
+        public async Task<IEnumerable<Child>> GetAllChildrenByParentIdAsync(Guid parentId)
+        {
+            return await _context.Childs
+                .Where(c => c.ParentId == parentId)
+                .ToListAsync();
+        }
     }
 }
