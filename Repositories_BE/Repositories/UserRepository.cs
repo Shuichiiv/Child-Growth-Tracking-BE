@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using DataObjects_BE;
@@ -116,40 +115,15 @@ namespace Repositories_BE.Repositories
             };
         }
         
-        //Change Password
-        public async Task<bool> ChangePasswordAsync(Guid accountId, string oldPassword, string newPassword,
-            string confirmPassword)
+        public async Task<Account> GetByIdAsync(Guid accountId)
         {
-            //kiểm tra account có tồn tại không 
-            var account = await _context.Accounts.FindAsync(accountId);
-            if (account == null) return false;
-            //Xác minh mật khẩu cũ
-            if (!VerifyPassword(oldPassword, account.Password)) return false;
-            //Kiểm tra mật khẩu mới và xác nhận mật khẩu mới
-            if (newPassword != confirmPassword) return false;
-            //Kiểm tra tiêu chí mật khẩu mới
-            if (newPassword.Length < 6) return false;
-            //Băm mật khẩu mới và cập nhật
-            account.Password = HashPassword(newPassword);
-            await _context.SaveChangesAsync();
-            return true;
+            return await _context.Accounts.FindAsync(accountId);
         }
-        public bool VerifyPassword(string inputPassword, string storedHashedPassword)
-        {
-            return storedHashedPassword == HashPassword(inputPassword);
-        }
-        public string HashPassword(string password)
-        {
-            using (var sha256 = SHA256.Create())
-            {
-                // Băm mật khẩu và chuyển sang Base64
-                byte[] hashedBytes = sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                return Convert.ToBase64String(hashedBytes);
-            }
-        }
-        
-        //
 
-        
+        public async Task UpdateAsync(Account account)
+        {
+            _context.Accounts.Update(account);
+            await _context.SaveChangesAsync();
+        }
     }
 }

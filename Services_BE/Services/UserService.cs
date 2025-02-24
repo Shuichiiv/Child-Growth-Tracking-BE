@@ -128,7 +128,9 @@ namespace Services_BE.Services
                 JWT = new JwtSecurityTokenHandler().WriteToken(userToken),
                 Expired = userToken.ValidTo,
                 JWTRefreshToken = refreshToken,
-                UserId = userExist.AccountId
+                UserId = userExist.AccountId,
+                FirstName = userExist.FirstName,
+                LastName = userExist.LastName
             };
         }
 
@@ -194,7 +196,6 @@ namespace Services_BE.Services
 
             return new RegisterResponseModel
             {
-                
                 Success = true,
                 Message = "Đăng kí thành công. Vui lòng kiểm tra email để nhập mã OTP.",
                 AccountId = account.AccountId
@@ -288,6 +289,25 @@ namespace Services_BE.Services
             }
 
             return new RegisterResponseModel { Success = false, Message = "OTP chưa hết hạn" };
+        }
+        public async Task<bool> ChangeUserRoleAsync(Guid accountId, int newRole)
+        {
+            var user = await _userRepository.GetByIdAsync(accountId);
+            if (user == null)
+            {
+                throw new KeyNotFoundException("User not found");
+            }
+
+            if (user.Role == 0)
+            {
+                throw new InvalidOperationException("Cannot change role of another Manager");
+            }
+
+            user.Role = newRole;
+            user.DateUpdateAt = DateTime.UtcNow;
+
+            await _userRepository.UpdateAsync(user);
+            return true;
         }
 
 

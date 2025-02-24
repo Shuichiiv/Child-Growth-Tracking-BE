@@ -24,6 +24,8 @@ namespace DataObjects_BE
         public DbSet<Service> Services { get; set; }
         public DbSet<ServiceOrder> ServiceOrders { get; set; }
         public DbSet<ReportProduct> ReportProducts { get; set; }
+        public DbSet<Appointment> Appointments { get; set; }
+
 
         public SWP391G3DbContext(DbContextOptions options): base(options)
         {
