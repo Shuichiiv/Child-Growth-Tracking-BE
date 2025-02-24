@@ -23,6 +23,9 @@ namespace Repositories_BE.Interfaces
         
         Task SaveOtp(string email, string otp, DateTime otpCreatedAt);
         Task<OtpInfo> GetOtpInfoAsync(string email);
-
+        Task<bool> ChangePasswordAsync(Guid accountId, string oldPassword, string newPassword, string confirmPassword);
+        bool VerifyPassword(string inputPassword, string storedHashedPassword);
+        string HashPassword(string password);
+        
     }
 }

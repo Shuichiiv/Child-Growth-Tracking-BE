@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DTOs_BE.UserDTOs;
+using Microsoft.AspNetCore.Identity;
 
 namespace Services_BE.Interfaces
 {
@@ -14,5 +15,8 @@ namespace Services_BE.Interfaces
         Task<bool> VerifyOtpAsync(VerifyOtpModel otpModel);
         Task<bool> ActivateAccountAsync(VerifyOtpModel otpModel);
         Task<RegisterResponseModel> ResendOtp(string email);
+        Task<bool> ChangePasswordAsync(Guid accountId, ChangePasswordModel model);
+
+
     }
 }

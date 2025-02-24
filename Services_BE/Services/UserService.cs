@@ -22,6 +22,7 @@ namespace Services_BE.Services
         private readonly ICurrentTime _timeService;
         private readonly PasswordHasher<string> _passwordHasher;
         private readonly IEmailService _emailService;
+        private readonly UserManager<IdentityUser> _userManager;
 
         public UserService(IConfiguration configuration, IUserRepository userRepository, ICurrentTime timeService,
             IEmailService emailService)
@@ -31,6 +32,7 @@ namespace Services_BE.Services
             _timeService = timeService;
             _emailService = emailService;
             _passwordHasher = new PasswordHasher<string>();
+            
         }
 
         public async Task<ResponseLoginModel> LoginByEmailAndPassword(UserLoginModel user)
@@ -329,5 +331,32 @@ namespace Services_BE.Services
                 AccountId = account.AccountId
             };
         }*/
+
+        //Change Password
+        public async Task<bool> ChangePasswordAsync(Guid accountId, ChangePasswordModel model)
+        {
+            // 1. Kiểm tra tính xác thực tài khoản
+            var user = await _userRepository.GetAsync(u => u.AccountId == accountId);
+            if (user == null)
+            {
+                throw new Exception("Người dùng không tồn tại.");
+            }
+
+            // 2. Kiểm tra mật khẩu cũ có khớp không
+            var passwordVerificationResult = _passwordHasher.VerifyHashedPassword(user.Email, user.Password, model.OldPassword);
+            if (passwordVerificationResult != PasswordVerificationResult.Success)
+            {
+                throw new Exception("Mật khẩu cũ không đúng.");
+            }
+
+            // 3. Cập nhật mật khẩu mới
+            user.Password = _passwordHasher.HashPassword(user.Email, model.NewPassword);
+            await _userRepository.UpdateUserAsync(user);
+            return true;
+
+        }
+        
+        //
+        
     }
 }
