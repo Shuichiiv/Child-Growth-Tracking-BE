@@ -47,4 +47,9 @@ public class ParentService :IParentService
     {
         return await _parentRepository.DeleteParentAsync(parentId);
     }
+
+    public async Task<IEnumerable<Child>> GetAllChildrenByParentIdAsync(Guid parentId)
+    {
+        return await _parentRepository.GetAllChildrenByParentIdAsync(parentId);
+    }
 }
