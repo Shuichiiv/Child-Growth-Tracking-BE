@@ -355,21 +355,33 @@ namespace Services_BE.Services
         //Change Password
         public async Task<bool> ChangePasswordAsync(Guid accountId, ChangePasswordModel model)
         {
-            // 1. Kiểm tra tính xác thực tài khoản
+            //1. Check tính xác thực tài khoản
             var user = await _userRepository.GetAsync(u => u.AccountId == accountId);
             if (user == null)
             {
                 throw new Exception("Người dùng không tồn tại.");
             }
 
-            // 2. Kiểm tra mật khẩu cũ có khớp không
+            //2. Check mật khẩu cũ có đúng hay không
             var passwordVerificationResult = _passwordHasher.VerifyHashedPassword(user.Email, user.Password, model.OldPassword);
             if (passwordVerificationResult != PasswordVerificationResult.Success)
             {
                 throw new Exception("Mật khẩu cũ không đúng.");
             }
 
-            // 3. Cập nhật mật khẩu mới
+            //3. Check mật khẩu mới phải có ít nhất 6 ký tự
+            if (string.IsNullOrWhiteSpace(model.NewPassword) || model.NewPassword.Length < 6)
+            {
+                throw new Exception("Mật khẩu mới phải có ít nhất 6 ký tự.");
+            }
+
+            //4. Check confirmPassword có giống với newPassword không
+            if (model.NewPassword != model.ConfirmPassword)
+            {
+                throw new Exception("Mật khẩu xác nhận không khớp với mật khẩu mới.");
+            }
+
+            //5. Lưu mật khẩu mới và băm mật khẩu
             user.Password = _passwordHasher.HashPassword(user.Email, model.NewPassword);
             await _userRepository.UpdateUserAsync(user);
             return true;

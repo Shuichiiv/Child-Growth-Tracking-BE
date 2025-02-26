@@ -21,14 +21,14 @@ namespace WebAPI_BE.Controllers
             _userService = userService;
         }
 
-        /*[HttpPost("change-password/{accountId}")]
+        [HttpPost("change-password/{accountId}")]
         public async Task<IActionResult> ChangePassword(Guid accountId, [FromBody] ChangePasswordModel model)
         {
             var result = await _userService.ChangePasswordAsync(accountId, model);
             if (!result)
-                return BadRequest("Incorrect old password or account not found");
+                return BadRequest("Không tìm thấy mật khẩu cũ hoặc tài khoản không đúng!!!");
 
-            return Ok("Password changed successfully");
-        }*/
+            return Ok("Mật khẩu đã được thay đổi thành công.");
+        }
     }
 }
