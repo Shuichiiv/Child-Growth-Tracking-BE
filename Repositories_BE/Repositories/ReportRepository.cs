@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using DataObjects_BE;
 using DataObjects_BE.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -45,7 +46,14 @@ namespace Repositories_BE.Repositories
                 .OrderByDescending(r => r.ReprotCreateDate)
                 .ToListAsync();
         }
-        
+
+        public async Task<Report> CreateBMIReportAsync(Report report)
+        {
+            await _context.Reports.AddAsync(report);
+            await _context.SaveChangesAsync();
+            return report;
+        }
+
         private string GetBMICategory(double bmi)
         {
             if (bmi < 16) return "Gầy độ III";
@@ -56,6 +64,62 @@ namespace Repositories_BE.Repositories
             if (bmi < 35) return "Béo phì độ I";
             if (bmi < 40) return "Béo phì độ II";
             return "Béo phì độ III";
+        }
+
+        public IEnumerable<Report> Get(Expression<Func<Report, bool>>? filter = null, Func<IQueryable<Report>, IOrderedQueryable<Report>>? orderBy = null, string includeProperties = "", int? pageIndex = null,
+            int? pageSize = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Report GetByID(object id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Insert(Report entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Delete(object id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Delete(Report entityToDelete)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Update(object id, Report entityToUpdate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Update(Report entityToUpdate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Save()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Report> GetAsync(Expression<Func<Report, bool>> predicate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task AddAsync(Report entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> SaveChangesAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }
