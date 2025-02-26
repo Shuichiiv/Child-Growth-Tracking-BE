@@ -5,12 +5,12 @@ using Repositories_BE.Interfaces;
 
 namespace Repositories_BE.Repositories
 {
-    public class ReportRepository : IReportRepository
+    public class ReportRepository : GenericRepository<Report>, IReportRepository 
     {
         
         private readonly SWP391G3DbContext _context;
 
-        public ReportRepository(SWP391G3DbContext context)
+        public ReportRepository(SWP391G3DbContext context): base(context)
         {
             _context = context;
         }

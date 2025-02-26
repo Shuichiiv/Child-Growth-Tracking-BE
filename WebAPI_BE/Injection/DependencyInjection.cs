@@ -42,6 +42,7 @@ namespace WebAPI_BE.Injection
             services.AddScoped<IAppointmentRepository, AppointmentRepository>();
             services.AddScoped<IParentRepository, ParentRepository>();
             services.AddScoped<IChildRepository, ChildRepository>();
+            services.AddScoped<IFeedbackRepository, FeedbackRepository>();
 
             
 
@@ -57,6 +58,7 @@ namespace WebAPI_BE.Injection
             services.AddScoped<IAppointmentService, AppointmentService>();
             services.AddScoped<IParentService, ParentService>();
             services.AddScoped<IChildService, ChildService>();
+            services.AddScoped<IFeedbackService, FeedbackService>();
             return services;
         }
     }
