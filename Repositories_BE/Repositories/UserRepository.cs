@@ -125,5 +125,22 @@ namespace Repositories_BE.Repositories
             _context.Accounts.Update(account);
             await _context.SaveChangesAsync();
         }
+
+        public async Task SaveResetPasswordTokenAsync(string email, string token, DateTime expiry)
+        {
+            var user = await GetUserByEmailAsync(email);
+            if (user != null)
+            {
+                user.ResetPasswordToken = token;
+                user.ResetPasswordTokenExpiration = expiry;
+                await UpdateUserAsync(user);
+            }
+        }
+
+        public async Task<Account> GetUserByResetPasswordTokenAsync(string token)
+        {
+            return await _context.Set<Account>().FirstOrDefaultAsync(u => u.ResetPasswordToken == token && u.ResetPasswordTokenExpiration > DateTime.UtcNow);
+        }
+
     }
 }

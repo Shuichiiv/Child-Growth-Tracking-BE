@@ -17,5 +17,12 @@ namespace Services_BE.Interfaces
         
         Task<bool> ChangeUserRoleAsync(Guid accountId, int newRole);
         Task<bool> ChangePasswordAsync(Guid accountId, ChangePasswordModel model);
+        //Task<bool> ChangePasswordByOtpAsync(ChangePasswordByOtpModel model);
+        Task<bool> ResetPasswordAsync(ResetPasswordModel model);
+        Task<bool> RequestPasswordResetAsync(string email);
+
+
+
+
     }
 }
