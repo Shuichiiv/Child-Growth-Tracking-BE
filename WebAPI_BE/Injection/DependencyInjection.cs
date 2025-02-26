@@ -43,6 +43,7 @@ namespace WebAPI_BE.Injection
             services.AddScoped<IParentRepository, ParentRepository>();
             services.AddScoped<IChildRepository, ChildRepository>();
             services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+            services.AddScoped<IRatingRepository, RatingRepository>();
 
             
 
@@ -59,6 +60,7 @@ namespace WebAPI_BE.Injection
             services.AddScoped<IParentService, ParentService>();
             services.AddScoped<IChildService, ChildService>();
             services.AddScoped<IFeedbackService, FeedbackService>();
+            services.AddScoped<IRatingService, RatingService>();
             return services;
         }
     }
