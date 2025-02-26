@@ -16,49 +16,88 @@ public class ChildService : IChildService
 
     public async Task<IEnumerable<Child>> GetAllChildrenAsync()
     {
-        return await _childRepository.GetAllChildrenAsync();
+        try
+        {
+            return await _childRepository.GetAllChildrenAsync();
+        }
+        catch (Exception e)
+        {
+            throw new Exception("An error occurred while getting reports", e);
+        }
     }
 
     public async Task<Child> GetChildByIdAsync(Guid childId)
     {
-        return await _childRepository.GetChildByIdAsync(childId);
+        try
+        {
+            return await _childRepository.GetChildByIdAsync(childId);
+        }
+        catch (Exception e)
+        {
+            throw new Exception("An error occurred while getting reports", e);
+        }
+       
     }
 
     public async Task<bool> CreateChildAsync(ChildDto childDto)
     {
-        var child = new Child
+        try
         {
-            ChildId = Guid.NewGuid(),
-            ParentId = childDto.ParentId,
-            FirstName = childDto.FirstName,
-            LastName = childDto.LastName,
-            Gender = childDto.Gender,
-            DOB = childDto.DOB,
-            DateCreateAt = DateTime.UtcNow,
-            DateUpdateAt = DateTime.UtcNow,
-            ImageUrl = childDto.ImageUrl
-        };
-        return await _childRepository.CreateChildAsync(child);
+            var child = new Child
+            {
+                ChildId = Guid.NewGuid(),
+                ParentId = childDto.ParentId,
+                FirstName = childDto.FirstName,
+                LastName = childDto.LastName,
+                Gender = childDto.Gender,
+                DOB = childDto.DOB,
+                DateCreateAt = DateTime.UtcNow,
+                DateUpdateAt = DateTime.UtcNow,
+                ImageUrl = childDto.ImageUrl
+            };
+            return await _childRepository.CreateChildAsync(child);
+        }
+        catch (Exception e)
+        {
+            throw new Exception("An error occurred while adding new child", e);
+        }
+        
     }
 
     public async Task<bool> UpdateChildAsync(Guid childId, ChildDto childDto)
     {
-        var child = await _childRepository.GetChildByIdAsync(childId);
-        if (child == null) return false;
+        try
+        {
+            var child = await _childRepository.GetChildByIdAsync(childId);
+            if (child == null) return false;
 
-        child.FirstName = childDto.FirstName;
-        child.LastName = childDto.LastName;
-        child.Gender = childDto.Gender;
-        child.DOB = childDto.DOB;
-        child.DateUpdateAt = DateTime.UtcNow;
-        child.ImageUrl = childDto.ImageUrl;
+            child.FirstName = childDto.FirstName;
+            child.LastName = childDto.LastName;
+            child.Gender = childDto.Gender;
+            child.DOB = childDto.DOB;
+            child.DateUpdateAt = DateTime.UtcNow;
+            child.ImageUrl = childDto.ImageUrl;
 
-        return await _childRepository.UpdateChildAsync(child);
+            return await _childRepository.UpdateChildAsync(child);
+        }
+        catch (Exception e)
+        {
+            throw new Exception("An error occurred while updating child", e);
+        }
+      
     }
 
 
     public async Task<bool> DeleteChildAsync(Guid childId)
     {
-        return await _childRepository.DeleteChildAsync(childId);
+        try
+        {
+            return await _childRepository.DeleteChildAsync(childId);
+        }
+        catch (Exception e)
+        {
+            throw new Exception("An error occurred while deleting child", e);
+        }
+       
     }
 }

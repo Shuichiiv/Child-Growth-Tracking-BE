@@ -1,3 +1,4 @@
+using DTOs_BE.DoctorDTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services_BE.Interfaces;
@@ -24,6 +25,18 @@ namespace WebAPI_BE.Controllers
             }
 
             var report = await _reportService.CreateBMIReportAsync(childId, height, weight);
+            return Ok(report);
+        }
+        
+        [HttpPost("create-kid-bmi")]
+        public async Task<IActionResult> CreateCustomBMIReport([FromBody] ReportDtoFParents reportDto)
+        {
+            if (reportDto.ChildId == Guid.Empty || reportDto.Height <= 0 || reportDto.Weight <= 0)
+            {
+                return BadRequest("Dữ liệu không hợp lệ.");
+            }
+
+            var report = await _reportService.CreateCustomBMIReportAsync(reportDto);
             return Ok(report);
         }
 

@@ -6,5 +6,7 @@ namespace Services_BE.Interfaces
     {
         Task<ReportDto> CreateBMIReportAsync(Guid childId, double height, double weight);
         Task<IEnumerable<ReportDto>> GetReportsByChildIdAsync(Guid childId);
+        
+        Task<ReportDto> CreateCustomBMIReportAsync(ReportDtoFParents reportDto);
     }
 }

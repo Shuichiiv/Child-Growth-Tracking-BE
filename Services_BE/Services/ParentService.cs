@@ -15,41 +15,85 @@ public class ParentService :IParentService
     }
     public async Task<IEnumerable<Parent>> GetAllParentsAsync()
     {
-        return await _parentRepository.GetAllParentsAsync();
+        try
+        {
+            return await _parentRepository.GetAllParentsAsync();
+        }
+        catch (Exception e)
+        {
+            throw new Exception("An error occurred while cancelling appointments", e);
+        }
     }
 
     public async Task<Parent> GetParentByIdAsync(Guid parentId)
     {
-        return await _parentRepository.GetParentByIdAsync(parentId);
+        try
+        {
+            return await _parentRepository.GetParentByIdAsync(parentId);
+        }
+        catch (Exception e)
+        {
+            throw new Exception("An error occurred while cancelling appointments", e);
+        }
     }
 
     public async Task<bool> CreateParentAsync(ParentDto parentDto)
     {
-        var parent = new Parent
+        try
         {
-            ParentId = Guid.NewGuid(),
-            AccountId = parentDto.AccountId
-        };
-        return await _parentRepository.CreateParentAsync(parent);
+            var parent = new Parent
+            {
+                ParentId = Guid.NewGuid(),
+                AccountId = parentDto.AccountId
+            };
+            return await _parentRepository.CreateParentAsync(parent);
+        }
+        catch (Exception e)
+        {
+            throw new Exception("An error occurred while cancelling appointments", e);
+        }
+        
     }
 
     public async Task<bool> UpdateParentAsync(Guid parentId, ParentDto parentDto)
     {
-        var parent = await _parentRepository.GetParentByIdAsync(parentId);
-        if (parent == null) return false;
+        try
+        {
+            var parent = await _parentRepository.GetParentByIdAsync(parentId);
+            if (parent == null) return false;
 
-        parent.AccountId = parentDto.AccountId;
+            parent.AccountId = parentDto.AccountId;
 
-        return await _parentRepository.UpdateParentAsync(parent);
+            return await _parentRepository.UpdateParentAsync(parent);
+        }
+        catch (Exception e)
+        {
+            throw new Exception("An error occurred while cancelling appointments", e);
+        }
     }
 
     public async Task<bool> DeleteParentAsync(Guid parentId)
     {
-        return await _parentRepository.DeleteParentAsync(parentId);
+        try
+        {
+            return await _parentRepository.DeleteParentAsync(parentId);
+        }
+        catch (Exception e)
+        {
+            throw new Exception("An error occurred while cancelling appointments", e);
+        }
     }
 
     public async Task<IEnumerable<Child>> GetAllChildrenByParentIdAsync(Guid parentId)
     {
-        return await _parentRepository.GetAllChildrenByParentIdAsync(parentId);
+        try
+        {
+            return await _parentRepository.GetAllChildrenByParentIdAsync(parentId);
+        }
+        catch (Exception e)
+        {
+            throw new Exception("An error occurred while cancelling appointments", e);
+        }
+       
     }
 }
