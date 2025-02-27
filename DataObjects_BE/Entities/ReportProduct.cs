@@ -11,7 +11,7 @@ public class ReportProduct
     [ForeignKey("Report")]
     public Guid ReportId { get; set; }
     public virtual Report Report { get; set; }
-
+        
     [ForeignKey("ProductList")]
     public Guid ProductListId { get; set; }
     public virtual ProductList ProductList { get; set; }

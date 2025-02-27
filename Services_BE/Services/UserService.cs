@@ -22,6 +22,7 @@ namespace Services_BE.Services
         private readonly ICurrentTime _timeService;
         private readonly PasswordHasher<string> _passwordHasher;
         private readonly IEmailService _emailService;
+        private readonly UserManager<IdentityUser> _userManager;
 
         public UserService(IConfiguration configuration, IUserRepository userRepository, ICurrentTime timeService,
             IEmailService emailService)
@@ -31,6 +32,7 @@ namespace Services_BE.Services
             _timeService = timeService;
             _emailService = emailService;
             _passwordHasher = new PasswordHasher<string>();
+
         }
 
         public async Task<ResponseLoginModel> LoginByEmailAndPassword(UserLoginModel user)
@@ -81,7 +83,7 @@ namespace Services_BE.Services
                     Message = "Your account has been deactivated. Please contact support."
                 };
             }
-            
+
             // So sánh mật khẩu đã băm
             var passwordVerification =
                 _passwordHasher.VerifyHashedPassword(user.Email, userExist.Password, user.Password);
@@ -164,7 +166,7 @@ namespace Services_BE.Services
                 DateCreateAt = DateTime.UtcNow,
                 Otp = null,
                 OtpCreatedAt = null,
-                IsActive = false,
+                IsActive = true,
                 DateUpdateAt = DateTime.UtcNow
             };
             var createAccount = await _userRepository.CreateAccount(account);
@@ -189,7 +191,7 @@ namespace Services_BE.Services
             {
                 return new RegisterResponseModel { Success = false, Message = $"Lỗi gửi email: {ex.Message}" };
             }
-            
+
 
 
             return new RegisterResponseModel
@@ -218,7 +220,7 @@ namespace Services_BE.Services
         {
             return await _userRepository.VerifyOtpAsync(model.Email, model.Otp);
         }*/
-        
+
         public async Task<bool> VerifyOtpAsync(VerifyOtpModel model)
         {
             var otpInfo = await _userRepository.GetOtpInfoAsync(model.Email);
@@ -227,9 +229,9 @@ namespace Services_BE.Services
             {
                 return false;
             }
-            
+
             var elapsedTime = DateTime.UtcNow - otpInfo.OtpCreatedAt.Value;
-            
+
             if (elapsedTime.TotalMinutes > 5)
             {
                 return false;
@@ -238,7 +240,7 @@ namespace Services_BE.Services
             return otpInfo.OtpCode == model.Otp;
         }
 
-        
+
         public async Task<bool> ActivateAccountAsync(VerifyOtpModel model)
         {
             var user = await _userRepository.GetUserByEmailAsync(model.Email);
@@ -252,7 +254,7 @@ namespace Services_BE.Services
 
             return true;
         }
-        
+
         public async Task<RegisterResponseModel> ResendOtp(string email)
         {
 
@@ -263,12 +265,12 @@ namespace Services_BE.Services
             }
 
             var otpInfo = await _userRepository.GetOtpInfoAsync(email);
-            
+
             if (otpInfo == null || otpInfo.OtpCreatedAt == null || (DateTime.UtcNow - otpInfo.OtpCreatedAt.Value).TotalMinutes > 5)
             {
                 string otp = new Random().Next(100000, 999999).ToString();
                 await _userRepository.SaveOtp(email, otp);
-                
+
                 string emailBody = $"Mã OTP của bạn là: <b>{otp}</b>. Vui lòng nhập mã này để kích hoạt tài khoản.";
                 try
                 {
@@ -349,5 +351,94 @@ namespace Services_BE.Services
                 AccountId = account.AccountId
             };
         }*/
+
+        //Change Password
+        public async Task<bool> ChangePasswordAsync(Guid accountId, ChangePasswordModel model)
+        {
+            //1. Check tính xác thực tài khoản
+            var user = await _userRepository.GetAsync(u => u.AccountId == accountId);
+            if (user == null)
+            {
+                throw new Exception("Người dùng không tồn tại.");
+            }
+
+            //2. Check mật khẩu cũ có đúng hay không
+            var passwordVerificationResult = _passwordHasher.VerifyHashedPassword(user.Email, user.Password, model.OldPassword);
+            if (passwordVerificationResult != PasswordVerificationResult.Success)
+            {
+                throw new Exception("Mật khẩu cũ không đúng.");
+            }
+
+            //3. Check mật khẩu mới phải có ít nhất 6 ký tự
+            if (string.IsNullOrWhiteSpace(model.NewPassword) || model.NewPassword.Length < 6)
+            {
+                throw new Exception("Mật khẩu mới phải có ít nhất 6 ký tự.");
+            }
+
+            //4. Check confirmPassword có giống với newPassword không
+            if (model.NewPassword != model.ConfirmPassword)
+            {
+                throw new Exception("Mật khẩu xác nhận không khớp với mật khẩu mới.");
+            }
+
+            //5. Lưu mật khẩu mới và băm mật khẩu
+            user.Password = _passwordHasher.HashPassword(user.Email, model.NewPassword);
+            await _userRepository.UpdateUserAsync(user);
+            return true;
+
+        }
+
+        //Reset Password
+        public async Task<bool> ResetPasswordAsync(ResetPasswordModel model)
+        {
+            if (model.NewPassword != model.ConfirmPassword)
+            {
+                return false; // Mật khẩu mới và xác nhận mật khẩu không khớp
+            }
+
+            var user = await _userRepository.GetUserByResetPasswordTokenAsync(model.Token);
+            if (user == null || user.Email != model.Email)
+            {
+                return false; // Token không hợp lệ hoặc email không khớp
+            }
+
+            // Cập nhật mật khẩu mới cho người dùng
+            user.Password = _passwordHasher.HashPassword(user.Email, model.NewPassword);
+            user.ResetPasswordToken = null;
+            user.ResetPasswordTokenExpiration = null;
+            await _userRepository.UpdateUserAsync(user);
+            return true;
+        }
+
+        //Send Request Link
+        public async Task<bool> RequestPasswordResetAsync(string email)
+        {
+            var user = await _userRepository.GetUserByEmailAsync(email);
+            if (user == null)
+            {
+                return false; // Người dùng không tồn tại
+            }
+
+            //var token = TokenTools.GenerateRefreshToken();
+            // Lưu token vào cơ sở dữ liệu hoặc một nơi lưu trữ tạm thời với thời gian hết hạn
+            //var resetLink = $"{_configuration["AppSettings:ClientUrl"]}/reset-password?token={token}&email={email}";
+            //var emailBody = $"Please reset your password by clicking <a href='{resetLink}'>here</a>";
+
+            var token = Guid.NewGuid().ToString(); // Sử dụng GUID làm mã thông báo
+            var expiry = DateTime.UtcNow.AddHours(1);
+            await _userRepository.SaveResetPasswordTokenAsync(email, token, expiry);
+
+            var resetLink = $"{_configuration["AppSettings:ClientUrl"]}/reset-password?token={token}&email={email}";
+            var emailBody = $"Please reset your password by clicking <a href='{resetLink}'>here</a>";
+
+            await _emailService.SendVerifymailAsync(email, "Reset Password", emailBody);
+
+            return true;
+        }
+
+        
+
+
+
     }
 }
