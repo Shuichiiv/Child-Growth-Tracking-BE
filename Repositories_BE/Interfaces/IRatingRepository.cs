@@ -10,5 +10,6 @@ namespace Repositories_BE.Interfaces
     public interface IRatingRepository:IGenericRepository<Rating>
     {
         Rating GetRatingByIdIncludeProperties(Guid id);
+        List<Rating> GetListRatingActiveOfParent(Guid parentId);
     }
 }
