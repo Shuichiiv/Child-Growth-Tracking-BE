@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DTOs_BE.AppointmentDtos;
+using DTOs_BE.FeedbackDTOs;
+using DTOs_BE.RatingDTOs;
 
 namespace Services_BE.Mapper
 {
@@ -25,6 +27,8 @@ namespace Services_BE.Mapper
 
             CreateMap<AppointmentCreateDto, Appointment>();
             CreateMap<AppointmentUpdateDto, Appointment>();
+            CreateMap<FeedbackResponseDTO,Feedback>().ReverseMap();
+            CreateMap<RatingResponseDTO, Rating>().ReverseMap();
         }
     }
 }

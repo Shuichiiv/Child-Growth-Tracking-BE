@@ -13,76 +13,147 @@ namespace Services_BE.Services
 
         public AppointmentService(IAppointmentRepository appointmentRepository, IMapper mapper)
         {
-            _appointmentRepository = appointmentRepository;
+            _appointmentRepository = appointmentRepository ?? throw new ArgumentNullException(nameof(appointmentRepository));
             _mapper = mapper;
         }
 
         public async Task<IEnumerable<AppointmentDto>> GetAllAppointmentsAsync()
         {
-            var appointments = await _appointmentRepository.GetAllAppointmentsAsync();
-            return _mapper.Map<IEnumerable<AppointmentDto>>(appointments);
+            try
+            {
+                var appointments = await _appointmentRepository.GetAllAppointmentsAsync();
+                return _mapper.Map<IEnumerable<AppointmentDto>>(appointments);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving appointments", ex);
+            }
         }
 
         public async Task<AppointmentDto?> GetAppointmentByIdAsync(Guid appointmentId)
         {
-            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId);
-            return appointment != null ? _mapper.Map<AppointmentDto>(appointment) : null;
+            try
+            {
+                var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId);
+                return appointment != null ? _mapper.Map<AppointmentDto>(appointment) : null;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("An error occurred while retrieving appointments", e);
+            }
+           
         }
 
         public async Task<IEnumerable<AppointmentDto>> GetAppointmentsByDoctorIdAsync(Guid doctorId)
         {
-            var appointments = await _appointmentRepository.GetAppointmentsByDoctorIdAsync(doctorId);
-            return _mapper.Map<IEnumerable<AppointmentDto>>(appointments);
+            try
+            {
+                var appointments = await _appointmentRepository.GetAppointmentsByDoctorIdAsync(doctorId);
+                return _mapper.Map<IEnumerable<AppointmentDto>>(appointments);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("An error occurred while retrieving appointments", e);
+            }
+           
         }
 
         public async Task<IEnumerable<AppointmentDto>> GetAppointmentsByParentIdAsync(Guid parentId)
         {
-            var appointments = await _appointmentRepository.GetAppointmentsByParentIdAsync(parentId);
-            return _mapper.Map<IEnumerable<AppointmentDto>>(appointments);
+            try
+            {
+                var appointments = await _appointmentRepository.GetAppointmentsByParentIdAsync(parentId);
+                return _mapper.Map<IEnumerable<AppointmentDto>>(appointments);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("An error occurred while retrieving appointments", e);
+            }
+           
         }
 
         public async Task<bool> CreateAppointmentAsync(AppointmentCreateDto appointmentDto)
         {
-            var appointment = _mapper.Map<Appointment>(appointmentDto);
-            await _appointmentRepository.AddAppointmentAsync(appointment);
-            return true;
+            try
+            {
+                var appointment = _mapper.Map<Appointment>(appointmentDto);
+                await _appointmentRepository.AddAppointmentAsync(appointment);
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("An error occurred while adding appointments", e);
+            }
+           
         }
 
         public async Task<bool> UpdateAppointmentAsync(Guid appointmentId, AppointmentUpdateDto appointmentDto)
         {
-            var existingAppointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId);
-            if (existingAppointment == null) return false;
+            try
+            {
+                var existingAppointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId);
+                if (existingAppointment == null) return false;
 
-            _mapper.Map(appointmentDto, existingAppointment);
-            await _appointmentRepository.UpdateAppointmentAsync(existingAppointment);
-            return true;
+                _mapper.Map(appointmentDto, existingAppointment);
+                await _appointmentRepository.UpdateAppointmentAsync(existingAppointment);
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("An error occurred while updating appointments", e);
+            }
+            
         }
 
         public async Task<bool> DeleteAppointmentAsync(Guid appointmentId)
         {
-            if (!await _appointmentRepository.AppointmentExistsAsync(appointmentId)) return false;
+            try
+            {
+                if (!await _appointmentRepository.AppointmentExistsAsync(appointmentId)) return false;
             
-            await _appointmentRepository.DeleteAppointmentAsync(appointmentId);
-            return true;
+                await _appointmentRepository.DeleteAppointmentAsync(appointmentId);
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("An error occurred while deleting appointments", e);
+            }
+            
         }
         public async Task<bool> ConfirmAppointmentAsync(Guid appointmentId)
         {
-            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId);
-            if (appointment == null) return false;
+            try
+            {
+                var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId);
+                if (appointment == null) return false;
 
-            appointment.Status = AppointmentStatus.Confirmed;
-            appointment.UpdatedAt = DateTime.UtcNow;
-            return await _appointmentRepository.UpdateAppointmentAsyncN(appointment);
+                appointment.Status = AppointmentStatus.Confirmed;
+                appointment.UpdatedAt = DateTime.UtcNow;
+                return await _appointmentRepository.UpdateAppointmentAsyncN(appointment);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("An error occurred while confirming appointments", e);
+            }
+            
         }
 
         public async Task<bool> CancelAppointmentAsync(Guid appointmentId)
         {
-            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId);
-            if (appointment == null) return false;
+            try
+            {
+                var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId);
+                if (appointment == null) return false;
 
-            appointment.Status = AppointmentStatus.Canceled;
-            appointment.UpdatedAt = DateTime.UtcNow;
-            return await _appointmentRepository.UpdateAppointmentAsyncN(appointment);
+                appointment.Status = AppointmentStatus.Canceled;
+                appointment.UpdatedAt = DateTime.UtcNow;
+                return await _appointmentRepository.UpdateAppointmentAsyncN(appointment);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("An error occurred while cancelling appointments", e);
+            }
+            
         }
     }
 }
