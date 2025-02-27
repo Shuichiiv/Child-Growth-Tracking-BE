@@ -59,6 +59,23 @@ namespace Services_BE.Services
                 throw ex;
             }
         }
+        public async Task<List<RatingResponseDTO>>GetListRatingOfParent(string parentId)
+        {
+            try
+            {
+                var id = Guid.Parse(parentId);
+                var list = _ratingRepository.GetListRatingActiveOfParent(id);
+                if(list == null)
+                {
+                    throw new Exception("List is not empty!!!");
+                }
+                var result = _mapper.Map<List<RatingResponseDTO>>(list);
+                return result;
+            }catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         public async Task<RatingResponseDTO> CreateRating(CreateRatingModel model)
         {
             try

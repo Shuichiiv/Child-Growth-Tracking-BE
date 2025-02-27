@@ -14,5 +14,6 @@ namespace Services_BE.Interfaces
         Task<RatingResponseDTO> CreateRating(CreateRatingModel model);
         Task<RatingResponseDTO> UpdateRating(UpdateRatingModel model, string id);
         Task<RatingResponseDTO> ChangeActiveRating(string id);
+        Task<List<RatingResponseDTO>> GetListRatingOfParent(string parentId);
     }
 }

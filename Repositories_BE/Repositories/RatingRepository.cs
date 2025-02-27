@@ -24,5 +24,13 @@ namespace Repositories_BE.Repositories
                 FirstOrDefault(x=>x.RatingId==id);
             return rating;
         }
+        public List<Rating> GetListRatingActiveOfParent(Guid parentId)
+        {
+           var list = _context.Ratings
+                .Where(x=>x.ParentId==parentId && x.IsActive==true)
+                .OrderByDescending(x=>x.RatingDate)
+                .ToList();
+            return list;
+        }
     }
 }

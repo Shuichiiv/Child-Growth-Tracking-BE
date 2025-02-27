@@ -33,6 +33,17 @@ namespace WebAPI_BE.Controllers
             }
             return Ok(response);
         }
+        [HttpGet("get-list-ratings-of-parent/{parentId}")]
+        public async Task<IActionResult>GetListRatingOfParent(string parentId)
+        {
+            var response = _ratingService.GetListRatingOfParent(parentId);
+            if(response == null)
+            {
+                return NotFound();
+            }
+            return Ok(response);
+        }
+
         [HttpPost("create-rating")]
         public async Task<IActionResult> CreateRating([FromBody] CreateRatingModel model)
         {
