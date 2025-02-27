@@ -19,35 +19,12 @@ namespace Repositories_BE.Repositories
             _context = context;
         }
 
-        public async Task<ProductList> CreateProductAsync(ProductList product)
+        public async Task<bool> CreateProductAsync(ProductList product)
         {
             product.ProductListId = Guid.NewGuid();
             _context.Set<ProductList>().Add(product);
             await _context.SaveChangesAsync();
-            return product;
-        }
-
-        public async Task<ProductList> GetProductByIdAsync(Guid productId)
-        {
-            return await _context.Set<ProductList>().FindAsync(productId);
-        }
-
-        public async Task<List<ProductList>> GetAllProductsAsync()
-        {
-            return await _context.Set<ProductList>().ToListAsync();
-        }
-
-        public async Task<ProductList> UpdateProductAsync(ProductList product)
-        {
-            var existingProduct = await _context.Set<ProductList>().FindAsync(product.ProductListId);
-            if (existingProduct == null)
-            {
-                return null;
-            }
-
-            _context.Entry(existingProduct).CurrentValues.SetValues(product);
-            await _context.SaveChangesAsync();
-            return existingProduct;
+            return true;
         }
 
         public async Task<bool> DeleteProductAsync(Guid productId)
@@ -61,6 +38,29 @@ namespace Repositories_BE.Repositories
             _context.Set<ProductList>().Remove(product);
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<bool> UpdateProductAsync(ProductList product)
+        {
+            var existingProduct = await _context.Set<ProductList>().FindAsync(product.ProductListId);
+            if (existingProduct == null)
+            {
+                return false;
+            }
+
+            _context.Entry(existingProduct).CurrentValues.SetValues(product);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<List<ProductList>> GetAllProductsAsync()
+        {
+            return await _context.Set<ProductList>().ToListAsync();
+        }
+
+        public async Task<ProductList> GetProductByIdAsync(Guid productId)
+        {
+            return await _context.Set<ProductList>().FindAsync(productId);
         }
 
     }

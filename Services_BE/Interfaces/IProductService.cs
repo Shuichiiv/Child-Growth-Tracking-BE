@@ -4,16 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DataObjects_BE.Entities;
+using DTOs_BE.ProductDTOs;
 
 namespace Services_BE.Interfaces
 {
     public interface IProductService
     {
-        Task<ProductList> CreateProductAsync(ProductList product);
+        Task<bool> CreateProductAsync(CreateProductModel model);
+        Task<bool> DeleteProductAsync(DeleteProductModel model);
+        Task<bool> UpdateProductAsync(UpdateProductModel model);
+        Task<List<ProductList>> GetAllProductAsync();
         Task<ProductList> GetProductByIdAsync(Guid productId);
-        Task<List<ProductList>> GetAllProductsAsync();
-        Task<ProductList> UpdateProductAsync(ProductList product);
-        Task<bool> DeleteProductAsync(Guid productId);
+
 
     }
 }

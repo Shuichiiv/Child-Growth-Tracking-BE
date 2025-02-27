@@ -1,4 +1,5 @@
 ﻿using DataObjects_BE.Entities;
+using DTOs_BE.ProductDTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,13 +19,16 @@ namespace WebAPI_BE.ProductController
             _productService = productService;
         }
 
-        [HttpPost("create")] // tạo sản phẩm
-        public async Task<IActionResult> CreateProduct([FromBody] ProductList product)
+        // Tạo sản phẩm mới
+        [HttpPost("create")]
+        public async Task<IActionResult> CreateProduct([FromBody] CreateProductModel model)
         {
             try
             {
-                var createdProduct = await _productService.CreateProductAsync(product);
-                return CreatedAtAction(nameof(GetProductById), new { productId = createdProduct.ProductListId }, createdProduct);
+                var result = await _productService.CreateProductAsync(model);
+                if (!result)
+                    return BadRequest("Tạo sản phẩm không thành công");
+                return Ok("Tạo sản phẩm thành công");
             }
             catch (ArgumentException ex)
             {
@@ -32,58 +36,51 @@ namespace WebAPI_BE.ProductController
             }
         }
 
-        [HttpGet("{productId}")] // lấy sản phẩm theo id
+        // Xóa sản phẩm
+        [HttpPost("delete")]
+        public async Task<IActionResult> DeleteProduct([FromBody] DeleteProductModel model)
+        {
+            var result = await _productService.DeleteProductAsync(model);
+            if (!result)
+                return BadRequest("Xóa sản phẩm không thành công");
+            return Ok("Xóa sản phẩm thành công");
+        }
+
+        // Cập nhật sản phẩm
+        [HttpPost("update")]
+        public async Task<IActionResult> UpdateProduct([FromBody] UpdateProductModel model)
+        {
+            try
+            {
+                var result = await _productService.UpdateProductAsync(model);
+                if (!result)
+                    return BadRequest("Cập nhật sản phẩm không thành công");
+                return Ok("Cập nhật sản phẩm thành công");
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // Lấy tất cả sản phẩm
+        [HttpGet("get-all")]
+        public async Task<IActionResult> GetAllProduct()
+        {
+            var result = await _productService.GetAllProductAsync();
+            if (result == null)
+                return BadRequest("Không tìm thấy sản phẩm");
+            return Ok(result);
+        }
+
+        // Lấy sản phẩm theo ID
+        [HttpGet("get-by-id/{productId}")]
         public async Task<IActionResult> GetProductById(Guid productId)
         {
-            try
-            {
-                var product = await _productService.GetProductByIdAsync(productId);
-                return Ok(product);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-        }
-
-        [HttpGet("get-all")] // lấy tất cả sản phẩm
-        public async Task<IActionResult> GetAllProducts()
-        {
-            var products = await _productService.GetAllProductsAsync();
-            return Ok(products);
-        }
-
-        [HttpPut("{productId}")] // cập nhật sản phẩm
-        public async Task<IActionResult> UpdateProduct(Guid productId, [FromBody] ProductList product)
-        {
-            try
-            {
-                product.ProductListId = productId;
-                var updatedProduct = await _productService.UpdateProductAsync(product);
-                return Ok(updatedProduct);
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-        }
-
-        [HttpDelete("{productId}")] // xóa sản phẩm
-        public async Task<IActionResult> DeleteProduct(Guid productId)
-        {
-            try
-            {
-                var result = await _productService.DeleteProductAsync(productId);
-                return NoContent();
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            var result = await _productService.GetProductByIdAsync(productId);
+            if (result == null)
+                return BadRequest("Không tìm thấy sản phẩm");
+            return Ok(result);
         }
 
 
