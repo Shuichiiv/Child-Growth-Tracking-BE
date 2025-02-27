@@ -33,5 +33,10 @@ namespace DataObjects_BE.Entities
         public DateTime? OtpCreatedAt { get; set; }
         
         public Boolean IsActive { get; set; }
+
+        //For Gmail Link
+        public string? ResetPasswordToken { get; set; }
+        public DateTime? ResetPasswordTokenExpiration { get; set; }
+
     }
 }

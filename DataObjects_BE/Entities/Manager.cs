@@ -11,7 +11,7 @@ namespace DataObjects_BE.Entities
     public partial class Manager
     {
         [Key]
-        public Guid ManagerId {  get; set; }
+        public Guid ManagerId { get; set; }
         public Guid AccountId { get; set; }
 
         [ForeignKey("AccountId")]

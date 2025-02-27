@@ -25,6 +25,9 @@ namespace Repositories_BE.Interfaces
         Task<OtpInfo> GetOtpInfoAsync(string email);
         Task<Account> GetByIdAsync(Guid accountId);
         Task UpdateAsync(Account account);
+        Task SaveResetPasswordTokenAsync(string email, string token, DateTime expiry);
+        Task<Account> GetUserByResetPasswordTokenAsync(string token);
+
 
     }
 }
