@@ -9,7 +9,6 @@ namespace WebAPI_BE.ProductController
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Doctor")]
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;

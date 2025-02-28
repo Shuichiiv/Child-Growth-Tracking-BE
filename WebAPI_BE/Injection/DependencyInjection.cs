@@ -44,8 +44,9 @@ namespace WebAPI_BE.Injection
             services.AddScoped<IChildRepository, ChildRepository>();
             services.AddScoped<IFeedbackRepository, FeedbackRepository>();
             services.AddScoped<IRatingRepository, RatingRepository>();
-
+            services.AddScoped<IProductRepository, ProductRepository>();
             
+
 
             //Injection services of project
             services.AddSingleton<IEmailService, EmailService>();
@@ -61,6 +62,7 @@ namespace WebAPI_BE.Injection
             services.AddScoped<IChildService, ChildService>();
             services.AddScoped<IFeedbackService, FeedbackService>();
             services.AddScoped<IRatingService, RatingService>();
+            services.AddScoped<IProductService, ProductService>();
             return services;
         }
     }
