@@ -11,5 +11,5 @@ public interface IParentService
     Task<bool> UpdateParentAsync(Guid parentId, ParentDto parentDto);
     Task<bool> DeleteParentAsync(Guid parentId);
     Task<IEnumerable<Child>> GetAllChildrenByParentIdAsync(Guid parentId);
-
+    Task<Parent> GetParentByAccountId(Guid accountId);
 }

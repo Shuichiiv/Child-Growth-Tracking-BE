@@ -176,8 +176,16 @@ namespace Services_BE.Services
             {
                 return new RegisterResponseModel { Success = false, Message = "Tạo tài khoản thất bại" };
             }
-
-
+            
+            if (account.Role == 1)
+            {
+                var parent = new Parent
+                {
+                    ParentId = Guid.NewGuid(),
+                    AccountId = account.AccountId
+                };
+                await _userRepository.CreateParent(parent);  // Thêm vào database
+            }
             string otp = new Random().Next(100000, 999999).ToString();
             //DateTime otpCreatedAt = DateTime.UtcNow;
             await _userRepository.SaveOtp(registerModel.Email, otp);
