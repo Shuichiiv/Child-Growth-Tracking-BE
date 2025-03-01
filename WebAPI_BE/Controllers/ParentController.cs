@@ -80,7 +80,7 @@ namespace WebAPI_BE.Controllers
             return Ok("Trẻ đã được tạo.");
         }
         
-        [HttpGet("{accountId}")]
+        [HttpGet("by-accountId/{accountId}")]
         public async Task<IActionResult> GetParentByAccountId(Guid accountId)
         {
             var parent = await _parentService.GetParentByAccountId(accountId);
