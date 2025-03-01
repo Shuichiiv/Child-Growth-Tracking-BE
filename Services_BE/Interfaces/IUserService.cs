@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DataObjects_BE.Entities;
 using DTOs_BE.UserDTOs;
 
 namespace Services_BE.Interfaces
@@ -20,9 +21,6 @@ namespace Services_BE.Interfaces
         //Task<bool> ChangePasswordByOtpAsync(ChangePasswordByOtpModel model);
         Task<bool> ResetPasswordAsync(ResetPasswordModel model);
         Task<bool> RequestPasswordResetAsync(string email);
-
-
-
 
     }
 }

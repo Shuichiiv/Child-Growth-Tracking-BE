@@ -21,6 +21,8 @@ namespace Repositories_BE.Interfaces
         Task UpdateUserAsync(Account user);
         Task<Account> GetUserByEmailAsync(string email);
         
+        Task<bool> CreateParent(Parent parent);
+        
         Task SaveOtp(string email, string otp, DateTime otpCreatedAt);
         Task<OtpInfo> GetOtpInfoAsync(string email);
         Task<Account> GetByIdAsync(Guid accountId);

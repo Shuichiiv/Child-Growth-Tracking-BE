@@ -62,6 +62,28 @@ namespace Services_BE.Services
         private static string GenerateEmailBody(EmailDto emailDto)
         {
             return $@"
+        <div style='font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; background-color: #f4f8f9; border-radius: 8px;'>
+            <div style='text-align: center; margin-bottom: 20px;'>
+                <img src='https://cdn-icons-png.flaticon.com/512/609/609803.png' width='60' alt='Medical Icon'/>
+                <h2 style='color: #2b8a3e; border-bottom: 2px solid #2b8a3e; padding-bottom: 5px;'>Thông báo góp ý Childs Tracking System</h2>
+            </div>
+            <p><strong>Họ tên:</strong> {emailDto.FullName}</p>
+            <p><strong>Email:</strong> {emailDto.Email}</p>
+            <p><strong>Tiêu đề:</strong> {emailDto.Subject}</p>
+            <div style='margin-top: 15px; padding: 15px; background-color: #e6f4ea; border-left: 5px solid #2b8a3e; border-radius: 5px;'>
+                <p><strong>Nội dung góp ý:</strong></p>
+                <p>{emailDto.Message}</p>
+            </div>
+            <p style='margin-top: 20px; font-size: 14px; color: gray; text-align: center;'>Đây là email tự động, vui lòng không trả lời.</p>
+        </div>";
+        }
+
+        
+        
+        /*
+        private static string GenerateEmailBody(EmailDto emailDto)
+        {
+            return $@"
                 <div style='font-family: Arial, sans-serif; padding: 20px; line-height: 1.6;'>
                     <h2 style='color: #007bff; border-bottom: 2px solid #007bff; padding-bottom: 5px;'>Bạn vừa nhận được một góp ý mới</h2>
                     <p><strong>Họ tên:</strong> {emailDto.FullName}</p>
@@ -74,6 +96,7 @@ namespace Services_BE.Services
                     <p style='margin-top: 20px; font-size: 14px; color: gray;'>Đây là email tự động, vui lòng không trả lời.</p>
                 </div>";
         }
+        */
         public async Task SendVerifymailAsync(string toEmail, string subject, string body)
         {
             try

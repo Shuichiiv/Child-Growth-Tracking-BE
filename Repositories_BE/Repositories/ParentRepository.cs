@@ -51,5 +51,17 @@ namespace Repositories_BE.Repositories
                 .Where(c => c.ParentId == parentId)
                 .ToListAsync();
         }
+        public async Task<Parent> GetParentByAccountId(Guid accountId)
+        {
+            return await _context.Parents
+                .Include(p => p.Account)
+                .FirstOrDefaultAsync(p => p.AccountId == accountId);
+        }
+        
+        public async Task<bool> CreateParent(Parent parent)
+        {
+            _context.Parents.Add(parent);
+            return await _context.SaveChangesAsync() > 0;
+        }
     }
 }

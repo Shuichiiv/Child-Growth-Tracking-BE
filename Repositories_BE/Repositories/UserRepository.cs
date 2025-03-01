@@ -59,6 +59,12 @@ namespace Repositories_BE.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+        
+        public async Task<bool> CreateParent(Parent parent)
+        {
+            _context.Parents.Add(parent);
+            return await _context.SaveChangesAsync() > 0;
+        }
 
         public async Task<string> GetOtpAsync(string email)
         {

@@ -21,7 +21,7 @@ public class ParentService :IParentService
         }
         catch (Exception e)
         {
-            throw new Exception("An error occurred while cancelling appointments", e);
+            throw new Exception("An error at parent service", e);
         }
     }
 
@@ -33,7 +33,7 @@ public class ParentService :IParentService
         }
         catch (Exception e)
         {
-            throw new Exception("An error occurred while cancelling appointments", e);
+            throw new Exception("An error at parent service", e);
         }
     }
 
@@ -50,7 +50,7 @@ public class ParentService :IParentService
         }
         catch (Exception e)
         {
-            throw new Exception("An error occurred while cancelling appointments", e);
+            throw new Exception("An error at parent service", e);
         }
         
     }
@@ -68,7 +68,7 @@ public class ParentService :IParentService
         }
         catch (Exception e)
         {
-            throw new Exception("An error occurred while cancelling appointments", e);
+            throw new Exception("An error at parent service", e);
         }
     }
 
@@ -80,7 +80,7 @@ public class ParentService :IParentService
         }
         catch (Exception e)
         {
-            throw new Exception("An error occurred while cancelling appointments", e);
+            throw new Exception("An error at parent service", e);
         }
     }
 
@@ -92,8 +92,12 @@ public class ParentService :IParentService
         }
         catch (Exception e)
         {
-            throw new Exception("An error occurred while cancelling appointments", e);
+            throw new Exception("An error at parent service", e);
         }
        
+    }
+    public async Task<Parent> GetParentByAccountId(Guid accountId)
+    {
+        return await _parentRepository.GetParentByAccountId(accountId);
     }
 }
