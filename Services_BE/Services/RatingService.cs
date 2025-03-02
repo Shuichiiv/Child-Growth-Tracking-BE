@@ -48,7 +48,7 @@ namespace Services_BE.Services
             try
             {
                 var list = _ratingRepository.Get(includeProperties: "Feedback,Parent");
-                if(list == null)
+                if(list == null||!list.Any())
                 {
                     throw new Exception("List is empty!!!");
                 }
