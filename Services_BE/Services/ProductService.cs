@@ -27,6 +27,9 @@ namespace Services_BE.Services
             if (model.Price <= 0)
                 throw new ArgumentException("Giá sản phẩm phải lớn hơn 0");
 
+            if (!ProductTypes.All.Contains(model.ProductType))
+                throw new ArgumentException("ProductType không hợp lệ");
+
             var product = new ProductList
             {
                 ProductName = model.ProductName,
@@ -59,6 +62,10 @@ namespace Services_BE.Services
             if (model.Price <= 0)
                 throw new ArgumentException("Giá sản phẩm phải lớn hơn 0");
 
+            if (!ProductTypes.All.Contains(model.ProductType))
+                throw new ArgumentException("ProductType không hợp lệ");
+
+
             var product = new ProductList
             {
                 ProductListId = model.ProductId,
@@ -89,5 +96,18 @@ namespace Services_BE.Services
             return await _productRepository.GetProductByIdAsync(productId);
         }
 
+    }
+    public static class ProductTypes
+    {
+        public const string Underweight = "Underweight";
+        public const string Balanced = "Balanced";
+        public const string Overweight = "Overweight";
+
+        public static readonly HashSet<string> All = new HashSet<string>
+        {
+            Underweight,
+            Balanced,
+            Overweight
+        };
     }
 }
