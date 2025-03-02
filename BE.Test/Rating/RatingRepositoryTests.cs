@@ -18,21 +18,21 @@ namespace BE.Test.Rating
             _ratingRepository = new RatingRepository(_context);
         }
 
-        /*[Fact]
+        [Fact]
         public void GetRatingByIdIncludeProperties_ShouldReturnCorrectRating()
         {
-            // Arrange: Tạo một tài khoản hợp lệ cho bác sĩ
+            // Arrange: Tạo Account hợp lệ
             var account = new Account
             {
                 AccountId = Guid.NewGuid(),
                 FirstName = "John",
                 LastName = "Doe",
                 UserName = "johndoe123",
-                Password = "SecurePassword123", // Nên hash password trước khi lưu
+                Password = "SecurePassword123",
                 Email = "johndoe@example.com",
                 PhoneNumber = "0123456789",
                 Address = "123 Main Street",
-                Role = 2, // 2: Doctor
+                Role = 2, // Doctor
                 DateCreateAt = DateTime.UtcNow,
                 IsActive = true,
                 ImageUrl = "https://example.com/avatar.jpg"
@@ -40,7 +40,7 @@ namespace BE.Test.Rating
             _context.Accounts.Add(account);
             _context.SaveChanges();
 
-            // Tạo bác sĩ hợp lệ
+            // Tạo Doctor
             var doctor = new Doctor
             {
                 DoctorId = Guid.NewGuid(),
@@ -52,7 +52,7 @@ namespace BE.Test.Rating
             _context.Doctors.Add(doctor);
             _context.SaveChanges();
 
-            // Tạo một Parent hợp lệ
+            // Tạo Parent
             var parent = new Parent
             {
                 ParentId = Guid.NewGuid(),
@@ -61,12 +61,45 @@ namespace BE.Test.Rating
             _context.Parents.Add(parent);
             _context.SaveChanges();
 
-            // Tạo Feedback hợp lệ
+            // Tạo Child
+            var child = new Child
+            {
+                ChildId = Guid.NewGuid(),
+                ParentId = parent.ParentId,
+                FirstName = "Baby",
+                LastName = "Doe",
+                Gender = "Male",
+                DOB = new DateTime(2020, 1, 1),
+                DateCreateAt = DateTime.UtcNow,
+                DateUpdateAt = DateTime.UtcNow,
+                ImageUrl = "https://example.com/baby.jpg"
+            };
+            _context.Childs.Add(child);
+            _context.SaveChanges();
+
+            // Tạo Report
+            var report = new Report
+            {
+                ReportId = Guid.NewGuid(),
+                ChildId = child.ChildId,
+                ReportMark = "A+",
+                ReportContent = "Child health checkup",
+                ReprotCreateDate = DateTime.UtcNow,
+                ReportIsActive = "Active",
+                ReportName = "General Health Report",
+                Height = 100.5,
+                Weight = 20.2,
+                BMI = 15.0
+            };
+            _context.Reports.Add(report);
+            _context.SaveChanges();
+
+            // Tạo Feedback liên kết với Report
             var feedback = new Feedback
             {
                 FeedbackId = Guid.NewGuid(),
-                ReportId = Guid.NewGuid(), // Giả sử có một báo cáo hợp lệ
-                DoctorId = doctor.DoctorId, // Liên kết với bác sĩ
+                ReportId = report.ReportId,
+                DoctorId = doctor.DoctorId,
                 FeedbackContentRequest = "Initial feedback request",
                 FeedbackCreateDate = DateTime.UtcNow,
                 FeedbackUpdateDate = DateTime.UtcNow,
@@ -77,7 +110,7 @@ namespace BE.Test.Rating
             _context.Feedbacks.Add(feedback);
             _context.SaveChanges();
 
-            // Tạo một Rating hợp lệ
+            // Tạo Rating
             var rating = new DataObjects_BE.Entities.Rating
             {
                 RatingId = Guid.NewGuid(),
@@ -85,22 +118,27 @@ namespace BE.Test.Rating
                 ParentId = parent.ParentId,
                 RatingValue = 4.5,
                 RatingDate = DateTime.UtcNow,
-                IsActive = true,
-                Feedback = feedback,
-                Parent = parent
+                IsActive = true
             };
             _context.Ratings.Add(rating);
             _context.SaveChanges();
 
-            // Act: Lấy rating từ repository
+            // Act: Gọi phương thức cần test
             var result = _ratingRepository.GetRatingByIdIncludeProperties(rating.RatingId);
 
-            // Assert: Kiểm tra dữ liệu trả về
+            // Assert: Kiểm tra kết quả trả về
             Assert.NotNull(result);
             Assert.Equal(rating.RatingId, result.RatingId);
             Assert.Equal(rating.RatingValue, result.RatingValue);
             Assert.NotNull(result.Feedback);
-            Assert.NotNull(result.Parent);
-        }*/
+            Assert.NotNull(result.Feedback.Report);
+            Assert.NotNull(result.Feedback.Report.Child);
+            Assert.Equal(child.ChildId, result.Feedback.Report.Child.ChildId);
+            Assert.Equal(report.ReportId, result.Feedback.Report.ReportId);
+            Assert.Equal("A+", result.Feedback.Report.ReportMark);
+            Assert.Equal(100.5, result.Feedback.Report.Height);
+            Assert.Equal(20.2, result.Feedback.Report.Weight);
+            Assert.Equal(15.0, result.Feedback.Report.BMI);
+        }
     }
 }

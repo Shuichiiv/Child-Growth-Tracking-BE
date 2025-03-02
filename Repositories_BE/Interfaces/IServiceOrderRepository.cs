@@ -10,5 +10,7 @@ namespace Repositories_BE.Interfaces
     public interface IServiceOrderRepository: IGenericRepository<ServiceOrder>
     {
         ServiceOrder GetOrderById(Guid id);
+        ServiceOrder GetLastestOrderByParentId(Guid parentId);
+        List<ServiceOrder> GetListOrderByParentId(Guid parentId);
     }
 }
