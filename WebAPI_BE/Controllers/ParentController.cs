@@ -79,7 +79,20 @@ namespace WebAPI_BE.Controllers
             if (!result) return BadRequest("Không thể tạo trẻ.");
             return Ok("Trẻ đã được tạo.");
         }
+        
+        [HttpGet("by-accountId/{accountId}")]
+        public async Task<IActionResult> GetParentByAccountId(Guid accountId)
+        {
+            var parent = await _parentService.GetParentByAccountId(accountId);
 
+            if (parent == null)
+            {
+                return NotFound(new { message = "Parent not found" });
+            }
+
+            return Ok(parent);
+        }
+        
         [HttpPost("parents")]
         public async Task<IActionResult> CreateParent([FromBody] ParentDto parentDto)
         {
