@@ -160,5 +160,40 @@ namespace Services_BE.Services
                 throw ex;
             }
         }
+        public async Task<CheckServiceRightsModel> CheckServiceRightsOfParent(string parentId)
+        {
+            try
+            {
+                var pId = Guid.Parse(parentId);
+                var list = _serviceOrderRepository.GetListOrderByParentId(pId);
+                bool check = false;
+                int sId=-1;
+                if(list == null||!list.Any())
+                {
+                    return new CheckServiceRightsModel
+                    {
+                        ServiceId = null,
+                        IsValid = false
+                    };
+                }
+                foreach(var i in list)
+                {
+                    if (i.EndDate > DateTime.UtcNow.AddHours(7))
+                    {
+                        check = true;
+                        sId = i.ServiceId;
+                        break;
+                    }
+                }
+                return new CheckServiceRightsModel
+                {
+                    ServiceId = sId,
+                    IsValid = check
+                };
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

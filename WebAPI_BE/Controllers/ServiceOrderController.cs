@@ -113,6 +113,23 @@ namespace WebAPI_BE.Controllers
                 throw ex;
             }
         }
+        [HttpGet("CheckServiceRights/{parentId}")]
+        public async Task<IActionResult> CheckServiceRights(string parentId)
+        {
+            try
+            {
+                var response = await _serviceOrderService.CheckServiceRightsOfParent(parentId);
+                if (response == null)
+                {
+                    return BadRequest();
+                }
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
     }
 }
