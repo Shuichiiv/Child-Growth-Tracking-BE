@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DTOs_BE.ProductDTOs
 {
-    public class UpdateProductModel
+    public class ProductResponseDto
     {
         public Guid ProductListId { get; set; }
         public string ProductName { get; set; }

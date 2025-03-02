@@ -27,9 +27,9 @@ namespace Repositories_BE.Repositories
             return true;
         }
 
-        public async Task<bool> DeleteProductAsync(Guid productId)
+        public async Task<bool> DeleteProductAsync(Guid productListId)
         {
-            var product = await _context.Set<ProductList>().FindAsync(productId);
+            var product = await _context.Set<ProductList>().FindAsync(productListId);
             if (product == null)
             {
                 return false;
@@ -58,9 +58,9 @@ namespace Repositories_BE.Repositories
             return await _context.Set<ProductList>().ToListAsync();
         }
 
-        public async Task<ProductList> GetProductByIdAsync(Guid productId)
+        public async Task<ProductList> GetProductByIdAsync(Guid productListId)
         {
-            return await _context.Set<ProductList>().FindAsync(productId);
+            return await _context.Set<ProductList>().FindAsync(productListId);
         }
 
     }

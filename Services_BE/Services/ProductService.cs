@@ -51,7 +51,7 @@ namespace Services_BE.Services
 
         public async Task<bool> DeleteProductAsync(DeleteProductModel model)
         {
-            return await _productRepository.DeleteProductAsync(model.ProductId);
+            return await _productRepository.DeleteProductAsync(model.ProducListId);
         }
 
         public async Task<bool> UpdateProductAsync(UpdateProductModel model)
@@ -68,7 +68,7 @@ namespace Services_BE.Services
 
             var product = new ProductList
             {
-                ProductListId = model.ProductId,
+                ProductListId = model.ProductListId,
                 ProductName = model.ProductName,
                 ProductDescription = model.ProductDescription,
                 Price = model.Price,
@@ -86,14 +86,47 @@ namespace Services_BE.Services
             return await _productRepository.UpdateProductAsync(product);
         }
 
-        public async Task<List<ProductList>> GetAllProductAsync()
+        public async Task<List<ProductResponseDto>> GetAllProductAsync()
         {
-            return await _productRepository.GetAllProductsAsync();
+            var products = await _productRepository.GetAllProductsAsync();
+            return products.Select(p => new ProductResponseDto
+            {
+                ProductListId = p.ProductListId,
+                ProductName = p.ProductName,
+                ProductDescription = p.ProductDescription,
+                Price = p.Price,
+                MinAge = p.MinAge,
+                MaxAge = p.MaxAge,
+                SafetyFeature = p.SafetyFeature,
+                Rating = p.Rating,
+                RecommendedBy = p.RecommendedBy,
+                ImageUrl = p.ImageUrl,
+                Brand = p.Brand,
+                IsActive = p.IsActive,
+                ProductType = p.ProductType
+            }).ToList();
         }
 
-        public async Task<ProductList> GetProductByIdAsync(Guid productId)
+        public async Task<ProductResponseDto> GetProductByIdAsync(Guid productListId)
         {
-            return await _productRepository.GetProductByIdAsync(productId);
+            var product = await _productRepository.GetProductByIdAsync(productListId);
+            if (product == null) return null;
+            return new ProductResponseDto
+            {
+                ProductListId = product.ProductListId,
+                ProductName = product.ProductName,
+                ProductDescription = product.ProductDescription,
+                Price = product.Price,
+                MinAge = product.MinAge,
+                MaxAge = product.MaxAge,
+                SafetyFeature = product.SafetyFeature,
+                Rating = product.Rating,
+                RecommendedBy = product.RecommendedBy,
+                ImageUrl = product.ImageUrl,
+                Brand = product.Brand,
+                IsActive = product.IsActive,
+                ProductType = product.ProductType
+            };
         }
 
     }
