@@ -25,5 +25,25 @@ namespace Repositories_BE.Repositories
                 .FirstOrDefault(x=>x.ServiceOrderId==id);
             return order;
         }
+        public ServiceOrder GetLastestOrderByParentId(Guid parentId)
+        {
+            return _context.ServiceOrders
+                .Include(o => o.Service)
+                .Include(o => o.Parent)
+                .Where(o => o.ParentId == parentId)
+                .OrderByDescending(o => o.CreateDate)
+                .FirstOrDefault();
+        }
+        public List<ServiceOrder> GetListOrderByParentId(Guid parentId)
+        {
+            return _context.ServiceOrders
+                .Include(o => o.Service)
+                .Include(o => o.Parent)
+                .Where(o => o.ParentId == parentId)
+                .OrderByDescending(o => o.CreateDate)
+                .ToList();
+        }
+
+
     }
 }

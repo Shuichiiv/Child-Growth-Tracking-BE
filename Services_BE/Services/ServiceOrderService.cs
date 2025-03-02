@@ -60,6 +60,41 @@ namespace Services_BE.Services
                 throw ex;
             }
         }
+
+        public async Task<ServiceOrderResponseDTO> GetLastestServiceOrderByParentId(string parentId)
+        {
+            try
+            {
+                var id = Guid.Parse(parentId);
+                var order = _serviceOrderRepository.GetLastestOrderByParentId(id);
+                if(order == null)
+                {
+                    throw new Exception("This parent don't have any service order");
+                }
+                var result = _mapper.Map<ServiceOrderResponseDTO>(order);
+                return result;
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public async Task<List<ServiceOrderResponseDTO>> GetListServiceOrderByParentId(string parentId)
+        {
+            try
+            {
+                var id = Guid.Parse(parentId);
+                var list = _serviceOrderRepository.GetListOrderByParentId(id);
+                if( list == null)
+                {
+                    throw new Exception("This parent don't have any service order");
+                }
+                var result = _mapper.Map<List<ServiceOrderResponseDTO>>(list);
+                return result;
+            }catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         public async Task<ServiceOrderResponseDTO> CreateServiceOrder(CreateServiceOrderModel model)
         {
             try
