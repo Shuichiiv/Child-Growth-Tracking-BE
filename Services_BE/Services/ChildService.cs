@@ -39,7 +39,7 @@ public class ChildService : IChildService
        
     }
 
-    public async Task<bool> CreateChildAsync(ChildDto childDto)
+    public async Task<bool> CreateChildAsync(ChildDtoCreate childDto)
     {
         try
         {
@@ -85,6 +85,34 @@ public class ChildService : IChildService
             throw new Exception("An error occurred while updating child", e);
         }
       
+    }
+    public async Task<IEnumerable<ChildDto>> SearchChildrenAsync(Guid parentId, string keyword)
+    {
+        var children = await _childRepository.SearchChildrenAsync(parentId, keyword);
+        return children.Select(child => new ChildDto
+        {
+            ChildId = child.ChildId,
+            FirstName = child.FirstName,
+            ParentId = child.ParentId
+        }).ToList();
+    }
+    public async Task<ChildDto> GetChildByIdAndParentAsync(Guid childId, Guid parentId)
+    {
+        var child = await _childRepository.GetChildByIdAndParentAsync(childId, parentId);
+    
+        if (child == null)
+            return null;
+
+        return new ChildDto
+        {
+            ChildId = child.ChildId,
+            ParentId = child.ParentId,
+            FirstName = child.FirstName,
+            LastName = child.LastName,
+            Gender = child.Gender,
+            ImageUrl = child.ImageUrl,
+            DOB = child.DOB
+        };
     }
 
 

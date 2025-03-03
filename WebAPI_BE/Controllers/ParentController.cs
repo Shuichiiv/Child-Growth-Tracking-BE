@@ -28,6 +28,13 @@ namespace WebAPI_BE.Controllers
             _appointmentService = appointmentService;
         }
         
+        [HttpPut("children/{childId}")]
+        public async Task<IActionResult> UpdateChild(Guid childId, [FromBody] ChildDto childDto)
+        {
+            var result = await _childService.UpdateChildAsync(childId, childDto);
+            if (!result) return NotFound("Không thể cập nhật thông tin trẻ.");
+            return Ok("Thông tin trẻ đã được cập nhật.");
+        }
         [HttpGet("{appointmentId}")]
         public async Task<IActionResult> GetAppointmentById(Guid appointmentId)
         {
@@ -36,6 +43,17 @@ namespace WebAPI_BE.Controllers
             return Ok(appointment);
         }
         
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchChildren([FromQuery] Guid parentId, [FromQuery] string keyword)
+        {
+            if (parentId == Guid.Empty)
+            {
+                return BadRequest("ParentId is required.");
+            }
+
+            var children = await _childService.SearchChildrenAsync(parentId, keyword);
+            return Ok(children);
+        }
         [HttpPost("appointments/create")]
         public async Task<IActionResult> CreateAppointment([FromBody] AppointmentCreateDto appointmentDto)
         {
@@ -43,7 +61,16 @@ namespace WebAPI_BE.Controllers
             if (!result) return BadRequest("Không thể tạo lịch hẹn.");
             return Ok("Lịch hẹn đã được tạo thành công.");
         }
-        
+        [HttpGet("{childId}/parent/{parentId}")]
+        public async Task<IActionResult> GetChildByParent(Guid childId, Guid parentId)
+        {
+            var child = await _childService.GetChildByIdAndParentAsync(childId, parentId);
+    
+            if (child == null)
+                return NotFound("Không tìm thấy thông tin trẻ hoặc bạn không có quyền truy cập.");
+
+            return Ok(child);
+        }
         [HttpGet("child/{childId}")]
         public async Task<IActionResult> GetReportsByChild(Guid childId)
         {
@@ -73,7 +100,7 @@ namespace WebAPI_BE.Controllers
         }
         
         [HttpPost("children")]
-        public async Task<IActionResult> CreateChild([FromBody] ChildDto childDto)
+        public async Task<IActionResult> CreateChild([FromBody] ChildDtoCreate childDto)
         {
             var result = await _childService.CreateChildAsync(childDto);
             if (!result) return BadRequest("Không thể tạo trẻ.");

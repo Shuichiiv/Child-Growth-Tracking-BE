@@ -7,7 +7,9 @@ public interface IChildService
 {
     Task<IEnumerable<Child>> GetAllChildrenAsync();
     Task<Child> GetChildByIdAsync(Guid childId);
-    Task<bool> CreateChildAsync(ChildDto childDto);
+    Task<bool> CreateChildAsync(ChildDtoCreate childDto);
     Task<bool> UpdateChildAsync(Guid childId, ChildDto childDto);
     Task<bool> DeleteChildAsync(Guid childId);
+    Task<IEnumerable<ChildDto>> SearchChildrenAsync(Guid parentId, string keyword);
+    Task<ChildDto> GetChildByIdAndParentAsync(Guid childId, Guid parentId);
 }

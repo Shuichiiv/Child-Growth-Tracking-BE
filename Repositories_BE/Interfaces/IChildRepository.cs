@@ -9,5 +9,7 @@ namespace Repositories_BE.Interfaces
         Task<bool> CreateChildAsync(Child child);
         Task<bool> UpdateChildAsync(Child child);
         Task<bool> DeleteChildAsync(Guid childId);
+        Task<IEnumerable<Child>> SearchChildrenAsync(Guid parentId, string keyword);
+        Task<Child> GetChildByIdAndParentAsync(Guid childId, Guid parentId);
     }
 }

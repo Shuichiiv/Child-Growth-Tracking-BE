@@ -121,7 +121,7 @@ namespace WebAPI_BE.Controllers
         }
 
         [HttpPost("children")]
-        public async Task<IActionResult> CreateChild([FromBody] ChildDto childDto)
+        public async Task<IActionResult> CreateChild([FromBody] ChildDtoCreate childDto)
         {
             var result = await _childService.CreateChildAsync(childDto);
             if (!result) return BadRequest("Không thể tạo trẻ.");
