@@ -13,5 +13,8 @@ namespace Services_BE.Interfaces
         Task<List<ServiceOrderResponseDTO>> GetListServiceOrder();
         Task<ServiceOrderResponseDTO> CreateServiceOrder(CreateServiceOrderModel model);
         Task<ServiceOrderResponseDTO> UpdateServiceOrder(UpdateServiceOrderModel model, string orderId);
+        Task<ServiceOrderResponseDTO> GetLastestServiceOrderByParentId(string parentId);
+        Task<List<ServiceOrderResponseDTO>> GetListServiceOrderByParentId(string parentId);
+        Task<CheckServiceRightsModel> CheckServiceRightsOfParent(string parentId);
     }
 }

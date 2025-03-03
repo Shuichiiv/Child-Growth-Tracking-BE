@@ -60,6 +60,41 @@ namespace Services_BE.Services
                 throw ex;
             }
         }
+
+        public async Task<ServiceOrderResponseDTO> GetLastestServiceOrderByParentId(string parentId)
+        {
+            try
+            {
+                var id = Guid.Parse(parentId);
+                var order = _serviceOrderRepository.GetLastestOrderByParentId(id);
+                if(order == null)
+                {
+                    throw new Exception("This parent don't have any service order");
+                }
+                var result = _mapper.Map<ServiceOrderResponseDTO>(order);
+                return result;
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public async Task<List<ServiceOrderResponseDTO>> GetListServiceOrderByParentId(string parentId)
+        {
+            try
+            {
+                var id = Guid.Parse(parentId);
+                var list = _serviceOrderRepository.GetListOrderByParentId(id);
+                if( list == null)
+                {
+                    throw new Exception("This parent don't have any service order");
+                }
+                var result = _mapper.Map<List<ServiceOrderResponseDTO>>(list);
+                return result;
+            }catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         public async Task<ServiceOrderResponseDTO> CreateServiceOrder(CreateServiceOrderModel model)
         {
             try
@@ -120,6 +155,41 @@ namespace Services_BE.Services
                 _serviceOrderRepository.Save();
                 var result = _mapper.Map<ServiceOrderResponseDTO>(orderExisting);
                 return result;
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public async Task<CheckServiceRightsModel> CheckServiceRightsOfParent(string parentId)
+        {
+            try
+            {
+                var pId = Guid.Parse(parentId);
+                var list = _serviceOrderRepository.GetListOrderByParentId(pId);
+                bool check = false;
+                int sId=-1;
+                if(list == null||!list.Any())
+                {
+                    return new CheckServiceRightsModel
+                    {
+                        ServiceId = null,
+                        IsValid = false
+                    };
+                }
+                foreach(var i in list)
+                {
+                    if (i.EndDate > DateTime.UtcNow.AddHours(7))
+                    {
+                        check = true;
+                        sId = i.ServiceId;
+                        break;
+                    }
+                }
+                return new CheckServiceRightsModel
+                {
+                    ServiceId = sId,
+                    IsValid = check
+                };
             }catch(Exception ex)
             {
                 throw ex;

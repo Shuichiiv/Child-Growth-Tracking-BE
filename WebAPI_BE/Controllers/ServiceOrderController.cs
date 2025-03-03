@@ -47,6 +47,40 @@ namespace WebAPI_BE.Controllers
                 throw ex;
             }
         }
+        [HttpGet("GetLastestOrderByParentId/{parentId}")]
+        public async Task<IActionResult> GetLastestOrderByParentId(string parentId)
+        {
+            try
+            {
+                var response = await _serviceOrderService.GetLastestServiceOrderByParentId(parentId);
+                if (response == null)
+                {
+                    return NotFound();
+                }
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        [HttpGet("GetListOrderByParentId/{parentId}")]
+        public async Task<IActionResult> GetListOrderByParentId(string parentId)
+        {
+            try
+            {
+                var response = await _serviceOrderService.GetListServiceOrderByParentId(parentId);
+                if(response == null)
+                {
+                    return NotFound();
+                }
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         [HttpPost("CreateServiceOrder")]
         public async Task<IActionResult> CreateServiceOrder(CreateServiceOrderModel model)
         {
@@ -75,6 +109,23 @@ namespace WebAPI_BE.Controllers
                 }
                 return Ok(response);
             }catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+        [HttpGet("CheckServiceRights/{parentId}")]
+        public async Task<IActionResult> CheckServiceRights(string parentId)
+        {
+            try
+            {
+                var response = await _serviceOrderService.CheckServiceRightsOfParent(parentId);
+                if (response == null)
+                {
+                    return BadRequest();
+                }
+                return Ok(response);
+            }
+            catch (Exception ex)
             {
                 throw ex;
             }
