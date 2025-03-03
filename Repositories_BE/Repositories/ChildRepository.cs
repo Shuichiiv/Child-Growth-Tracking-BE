@@ -36,6 +36,19 @@ namespace Repositories_BE.Repositories
             _context.Childs.Update(child);
             return await _context.SaveChangesAsync() > 0;
         }
+        public async Task<IEnumerable<Child>> SearchChildrenAsync(Guid parentId, string keyword)
+        {
+            return await _context.Childs
+                .Where(c => c.ParentId == parentId &&
+                            (string.IsNullOrEmpty(keyword) || c.FirstName.Contains(keyword)))
+                .ToListAsync();
+        }
+        public async Task<Child> GetChildByIdAndParentAsync(Guid childId, Guid parentId)
+        {
+            return await _context.Childs
+                .Where(c => c.ChildId == childId && c.ParentId == parentId)
+                .FirstOrDefaultAsync();
+        }
 
         public async Task<bool> DeleteChildAsync(Guid childId)
         {
