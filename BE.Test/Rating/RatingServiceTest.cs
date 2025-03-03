@@ -376,7 +376,176 @@ namespace BE.Test.Rating
             _parentRepositoryMock.Verify(repo => repo.GetByID(model.ParentId), Times.Once);
             _ratingRepositoryMock.Verify(repo => repo.Insert(It.IsAny<DataObjects_BE.Entities.Rating>()), Times.Never);
         }
+        //UpdateRating Test
+        [Fact]
+        public async Task UpdateRating_ShouldReturnRatingResponseDTO_WhenDataIsValid()
+        {
+            // Arrange
+            var ratingId = Guid.NewGuid();
+            var updatedValue = 4.5;
+            var currentDate = DateTime.UtcNow.Date;
 
+            var model = new UpdateRatingModel
+            {
+                RatingValue = updatedValue
+            };
 
+            var existingRating = new DataObjects_BE.Entities.Rating
+            {
+                RatingId = ratingId,
+                RatingValue = 3.5,
+                RatingDate = DateTime.UtcNow.Date.AddDays(-1)
+            };
+
+            var updatedDto = new RatingResponseDTO
+            {
+                RatingId = ratingId,
+                RatingValue = updatedValue
+            };
+
+            _ratingRepositoryMock
+                .Setup(repo => repo.GetRatingByIdIncludeProperties(ratingId))
+                .Returns(existingRating);
+
+            _currentTimeMock
+                .Setup(time => time.GetCurrentTime())
+                .Returns(currentDate);
+
+            _ratingRepositoryMock
+                .Setup(repo => repo.Update(It.IsAny<DataObjects_BE.Entities.Rating>()));
+
+            _ratingRepositoryMock
+                .Setup(repo => repo.Save());
+
+            _mapperMock
+                .Setup(mapper => mapper.Map<RatingResponseDTO>(It.IsAny<DataObjects_BE.Entities.Rating>()))
+                .Returns(updatedDto);
+
+            // Act
+            var result = await _ratingService.UpdateRating(model, ratingId.ToString());
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(updatedValue, result.RatingValue);
+
+            _ratingRepositoryMock.Verify(repo => repo.GetRatingByIdIncludeProperties(ratingId), Times.Once);
+            _ratingRepositoryMock.Verify(repo => repo.Update(It.IsAny<DataObjects_BE.Entities.Rating>()), Times.Once);
+            _ratingRepositoryMock.Verify(repo => repo.Save(), Times.Once);
+            _mapperMock.Verify(mapper => mapper.Map<RatingResponseDTO>(It.IsAny<DataObjects_BE.Entities.Rating>()), Times.Once);
+        }
+        [Fact]
+        public async Task UpdateRating_ShouldThrowException_WhenRatingDoesNotExist()
+        {
+            // Arrange
+            var ratingId = Guid.NewGuid().ToString();
+            var model = new UpdateRatingModel { RatingValue = 4.8 };
+
+            _ratingRepositoryMock
+                .Setup(repo => repo.GetRatingByIdIncludeProperties(It.IsAny<Guid>()))
+                .Returns((DataObjects_BE.Entities.Rating)null);
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<Exception>(() => _ratingService.UpdateRating(model, ratingId));
+
+            Assert.Equal("Rating is not existing!!!", exception.Message);
+            _ratingRepositoryMock.Verify(repo => repo.GetRatingByIdIncludeProperties(It.IsAny<Guid>()), Times.Once);
+            _ratingRepositoryMock.Verify(repo => repo.Update(It.IsAny<DataObjects_BE.Entities.Rating>()), Times.Never);
+        }
+        [Fact]
+        public async Task UpdateRating_ShouldThrowException_WhenIdIsInvalid()
+        {
+            // Arrange
+            var model = new UpdateRatingModel { RatingValue = 4.8 };
+            var invalidId = "invalid-guid";
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<FormatException>(() => _ratingService.UpdateRating(model, invalidId));
+
+            Assert.Contains("Unrecognized Guid format", exception.Message); // Cập nhật chuỗi so sánh
+            _ratingRepositoryMock.Verify(repo => repo.GetRatingByIdIncludeProperties(It.IsAny<Guid>()), Times.Never);
+            _ratingRepositoryMock.Verify(repo => repo.Update(It.IsAny<DataObjects_BE.Entities.Rating>()), Times.Never);
+        }
+        //ChangeActiveRating Test
+        [Fact]
+        public async Task ChangeActiveRating_ShouldToggleIsActive_WhenRatingExists()
+        {
+            // Arrange
+            var ratingId = Guid.NewGuid();
+            var existingRating = new DataObjects_BE.Entities.Rating
+            {
+                RatingId = ratingId,
+                IsActive = false // Ban đầu là false
+            };
+
+            _ratingRepositoryMock.Setup(repo => repo.GetRatingByIdIncludeProperties(ratingId))
+                .Returns(existingRating);
+
+            _mapperMock.Setup(mapper => mapper.Map<RatingResponseDTO>(existingRating))
+                .Returns(new RatingResponseDTO { RatingId = ratingId, IsActive = true });
+
+            // Act
+            var result = await _ratingService.ChangeActiveRating(ratingId.ToString());
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.True(result.IsActive);
+            _ratingRepositoryMock.Verify(repo => repo.Update(existingRating), Times.Once);
+            _ratingRepositoryMock.Verify(repo => repo.Save(), Times.Once);
+        }
+        [Fact]
+        public async Task ChangeActiveRating_ShouldToggleIsActive_WhenRatingIsActive()
+        {
+            // Arrange
+            var ratingId = Guid.NewGuid();
+            var existingRating = new DataObjects_BE.Entities.Rating
+            {
+                RatingId = ratingId,
+                IsActive = true // Ban đầu là true
+            };
+
+            _ratingRepositoryMock.Setup(repo => repo.GetRatingByIdIncludeProperties(ratingId))
+                .Returns(existingRating);
+
+            _mapperMock.Setup(mapper => mapper.Map<RatingResponseDTO>(existingRating))
+                .Returns(new RatingResponseDTO { RatingId = ratingId, IsActive = false });
+
+            // Act
+            var result = await _ratingService.ChangeActiveRating(ratingId.ToString());
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.False(result.IsActive);
+            _ratingRepositoryMock.Verify(repo => repo.Update(existingRating), Times.Once);
+            _ratingRepositoryMock.Verify(repo => repo.Save(), Times.Once);
+        }
+
+        [Fact]
+        public async Task ChangeActiveRating_ShouldThrowException_WhenIdIsInvalid()
+        {
+            // Arrange
+            var invalidId = "invalid-guid";
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<FormatException>(() => _ratingService.ChangeActiveRating(invalidId));
+
+            Assert.Contains("Unrecognized Guid format", exception.Message);
+            _ratingRepositoryMock.Verify(repo => repo.GetRatingByIdIncludeProperties(It.IsAny<Guid>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task ChangeActiveRating_ShouldThrowException_WhenRatingNotFound()
+        {
+            // Arrange
+            var ratingId = Guid.NewGuid();
+
+            _ratingRepositoryMock.Setup(repo => repo.GetRatingByIdIncludeProperties(ratingId))
+                .Returns((DataObjects_BE.Entities.Rating)null);
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<Exception>(() => _ratingService.ChangeActiveRating(ratingId.ToString()));
+
+            Assert.Equal("Rating is not existing!!!", exception.Message);
+            _ratingRepositoryMock.Verify(repo => repo.Update(It.IsAny<DataObjects_BE.Entities.Rating>()), Times.Never);
+        }
     }
 }
