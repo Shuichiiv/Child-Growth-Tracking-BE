@@ -433,7 +433,8 @@ namespace Services_BE.Services
             //var emailBody = $"Please reset your password by clicking <a href='{resetLink}'>here</a>";
 
             var token = Guid.NewGuid().ToString(); // Sử dụng GUID làm mã thông báo
-            var expiry = _timeService.GetCurrentTime().AddHours(1); // Thời gian hết hạn
+            //var expiry = _timeService.GetCurrentTime().AddHours(1); // Thời gian hết hạn
+            var expiry = DateTime.UtcNow.AddHours(1);
             await _userRepository.SaveResetPasswordTokenAsync(email, token, expiry);
 
             var resetLink = $"{_configuration["AppSettings:ClientUrl"]}/reset-password?token={token}&email={email}";
