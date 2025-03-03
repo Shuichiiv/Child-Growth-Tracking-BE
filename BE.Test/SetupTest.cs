@@ -22,8 +22,10 @@ namespace BE.Test
 
         //setup for repository
         protected readonly Mock<IRatingRepository> _ratingRepositoryMock;
+        protected readonly Mock<IServiceRepositoy> _serviceRepositoryMock;
 
         protected readonly Mock<IRatingService> _ratingServiceMock;
+        protected readonly Mock<IServiceService> _serviceServiceMock;
         protected readonly Mock<ICurrentTime> _currentTimeMock;
 
         public SetupTest()
@@ -38,9 +40,12 @@ namespace BE.Test
 
             //repository
             _ratingRepositoryMock = new Mock<IRatingRepository>();
+            _serviceRepositoryMock = new Mock<IServiceRepositoy>();
 
             //service
             _ratingServiceMock = new Mock<IRatingService>();
+            _serviceServiceMock = new Mock<IServiceService> ();
+            
             _currentTimeMock = new Mock<ICurrentTime>();
 
             var options = new DbContextOptionsBuilder<SWP391G3DbContext>()
