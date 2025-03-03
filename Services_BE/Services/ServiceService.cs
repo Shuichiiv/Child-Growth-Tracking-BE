@@ -30,7 +30,7 @@ namespace Services_BE.Services
             try
             {
                 var list =  _serviceRepositoy.Get(includeProperties: "ServiceOrders").ToList();
-                if (list == null) { throw new Exception("List is empty"); }
+                if (list == null||!list.Any()) { throw new Exception("List is empty"); }
                 var result = _mapper.Map<List<ServiceResponseDTO>>(list);
                 return result;
             }catch (Exception ex) { throw ex; }
