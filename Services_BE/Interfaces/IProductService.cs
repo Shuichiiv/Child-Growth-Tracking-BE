@@ -13,8 +13,8 @@ namespace Services_BE.Interfaces
         Task<bool> CreateProductAsync(CreateProductModel model);
         Task<bool> DeleteProductAsync(DeleteProductModel model);
         Task<bool> UpdateProductAsync(UpdateProductModel model);
-        Task<List<ProductList>> GetAllProductAsync();
-        Task<ProductList> GetProductByIdAsync(Guid productId);
+        Task<List<ProductResponseDto>> GetAllProductAsync();
+        Task<ProductResponseDto> GetProductByIdAsync(Guid productListId);
 
 
     }
