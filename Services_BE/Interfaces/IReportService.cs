@@ -11,5 +11,7 @@ namespace Services_BE.Interfaces
         Task<ReportDto> CreateCustomBMIReportAsync(ReportDtoFParents reportDto);
         Task<ReportDto> CreateReportAsync(CreateReportDto request);
         Task<bool> UpdateReportAsync(Guid reportId, UpdateReportDto request);
+        
+        Task<Report> CreateReportAsync2(Guid childId, CreateReportDto dto);
     }
 }

@@ -100,7 +100,6 @@ namespace Services_BE.Services
             var report = new Report
             {
                 ReportId = Guid.NewGuid(),
-                ChildId = request.ChildId,
                 Height = request.Height,
                 Weight = request.Weight,
                 BMI = request.Weight / Math.Pow(request.Height / 100, 2), 
@@ -117,6 +116,10 @@ namespace Services_BE.Services
                 BMI = createdReport.BMI,
                 ReportCreateDate = createdReport.ReprotCreateDate
             };
+        }
+        public async Task<Report> CreateReportAsync2(Guid childId, CreateReportDto dto)
+        {
+            return await _reportRepository.CreateReportAsync2(childId, dto);
         }
 
         public async Task<bool> UpdateReportAsync(Guid reportId, UpdateReportDto request)
