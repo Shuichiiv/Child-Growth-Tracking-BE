@@ -71,7 +71,8 @@ namespace Services_BE.Services
                 ReprotCreateDate = reportDto.ReportCreateDate,
                 ReportIsActive = "Pending",
                 ReportName = "BMI Report",
-                ReportContent = $"BMI calculated on {reportDto.ReportCreateDate:yyyy-MM-dd}"
+                ReportContent = $"BMI calculated on {reportDto.ReportCreateDate:yyyy-MM-dd}",
+                ReportMark = GetBMICategory(reportDto.Weight / ((reportDto.Height / 100) * (reportDto.Height / 100))) // Thêm dòng này
             };
 
             var createdReport = await _reportRepository.CreateBMIReportAsync(report);
@@ -86,6 +87,13 @@ namespace Services_BE.Services
                 ReportContent = createdReport.ReportContent,
                 ReportMark = createdReport.ReportMark
             };
+        }
+        private string GetBMICategory(double bmi)
+        {
+            if (bmi < 18.5) return "Underweight";
+            if (bmi < 24.9) return "Normal weight";
+            if (bmi < 29.9) return "Overweight";
+            return "Obese";
         }
         public async Task<ReportDto> CreateReportAsync(CreateReportDto request)
         {
