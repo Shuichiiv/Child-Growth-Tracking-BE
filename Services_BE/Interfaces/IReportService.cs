@@ -1,3 +1,4 @@
+using DataObjects_BE.Entities;
 using DTOs_BE.DoctorDTOs;
 
 namespace Services_BE.Interfaces
@@ -8,5 +9,7 @@ namespace Services_BE.Interfaces
         Task<IEnumerable<ReportDto>> GetReportsByChildIdAsync(Guid childId);
         
         Task<ReportDto> CreateCustomBMIReportAsync(ReportDtoFParents reportDto);
+        Task<ReportDto> CreateReportAsync(CreateReportDto request);
+        Task<bool> UpdateReportAsync(Guid reportId, UpdateReportDto request);
     }
 }

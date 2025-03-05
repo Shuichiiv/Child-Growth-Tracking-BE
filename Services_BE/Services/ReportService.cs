@@ -87,5 +87,43 @@ namespace Services_BE.Services
                 ReportMark = createdReport.ReportMark
             };
         }
+        public async Task<ReportDto> CreateReportAsync(CreateReportDto request)
+        {
+            var report = new Report
+            {
+                ReportId = Guid.NewGuid(),
+                ChildId = request.ChildId,
+                Height = request.Height,
+                Weight = request.Weight,
+                BMI = request.Weight / Math.Pow(request.Height / 100, 2), 
+                ReprotCreateDate = request.Date
+            };
+
+            var createdReport = await _reportRepository.CreateReportAsync(report);
+            return new ReportDto
+            {
+                ReportId = createdReport.ReportId,
+                ChildId = createdReport.ChildId,
+                Height = createdReport.Height,
+                Weight = createdReport.Weight,
+                BMI = createdReport.BMI,
+                ReportCreateDate = createdReport.ReprotCreateDate
+            };
+        }
+
+        public async Task<bool> UpdateReportAsync(Guid reportId, UpdateReportDto request)
+        {
+            var reports = await _reportRepository.GetReportsByChildIdAsync(request.ChildId);
+            var report = reports.FirstOrDefault(r => r.ReportId == reportId);
+            if (report == null) return false;
+
+            report.Height = request.Height;
+            report.Weight = request.Weight;
+            report.BMI = request.Weight / Math.Pow(request.Height / 100, 2);
+            report.ReprotCreateDate = request.Date;
+
+            return await _reportRepository.UpdateReportAsync(report);
+        }
+        
         }
 }

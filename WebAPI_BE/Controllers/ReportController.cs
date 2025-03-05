@@ -51,6 +51,34 @@ namespace WebAPI_BE.Controllers
             var reports = await _reportService.GetReportsByChildIdAsync(childId);
             return Ok(reports);
         }
+        
+        [HttpGet("{childId}")]
+        public async Task<IActionResult> GetReportsByChildId(Guid childId)
+        {
+            var reports = await _reportService.GetReportsByChildIdAsync(childId);
+            if (!reports.Any()) return NotFound("Không có báo cáo nào.");
+            return Ok(reports);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateReport([FromBody] CreateReportDto request)
+        {
+            if (request.ChildId == Guid.Empty || request.Height <= 0 || request.Weight <= 0)
+            {
+                return BadRequest("Dữ liệu không hợp lệ.");
+            }
+
+            var report = await _reportService.CreateReportAsync(request);
+            return Ok(report);
+        }
+
+        [HttpPut("{reportId}")]
+        public async Task<IActionResult> UpdateReport(Guid reportId, [FromBody] UpdateReportDto request)
+        {
+            var updated = await _reportService.UpdateReportAsync(reportId, request);
+            if (!updated) return NotFound("Không tìm thấy báo cáo để cập nhật.");
+            return Ok("Cập nhật thành công.");
+        }
     }
     
 }
