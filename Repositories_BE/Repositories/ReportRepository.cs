@@ -65,6 +65,19 @@ namespace Repositories_BE.Repositories
             if (bmi < 40) return "Béo phì độ II";
             return "Béo phì độ III";
         }
+        
+        public async Task<Report> CreateReportAsync(Report report)
+        {
+            await _context.Reports.AddAsync(report);
+            await _context.SaveChangesAsync();
+            return report;
+        }
+
+        public async Task<bool> UpdateReportAsync(Report report)
+        {
+            _context.Reports.Update(report);
+            return await _context.SaveChangesAsync() > 0;
+        }
 
         public IEnumerable<Report> Get(Expression<Func<Report, bool>>? filter = null, Func<IQueryable<Report>, IOrderedQueryable<Report>>? orderBy = null, string includeProperties = "", int? pageIndex = null,
             int? pageSize = null)

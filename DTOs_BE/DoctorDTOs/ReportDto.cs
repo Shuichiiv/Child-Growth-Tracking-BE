@@ -14,7 +14,6 @@ namespace DTOs_BE.DoctorDTOs
     
     public class ReportDtoFParents
     {
-        public Guid ReportId { get; set; }
         public Guid ChildId { get; set; }
         public string ReportMark { get; set; }
         public string ReportContent { get; set; }
@@ -24,6 +23,32 @@ namespace DTOs_BE.DoctorDTOs
         public double Height { get; set; }
         public double Weight { get; set; }
         public double BMI { get; set; }
+    }
+    
+    public class CreateReportDto
+    {
+        public Guid ChildId { get; set; }
+        public double Height { get; set; }
+        public double Weight { get; set; }
+        public DateTime Date { get; set; }
+    }
+
+    public class UpdateReportDto
+    {
+        public Guid ChildId { get; set; }
+        public double Height { get; set; }
+        public double Weight { get; set; }
+        public DateTime Date { get; set; }
+    }
+
+    public class ReportDto2
+    {
+        public Guid ReportId { get; set; }
+        public Guid ChildId { get; set; }
+        public double Height { get; set; }
+        public double Weight { get; set; }
+        public double BMI { get; set; }
+        public DateTime CreateDate { get; set; }
     }
 
 }

@@ -44,22 +44,6 @@ namespace WebAPI_BE.DoctorController
 
             return Ok("Doctor updated successfully");
         }
-
-        [HttpPost("change-password/{accountId}")]
-        public async Task<IActionResult> ChangePassword(Guid accountId, [FromBody] ChangePasswordDto model)
-        {
-            var result = await _doctorService.ChangePasswordAsync(accountId, model.OldPassword, model.NewPassword);
-            if (!result)
-                return BadRequest("Incorrect old password or account not found");
-
-            return Ok("Password changed successfully");
-        }
-
-        [HttpPost("logout")]
-        public IActionResult Logout()
-        {
-            return Ok("Logged out successfully");
-        }
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<DoctorDto>>> SearchDoctors([FromQuery] string keyword)
         {
@@ -72,17 +56,6 @@ namespace WebAPI_BE.DoctorController
         {
             var doctors = await _doctorService.GetDoctorsBySpecialtyAsync(specialty);
             return Ok(doctors);
-        }
-
-        [HttpDelete("{accountId}")]
-        public async Task<ActionResult> DeleteDoctor(Guid accountId)
-        {
-            var result = await _doctorService.DeleteDoctorAsync(accountId);
-            if (!result)
-            {
-                return NotFound(new { message = "Doctor not found." });
-            }
-            return NoContent();
         }
 
         [HttpGet("count")]
