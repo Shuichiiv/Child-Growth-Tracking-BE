@@ -48,10 +48,16 @@ namespace Services_BE.Services
 
             return await _productRepository.CreateProductAsync(product);
         }
-
+        //thay vì xóa data thì chỉ cần set IsActive = false
         public async Task<bool> DeleteProductAsync(DeleteProductModel model)
         {
-            return await _productRepository.DeleteProductAsync(model.ProducListId);
+            var product = await _productRepository.GetProductByIdAsync(model.ProductListId);
+            if (product == null)
+            {
+                throw new ArgumentException("Không tìm thấy sản phẩm");
+            }
+            product.IsActive = false;
+            return await _productRepository.UpdateProductAsync(product);
         }
 
         public async Task<bool> UpdateProductAsync(UpdateProductModel model)

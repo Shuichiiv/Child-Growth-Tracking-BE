@@ -34,8 +34,8 @@ namespace Repositories_BE.Repositories
             {
                 return false;
             }
-
-            _context.Set<ProductList>().Remove(product);
+            product.IsActive = false;
+            _context.Set<ProductList>().Update(product);
             await _context.SaveChangesAsync();
             return true;
         }

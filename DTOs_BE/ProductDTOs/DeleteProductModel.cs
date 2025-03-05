@@ -8,6 +8,6 @@ namespace DTOs_BE.ProductDTOs
 {
     public class DeleteProductModel
     {
-        public Guid ProducListId { get; set; }
+        public Guid ProductListId { get; set; }
     }
 }
