@@ -27,7 +27,6 @@ namespace DTOs_BE.DoctorDTOs
     
     public class CreateReportDto
     {
-        public Guid ChildId { get; set; }
         public double Height { get; set; }
         public double Weight { get; set; }
         public DateTime Date { get; set; }

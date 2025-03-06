@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using DataObjects_BE;
 using DataObjects_BE.Entities;
+using DTOs_BE.DoctorDTOs;
 using Microsoft.EntityFrameworkCore;
 using Repositories_BE.Interfaces;
 
@@ -37,6 +38,20 @@ namespace Repositories_BE.Repositories
             await _context.Reports.AddAsync(newReport);
             await _context.SaveChangesAsync();
             return newReport;
+        }
+        public async Task<Report> CreateReportAsync2(Guid childId, CreateReportDto dto)
+        {
+            var report = new Report
+            {
+                ChildId = childId,
+                Height = dto.Height,
+                Weight = dto.Weight,
+                ReprotCreateDate = dto.Date
+            };
+        
+            _context.Reports.Add(report);
+            await _context.SaveChangesAsync();
+            return report;
         }
 
         public async Task<IEnumerable<Report>> GetReportsByChildIdAsync(Guid childId)

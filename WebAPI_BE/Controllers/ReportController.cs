@@ -59,11 +59,23 @@ namespace WebAPI_BE.Controllers
             if (!reports.Any()) return NotFound("Không có báo cáo nào.");
             return Ok(reports);
         }
+        
+        [HttpPost("{childId}")]
+        public async Task<IActionResult> CreateReport(Guid childId, [FromBody] CreateReportDto dto)
+        {
+            if (childId == Guid.Empty || dto.Height <= 0 || dto.Weight <= 0)
+            {
+                return BadRequest("Dữ liệu không hợp lệ.");
+            }
+        
+            var report = await _reportService.CreateReportAsync2(childId, dto);
+            return Ok(report);
+        }
 
         [HttpPost]
         public async Task<IActionResult> CreateReport([FromBody] CreateReportDto request)
         {
-            if (request.ChildId == Guid.Empty || request.Height <= 0 || request.Weight <= 0)
+            if (request.Height <= 0 || request.Weight <= 0)
             {
                 return BadRequest("Dữ liệu không hợp lệ.");
             }
