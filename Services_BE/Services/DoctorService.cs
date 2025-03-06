@@ -52,5 +52,33 @@ namespace Services_BE.Services
         {
             return await _doctorRepository.CountDoctorsAsync();
         }
+        public async Task<List<GetDoctorByIdForCustomerModel>> GetListDoctorsForCustomer()
+        {
+            try
+            {
+                var list = _doctorRepository.GetListDoctorsForCustomer();
+                if (list == null || !list.Any())
+                {
+                    throw new Exception("No doctors found");
+                }
+                List<GetDoctorByIdForCustomerModel> listModels = new List<GetDoctorByIdForCustomerModel>();
+                foreach (var d in list)
+                {
+                    var getdoctor = new GetDoctorByIdForCustomerModel()
+                    {
+                        DoctorId = d.DoctorId,
+                        AccountId = d.AccountId,
+                        FirstName = d.Account.FirstName,
+                        LastName = d.Account.LastName
+                    };
+                    listModels.Add(getdoctor);
+                }
+                return listModels;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
     }
 }
