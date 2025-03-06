@@ -45,6 +45,7 @@ namespace WebAPI_BE.Injection
             services.AddScoped<IFeedbackRepository, FeedbackRepository>();
             services.AddScoped<IRatingRepository, RatingRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<PaymentService>();
             
 
 
@@ -63,6 +64,7 @@ namespace WebAPI_BE.Injection
             services.AddScoped<IFeedbackService, FeedbackService>();
             services.AddScoped<IRatingService, RatingService>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IPaymentRepository, PaymentRepository>();
             return services;
         }
     }
