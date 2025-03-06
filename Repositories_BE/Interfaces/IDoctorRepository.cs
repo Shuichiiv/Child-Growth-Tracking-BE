@@ -15,6 +15,7 @@ namespace Repositories_BE.Interfaces
         Task<IEnumerable<DoctorDto>> GetDoctorsBySpecialtyAsync(string specialty);
         Task<bool> DeleteDoctorAsync(Guid accountId);
         Task<int> CountDoctorsAsync();
+        List<Doctor> GetListDoctorsForCustomer();
     }
 }
 

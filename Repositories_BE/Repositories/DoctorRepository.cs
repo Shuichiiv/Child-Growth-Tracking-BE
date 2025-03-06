@@ -161,6 +161,12 @@ namespace Repositories_BE.Repositories
             await _context.SaveChangesAsync();
             return true;
         }
+        public List<Doctor> GetListDoctorsForCustomer()
+        {
+            return _context.Doctors
+                .Include(d => d.Account)
+                .ToList<Doctor>();
+        }
 
         public async Task<int> CountDoctorsAsync()
         {
