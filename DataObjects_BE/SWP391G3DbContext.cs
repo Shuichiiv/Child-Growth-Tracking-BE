@@ -94,7 +94,7 @@ namespace DataObjects_BE
                 .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<ProductList>()
                 .Property(p => p.Price)
-                .HasPrecision(18, 4); // Thay đổi precision và scale phù hợp với yêu cầu của bạn
+                .HasPrecision(18,4); // Thay đổi precision và scale phù hợp với yêu cầu của bạn
             modelBuilder.Entity<Service>(entity =>
             {
                 entity.HasKey(e => e.ServiceId);
