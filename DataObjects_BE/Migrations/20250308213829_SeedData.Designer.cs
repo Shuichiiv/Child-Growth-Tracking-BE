@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataObjects_BE.Migrations
 {
     [DbContext(typeof(SWP391G3DbContext))]
-    [Migration("20250305143739_SeedData")]
+    [Migration("20250308213829_SeedData")]
     partial class SeedData
     {
         /// <inheritdoc />
@@ -281,9 +281,8 @@ namespace DataObjects_BE.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Amount")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("PaymentDate")
                         .HasColumnType("datetime2");
@@ -412,7 +411,6 @@ namespace DataObjects_BE.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ReportIsActive")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ReportMark")
@@ -420,7 +418,6 @@ namespace DataObjects_BE.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ReportName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ReprotCreateDate")

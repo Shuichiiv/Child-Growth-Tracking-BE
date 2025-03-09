@@ -16,6 +16,7 @@ namespace DataObjects_BE.Migrations
 
             var manager1 = Guid.NewGuid();
             var manager2 = Guid.NewGuid();
+            var manager3 = Guid.NewGuid();
 
             var parent1 = Guid.NewGuid();
             var parent2 = Guid.NewGuid();
@@ -53,6 +54,14 @@ namespace DataObjects_BE.Migrations
             var rating2 = Guid.NewGuid();
             var rating3 = Guid.NewGuid();
 
+            var appointment1 = Guid.NewGuid();
+            var appointment2 = Guid.NewGuid();
+            var appointment3 = Guid.NewGuid();
+
+            var reportProduct1 = Guid.NewGuid();
+            var reportProduct2 = Guid.NewGuid();
+            var reportProduct3 = Guid.NewGuid();
+
             // Chèn dữ liệu vào bảng Accounts
             migrationBuilder.InsertData(
                 table: "Accounts",
@@ -62,8 +71,9 @@ namespace DataObjects_BE.Migrations
                     { doctor1, "John", "Doe", "johndoe", "hashedpassword1", "johndoe@example.com", "123456789", "123 Main St", 2, DateTime.UtcNow, "image1.jpg", true },
                     { doctor2, "Jane", "Smith", "janesmith", "hashedpassword2", "janesmith@example.com", "987654321", "456 Oak St", 2, DateTime.UtcNow, "image2.jpg", true },
                     { doctor3, "Alice", "Johnson", "alicejohnson", "hashedpassword3", "alicejohnson@example.com", "1122334455", "789 Pine St", 2, DateTime.UtcNow, "image3.jpg", true },
-                    { manager1, "Robert", "Williams", "robertw", "hashedpassword7", "robert@example.com", "2233445566", "789 Birch St", 3, DateTime.UtcNow, "image7.jpg", true },
-                    { manager2, "Lisa", "White", "lisaw", "hashedpassword8", "lisa@example.com", "3344556677", "951 Cedar St", 3, DateTime.UtcNow, "image8.jpg", true },
+                    { manager1, "Robert", "Williams", "robertw", "hashedpassword7", "robert@example.com", "2233445566", "789 Birch St", 0, DateTime.UtcNow, "image7.jpg", true },
+                    { manager2, "Lisa", "White", "lisaw", "hashedpassword8", "lisa@example.com", "3344556677", "951 Cedar St", 0, DateTime.UtcNow, "image8.jpg", true },
+                    { manager3, "Ad", "min", "admin", "AQAAAAIAAYagAAAAELObGZZG6vqAQaRa1m71QSDs2h1pUHdryohuqFT/OV71Zbq997QA4CJP6i4zzFHeOw==", "admin@root.com", "1234567890", "123 Main St", 0, DateTime.UtcNow, "https://example.com/johndoe.jpg", true },
                     { parent1, "Michael", "Brown", "michaelbrown", "hashedpassword4", "michaelbrown@example.com", "555666777", "159 Maple St", 1, DateTime.UtcNow, "image4.jpg", true },
                     { parent2, "Emily", "Davis", "emilydavis", "hashedpassword5", "emilydavis@example.com", "999888777", "852 Walnut St", 1, DateTime.UtcNow, "image5.jpg", true },
                     { parent3, "Chris", "Evans", "chrisevans", "hashedpassword6", "chrisevans@example.com", "123789456", "951 Birch St", 1, DateTime.UtcNow, "image6.jpg", true }
@@ -103,7 +113,7 @@ namespace DataObjects_BE.Migrations
 
             // Chèn dữ liệu vào bảng Children
             migrationBuilder.InsertData(
-                table: "Children",
+                table: "Childs",
                 columns: new[] { "ChildId", "ParentId", "FirstName", "LastName", "Gender", "DOB", "DateCreateAt", "DateUpdateAt", "ImageUrl" },
                 values: new object[,]
                 {
@@ -129,9 +139,9 @@ namespace DataObjects_BE.Migrations
                 columns: new[] { "ServiceOrderId", "ParentId", "ServiceId", "Quantity", "UnitPrice", "TotalPrice", "CreateDate", "EndDate" },
                 values: new object[,]
                 {
-                    { serviceOrder1, parent1, service1, 1, 100f, 100f, DateTime.UtcNow, DateTime.UtcNow.AddDays(1) },
-                    { serviceOrder2, parent2, service2, 2, 200f, 400f, DateTime.UtcNow, DateTime.UtcNow.AddDays(2) },
-                    { serviceOrder3, parent3, service3, 3, 300f, 900f, DateTime.UtcNow, DateTime.UtcNow.AddDays(3) }
+                    { serviceOrder1, parent1, 1, 1, 100f, 100f, DateTime.UtcNow, DateTime.UtcNow.AddDays(1) },
+                    { serviceOrder2, parent2, 2, 2, 200f, 400f, DateTime.UtcNow, DateTime.UtcNow.AddDays(2) },
+                    { serviceOrder3, parent3, 3, 3, 300f, 900f, DateTime.UtcNow, DateTime.UtcNow.AddDays(3) }
                 });
 
             // Chèn dữ liệu vào bảng Reports
@@ -140,9 +150,9 @@ namespace DataObjects_BE.Migrations
                 columns: new[] { "ReportId", "ChildId", "ReportMark", "ReportContent", "ReprotCreateDate", "ReportIsActive", "ReportName", "Height", "Weight", "BMI" },
                 values: new object[,]
                 {
-                    { report1, child1, "A", "Content 1", DateTime.UtcNow, true, "Report 1", 120.5, 30.5, 18.5 },
-                    { report2, child2, "B", "Content 2", DateTime.UtcNow, true, "Report 2", 130.5, 35.5, 20.5 },
-                    { report3, child3, "C", "Content 3", DateTime.UtcNow, true, "Report 3", 140.5, 40.5, 22.5 }
+                    { report1, child1, "A", "Content 1", DateTime.UtcNow, "true", "Report 1", 120.5, 30.5, 18.5 },
+                    { report2, child2, "B", "Content 2", DateTime.UtcNow, "true", "Report 2", 130.5, 35.5, 20.5 },
+                    { report3, child3, "C", "Content 3", DateTime.UtcNow, "true", "Report 3", 140.5, 40.5, 22.5 }
                 });
 
             // Chèn dữ liệu vào bảng Payments
@@ -151,9 +161,9 @@ namespace DataObjects_BE.Migrations
                 columns: new[] { "PaymentId", "ServiceOrderId", "PaymentMethod", "PaymentStatus", "PaymentDate", "Amount" },
                 values: new object[,]
                 {
-                    { payment1, serviceOrder1, "Credit Card", 1, DateTime.UtcNow, 100m },
-                    { payment2, serviceOrder2, "PayPal", 2, DateTime.UtcNow, 200m },
-                    { payment3, serviceOrder3, "Bank Transfer", 3, DateTime.UtcNow, 300m }
+                    { payment1, serviceOrder1, "Credit Card", 1, DateTime.UtcNow, "100.0000" },
+                    { payment2, serviceOrder2, "PayPal", 2, DateTime.UtcNow, "200.0000" },
+                    { payment3, serviceOrder3, "Bank Transfer", 3, DateTime.UtcNow, "300.0000" }
                 });
 
             // Chèn dữ liệu vào bảng Feedbacks
@@ -170,12 +180,12 @@ namespace DataObjects_BE.Migrations
             // Chèn dữ liệu vào bảng ProductLists
             migrationBuilder.InsertData(
                 table: "ProductLists",
-                columns: new[] { "ProductListId", "ReportId", "ProductName", "ProductDescription", "Price", "MinAge", "MaxAge", "SafetyFeature", "Rating", "RecommendedBy", "ImageUrl", "Brand", "IsActive" },
+                columns: new[] { "ProductListId", "ProductName", "ProductDescription", "Price", "MinAge", "MaxAge", "SafetyFeature", "Rating", "RecommendedBy", "ImageUrl", "Brand", "IsActive", "ProductType" },
                 values: new object[,]
                 {
-                    { product1, report1, "Product 1", "Description 1", 100m, 3, 5, "Feature 1", 4.5, "Recommender 1", "url1", "Brand 1", true },
-                    { product2, report2, "Product 2", "Description 2", 200m, 6, 8, "Feature 2", 4.0, "Recommender 2", "url2", "Brand 2", true },
-                    { product3, report3, "Product 3", "Description 3", 300m, 9, 12, "Feature 3", 3.5, "Recommender 3", "url3", "Brand 3", true }
+                    { product1, "Product 1", "Description 1", 1000.0000, "3", "5", "Feature 1", 4.5, "Recommender 1", "url1", "Brand 1", true,"Balanced" },
+                    { product2, "Product 2", "Description 2", 2000.0000, "6", "8", "Feature 2", 4.0, "Recommender 2", "url2", "Brand 2", true, "Balanced" },
+                    { product3, "Product 3", "Description 3", 3000.0000, "9", "12", "Feature 3", 3.5, "Recommender 3", "url3", "Brand 3", true, "Balanced" }
                 });
 
             // Chèn dữ liệu vào bảng Ratings
@@ -188,6 +198,29 @@ namespace DataObjects_BE.Migrations
                     { rating2, feedback2, parent2, 4.0, DateTime.UtcNow, true },
                     { rating3, feedback3, parent3, 3.5, DateTime.UtcNow, true }
                 });
+
+            // Chèn dữ liệu vào bảng Appointments
+            migrationBuilder.InsertData(
+                table: "Appointments",
+                columns: new[] { "AppointmentId", "DoctorId", "ParentId", "ChildId", "ScheduledTime", "Status", "CreatedAt", "UpdatedAt" },
+                values: new object[,]
+                {
+                    { appointment1, doctor1, parent1, child1, DateTime.UtcNow.AddDays(1), 1, DateTime.UtcNow, null },
+                    { appointment2, doctor2, parent2, child2, DateTime.UtcNow.AddDays(2), 1, DateTime.UtcNow, null },
+                    { appointment3, doctor3, parent3, child3, DateTime.UtcNow.AddDays(3), 1, DateTime.UtcNow, null }
+                });
+
+            // Chèn dữ liệu vào bảng ReportProduct
+            migrationBuilder.InsertData(
+                table: "ReportProducts",
+                columns: new[] { "ReportProductId", "ReportId", "ProductListId"},
+                values: new object[,]
+                {
+                    { reportProduct1, report1, product1},
+                    { reportProduct2, report2, product2},
+                    { reportProduct3, report3, product3}
+                }); 
+
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -204,6 +237,8 @@ namespace DataObjects_BE.Migrations
             migrationBuilder.Sql("DELETE FROM Feedbacks;");
             migrationBuilder.Sql("DELETE FROM ProductLists;");
             migrationBuilder.Sql("DELETE FROM Ratings;");
+            migrationBuilder.Sql("DELETE FROM Appointments;");
         }
     }
 }
+
