@@ -141,9 +141,9 @@ namespace Services_BE.Services
 
             report.Height = request.Height;
             report.Weight = request.Weight;
-            report.BMI = request.Weight / Math.Pow(request.Height / 100, 2);
             report.ReprotCreateDate = request.Date;
-            report.ReportMark = GetBMICategory(request.Weight / 100 / ((request.Height / 100) * (request.Height / 100)));
+            report.BMI = request.Weight / Math.Pow(request.Height / 100, 2);
+            report.ReportMark = GetBMICategory(report.BMI);
 
             return await _reportRepository.UpdateReportAsync(report);           
         }
