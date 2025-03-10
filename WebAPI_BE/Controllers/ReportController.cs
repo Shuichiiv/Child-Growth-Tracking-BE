@@ -91,6 +91,56 @@ namespace WebAPI_BE.Controllers
             if (!updated) return NotFound("Không tìm thấy báo cáo để cập nhật.");
             return Ok("Cập nhật thành công.");
         }
+        [HttpGet("inactive")]
+        public async Task<IActionResult> GetPendingReportsInactive()
+        {
+            var reports = await _reportService.GetReportsByStatusAsync("Inactive");
+            if (reports == null || !reports.Any())
+            {
+                return NotFound("Không có báo cáo nào ở trạng thái Inactive.");
+            }
+
+            return Ok(reports);
+        }
+        
+        [HttpGet("pending")]
+        public async Task<IActionResult> GetPendingReportsPending()
+        {
+            var reports = await _reportService.GetReportsByStatusAsync("Pending");
+            if (reports == null || !reports.Any())
+            {
+                return NotFound("Không có báo cáo nào ở trạng thái Pending.");
+            }
+
+            return Ok(reports);
+        }
+        [HttpGet("active")]
+        public async Task<IActionResult> GetPendingReportsActive()
+        {
+            var reports = await _reportService.GetReportsByStatusAsync("Active");
+            if (reports == null || !reports.Any())
+            {
+                return NotFound("Không có báo cáo nào ở trạng thái Active.");
+            }
+
+            return Ok(reports);
+        }
+        
+        [HttpPut("{reportId}/status")]
+        public async Task<IActionResult> UpdateReportStatus(Guid reportId, [FromBody] string newStatus)
+        {
+            if (reportId == Guid.Empty || string.IsNullOrWhiteSpace(newStatus))
+            {
+                return BadRequest("Dữ liệu không hợp lệ.");
+            }
+
+            var updated = await _reportService.UpdateReportStatusAsync(reportId, newStatus);
+            if (!updated) return NotFound("Không tìm thấy báo cáo để cập nhật trạng thái.");
+
+            return Ok("Cập nhật trạng thái thành công.");
+        }
+
+
     }
     
 }

@@ -100,6 +100,23 @@ namespace Repositories_BE.Repositories
             throw new NotImplementedException();
         }
 
+        public async Task<IEnumerable<ReportDto>> GetReportsByStatusAsync(string status)
+        {
+            return await _context.Reports
+                .Where(r => r.ReportIsActive == status)
+                .Select(r => new ReportDto
+                {
+                    ReportId = r.ReportId,
+                    ChildId = r.ChildId,
+                    Height = r.Height,
+                    Weight = r.Weight,
+                    BMI = r.BMI,
+                    ReportIsActive = r.ReportIsActive,
+                })
+                .ToListAsync();
+        }
+
+
         public Report GetByID(object id)
         {
             throw new NotImplementedException();
