@@ -8,7 +8,7 @@ namespace WebAPI_BE.Controllers
 {
     [Route("api/Parent")]
     [ApiController]
-    [Authorize(Roles = "User,Admin")]
+    
     public class ParentController : ControllerBase
     {
         private readonly IParentService _parentService;
@@ -29,6 +29,7 @@ namespace WebAPI_BE.Controllers
         }
         
         [HttpPut("children/{childId}")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> UpdateChild(Guid childId, [FromBody] ChildDto childDto)
         {
             var result = await _childService.UpdateChildAsync(childId, childDto);
@@ -36,6 +37,7 @@ namespace WebAPI_BE.Controllers
             return Ok("Thông tin trẻ đã được cập nhật.");
         }
         [HttpGet("{appointmentId}")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> GetAppointmentById(Guid appointmentId)
         {
             var appointment = await _appointmentService.GetAppointmentByIdAsync(appointmentId);
@@ -44,6 +46,7 @@ namespace WebAPI_BE.Controllers
         }
         
         [HttpGet("search")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> SearchChildren([FromQuery] Guid parentId, [FromQuery] string keyword)
         {
             if (parentId == Guid.Empty)
@@ -55,6 +58,7 @@ namespace WebAPI_BE.Controllers
             return Ok(children);
         }
         [HttpPost("appointments/create")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> CreateAppointment([FromBody] AppointmentCreateDto appointmentDto)
         {
             var result = await _appointmentService.CreateAppointmentAsync(appointmentDto);
@@ -62,6 +66,7 @@ namespace WebAPI_BE.Controllers
             return Ok("Lịch hẹn đã được tạo thành công.");
         }
         [HttpGet("{childId}/parent/{parentId}")]
+        [Authorize(Roles = "User,Admin,Doctor")]
         public async Task<IActionResult> GetChildByParent(Guid childId, Guid parentId)
         {
             var child = await _childService.GetChildByIdAndParentAsync(childId, parentId);
@@ -72,6 +77,7 @@ namespace WebAPI_BE.Controllers
             return Ok(child);
         }
         [HttpGet("child/{childId}")]
+        [Authorize(Roles = "User,Admin,Doctor")]
         public async Task<IActionResult> GetReportsByChild(Guid childId)
         {
             if (childId == Guid.Empty)
@@ -84,6 +90,7 @@ namespace WebAPI_BE.Controllers
         }
         
         [HttpGet("parents/{parentId}/children")]
+        [Authorize(Roles = "User,Admin,Doctor")]
         public async Task<IActionResult> GetAllchildsByParentId(Guid parentId)
         {
             var children = await _parentService.GetAllChildrenByParentIdAsync(parentId);
@@ -92,6 +99,7 @@ namespace WebAPI_BE.Controllers
         }
         
         [HttpGet("parents/{parentId}")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> GetParentById(Guid parentId)
         {
             var parent = await _parentService.GetParentByIdAsync(parentId);
@@ -100,6 +108,7 @@ namespace WebAPI_BE.Controllers
         }
         
         [HttpPost("children")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> CreateChild([FromBody] ChildDtoCreate childDto)
         {
             var result = await _childService.CreateChildAsync(childDto);
@@ -108,6 +117,7 @@ namespace WebAPI_BE.Controllers
         }
         
         [HttpGet("by-accountId/{accountId}")]
+        [Authorize(Roles = "User,Admin,Doctor")]
         public async Task<IActionResult> GetParentByAccountId(Guid accountId)
         {
             var parent = await _parentService.GetParentByAccountId(accountId);
@@ -121,6 +131,7 @@ namespace WebAPI_BE.Controllers
         }
         
         [HttpPost("parents")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> CreateParent([FromBody] ParentDto parentDto)
         {
             var result = await _parentService.CreateParentAsync(parentDto);
@@ -129,6 +140,7 @@ namespace WebAPI_BE.Controllers
         }
 
         [HttpPut("parents/{parentId}")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> UpdateParent(Guid parentId, [FromBody] ParentDto parentDto)
         {
             var result = await _parentService.UpdateParentAsync(parentId, parentDto);
@@ -137,6 +149,7 @@ namespace WebAPI_BE.Controllers
         }
 
         [HttpDelete("parents/{parentId}")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> DeleteParent(Guid parentId)
         {
             var result = await _parentService.DeleteParentAsync(parentId);
