@@ -75,7 +75,7 @@ namespace Services_BE.Services
                 ReportIsActive = "Inactive",
                 ReportName = "BMI Report",
                 ReportContent = $"BMI calculated on {reportDto.ReportCreateDate:yyyy-MM-dd}",
-                ReportMark = GetBMICategory(reportDto.Weight / ((reportDto.Height / 100) * (reportDto.Height / 100))) // Thêm dòng này
+                ReportMark = GetBMICategory(reportDto.Weight / ((reportDto.Height / 100) * (reportDto.Height / 100)))
             };
 
             var createdReport = await _reportRepository.CreateBMIReportAsync(report);
@@ -143,8 +143,9 @@ namespace Services_BE.Services
             report.Weight = request.Weight;
             report.BMI = request.Weight / Math.Pow(request.Height / 100, 2);
             report.ReprotCreateDate = request.Date;
+            report.ReportMark = GetBMICategory(request.Weight / 100 / ((request.Height / 100) * (request.Height / 100)));
 
-            return await _reportRepository.UpdateReportAsync(report);
+            return await _reportRepository.UpdateReportAsync(report);           
         }
         public async Task<IEnumerable<ReportDto>> GetReportsByStatusAsync(string status)
         {
