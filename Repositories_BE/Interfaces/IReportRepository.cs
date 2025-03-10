@@ -11,6 +11,7 @@ namespace Repositories_BE.Interfaces
         Task<Report> CreateReportAsync(Report report);
         Task<Report> CreateReportAsync2(Guid childId, CreateReportDto dto);
         Task<bool> UpdateReportAsync(Report report);
+        Task<IEnumerable<ReportDto>> GetReportsByStatusAsync(string status);
     }
 
 }
