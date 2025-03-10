@@ -13,5 +13,9 @@ namespace Services_BE.Interfaces
         Task<bool> UpdateReportAsync(Guid reportId, UpdateReportDto request);
         
         Task<Report> CreateReportAsync2(Guid childId, CreateReportDto dto);
+        
+        Task<IEnumerable<ReportDto>> GetReportsByStatusAsync(string status);
+        Task<bool> UpdateReportStatusAsync(Guid reportId, string newStatus);
+
     }
 }
