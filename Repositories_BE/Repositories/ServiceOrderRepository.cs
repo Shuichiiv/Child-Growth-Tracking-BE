@@ -43,7 +43,34 @@ namespace Repositories_BE.Repositories
                 .OrderByDescending(o => o.CreateDate)
                 .ToList();
         }
+        
+        public async Task AddAsync(ServiceOrder serviceOrder)
+        {
+            await _context.ServiceOrders.AddAsync(serviceOrder);
+            await _context.SaveChangesAsync();
+        }
+        public async Task<ServiceOrder> CreateServiceOrderAsync(float totalAmount)
+        {
+            var order = new ServiceOrder
+            {
+                TotalPrice = totalAmount,
+                Status = "Pending"
+            };
 
+            _context.ServiceOrders.Add(order);
+            await _context.SaveChangesAsync();
+            return order;
+        }
+
+        public async Task<bool> UpdateServiceOrderStatusAsync(Guid orderId, int status)
+        {
+            var order = await _context.ServiceOrders.FindAsync(orderId);
+            if (order == null) return false;
+
+            order.Status = status.ToString();
+            await _context.SaveChangesAsync();
+            return true;
+        }
 
     }
 }

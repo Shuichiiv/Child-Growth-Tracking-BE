@@ -17,5 +17,9 @@ namespace Repositories_BE.Repositories
             _context = context;
         }
 
+        public async Task<Service> GetByIdAsync(int serviceId)
+        {
+            return await _context.Services.FindAsync(serviceId);
+        }
     }
 }
