@@ -17,6 +17,7 @@ namespace DTOs_BE.ServiceOrderDTOs
         public int Quantity { get; set; }
         public float UnitPrice { get; set; }
         public float TotalPrice { get; set; }
+        public string Status { get; set; }
         public DateTime CreateDate { get; set; }
         public DateTime EndDate { get; set; }
         public virtual Parent Parent { get; set; }

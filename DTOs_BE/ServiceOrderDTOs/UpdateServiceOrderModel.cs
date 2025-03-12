@@ -9,5 +9,6 @@ namespace DTOs_BE.ServiceOrderDTOs
     public class UpdateServiceOrderModel
     {
         public int Quantity { get; set; }
+        /*public string Status { get; set; }*/
     }
 }

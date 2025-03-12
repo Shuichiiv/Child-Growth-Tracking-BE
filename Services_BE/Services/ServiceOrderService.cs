@@ -114,8 +114,8 @@ namespace Services_BE.Services
                     Quantity = model.Quantity,
                     UnitPrice = price,
                     TotalPrice = model.Quantity * price,
-                    CreateDate = _currentTime.GetCurrentTime().Date,
-                    EndDate = _currentTime.GetCurrentTime().Date.AddDays(serviceExisting.ServiceDuration*model.Quantity),
+                    CreateDate = _currentTime.GetCurrentTime(),
+                    EndDate = _currentTime.GetCurrentTime().AddDays(serviceExisting.ServiceDuration*model.Quantity),
                 };
                 
                 await _serviceOrderRepository.AddAsync(newOrder);
@@ -142,7 +142,7 @@ namespace Services_BE.Services
                 {
                     orderExisting.Quantity = orderExisting.Quantity + model.Quantity;
                     orderExisting.TotalPrice = orderExisting.UnitPrice * orderExisting.Quantity;
-                    orderExisting.EndDate = _currentTime.GetCurrentTime().Date.AddDays(orderExisting.Service.ServiceDuration * model.Quantity);
+                    orderExisting.EndDate = _currentTime.GetCurrentTime().AddDays(orderExisting.Service.ServiceDuration * model.Quantity);
                 }
                 else
                 {
