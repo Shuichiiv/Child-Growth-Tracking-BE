@@ -127,9 +127,19 @@ namespace WebAPI_BE.Controllers
         [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> CreateChild([FromBody] ChildDtoCreate childDto)
         {
-            var result = await _childService.CreateChildAsync(childDto);
-            if (!result) return BadRequest("Không thể tạo trẻ.");
-            return Ok("Trẻ đã được tạo.");
+            try
+            {
+                var result = await _childService.CreateChildAsync(childDto);
+                return Ok("Trẻ đã được tạo.");
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message); // Trả về lỗi cụ thể từ service
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Có lỗi xảy ra trong quá trình xử lý.");
+            }
         }
         
         [HttpGet("by-accountId/{accountId}")]
