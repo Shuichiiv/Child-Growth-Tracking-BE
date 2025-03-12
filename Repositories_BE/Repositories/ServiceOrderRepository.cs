@@ -71,6 +71,17 @@ namespace Repositories_BE.Repositories
             await _context.SaveChangesAsync();
             return true;
         }
+        public async Task<List<ServiceOrder>> GetExpiredOrdersAsync()
+        {
+            return await _context.ServiceOrders
+                .Where(o => o.Status == "Complete" && o.EndDate <= DateTime.UtcNow)
+                .ToListAsync();
+        }
+        public async Task UpdateOrdersAsync(List<ServiceOrder> orders)
+        {
+            _context.ServiceOrders.UpdateRange(orders);
+            await _context.SaveChangesAsync();
+        }
 
     }
 }

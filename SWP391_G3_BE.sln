@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DTOs_BE", "DTOs_BE\DTOs_BE.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPI_BE", "WebAPI_BE\WebAPI_BE.csproj", "{CCB08658-DD13-48DC-BDB4-9E0205632A0A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BE.Test", "BE.Test\BE.Test.csproj", "{0D17FF43-B821-4FD0-A1AE-D2C8DCD1C5E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BE.Test", "BE.Test\BE.Test.csproj", "{0D17FF43-B821-4FD0-A1AE-D2C8DCD1C5E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -11,6 +11,7 @@ namespace DTOs_BE.ServiceOrderDTOs
         public Guid ParentId { get; set; }
         public int ServiceId { get; set; }
         public int Quantity { get; set; }
+        public string Status { get; set; }
       //  public float UnitPrice { get; set; }
        // public float TotalPrice { get; set; }
     }
