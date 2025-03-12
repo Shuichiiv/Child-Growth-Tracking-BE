@@ -15,6 +15,7 @@ namespace Services_BE.Interfaces
         Task<bool> UpdateProductAsync(UpdateProductModel model);
         Task<List<ProductResponseDto>> GetAllProductAsync();
         Task<ProductResponseDto> GetProductByIdAsync(Guid productListId);
+        Task<List<ProductResponseDto>> GetProductsByTypeAsync(string productType);
 
 
     }

@@ -1,6 +1,7 @@
 using DataObjects_BE.Entities;
 using DTOs_BE.UserDTOs;
 using Repositories_BE.Interfaces;
+using Repositories_BE.Repositories;
 using Services_BE.Interfaces;
 
 namespace Services_BE.Services;
@@ -24,6 +25,16 @@ public class ChildService : IChildService
         {
             throw new Exception("An error occurred while getting reports", e);
         }
+    }
+    
+    public async Task<ParentDto2> GetParentByChildIdAsync1(Guid childId)
+    {
+        return await _childRepository.GetParentByChildIdAsync1(childId);
+    }
+        
+    public async Task<ChildDto> GetChildByIdAsync1(Guid childId)
+    {
+        return await _childRepository.GetChildByIdAsync1(childId);
     }
 
     public async Task<Child> GetChildByIdAsync(Guid childId)

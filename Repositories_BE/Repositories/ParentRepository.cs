@@ -13,10 +13,13 @@ namespace Repositories_BE.Repositories
         {
             _context = context;
         }
-
+        
+        
         public async Task<IEnumerable<Parent>> GetAllParentsAsync()
         {
-            return await _context.Parents.ToListAsync();
+            return await _context.Parents
+                .Include(p => p.Account)
+                .ToListAsync();
         }
 
         public async Task<Parent> GetParentByIdAsync(Guid parentId)

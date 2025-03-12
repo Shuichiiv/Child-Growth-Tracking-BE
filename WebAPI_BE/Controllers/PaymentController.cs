@@ -76,12 +76,14 @@ namespace PaymentIntegration.Controllers
             }
 
             //Tính tổng tiền của đơn hàng
-            decimal totalAmount = serviceOrders.Sum(so => (decimal)so.TotalPrice);
+            //decimal totalAmount = serviceOrders.Sum(so => (decimal)so.TotalPrice);
+            decimal totalAmount = serviceOrders.Sum(so => (decimal)so.Service.ServicePrice * so.Quantity);
+
 
             //Tạo danh sách các dịch vụ để gửi lên PayOS
             var serviceList = serviceOrders.Select(so => new ItemData(
                 name: so.Service.ServiceName,
-                quantity: so.Quantity,
+                quantity: 1,
                 price: (int)so.TotalPrice
             )).ToList();
 
