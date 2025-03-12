@@ -116,56 +116,5 @@ namespace Repositories_BE.Repositories
                 .ToListAsync();
         }
 
-
-        /*public Report GetByID(object id)
-        {
-            throw new NotImplementedException();
-        }*/
-
-        public void Insert(Report entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Delete(object id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Delete(Report entityToDelete)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Update(object id, Report entityToUpdate)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Update(Report entityToUpdate)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Save()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Report> GetAsync(Expression<Func<Report, bool>> predicate)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task AddAsync(Report entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<int> SaveChangesAsync()
-        {
-            throw new NotImplementedException();
-        }
-        
     }
 }
