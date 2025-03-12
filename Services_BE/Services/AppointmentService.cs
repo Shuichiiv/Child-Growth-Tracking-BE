@@ -74,23 +74,22 @@ namespace Services_BE.Services
 
         public async Task<bool> CreateAppointmentAsync(AppointmentCreateDto appointmentDto)
         {
+            if (appointmentDto == null) throw new ArgumentNullException(nameof(appointmentDto));
+
             try
             {
                 var appointment = _mapper.Map<Appointment>(appointmentDto);
-                
+
                 if (appointmentDto.ScheduledTime == default)
                 {
                     throw new Exception("ScheduledTime is required.");
                 }
-                
-                else if (appointmentDto.ScheduledTime < DateTime.Now)
+                else if (appointmentDto.ScheduledTime < DateTime.UtcNow)
                 {
-                    throw new Exception("Thoi gian tao trong qua khu, khong the tao");
+                    throw new Exception("Thời gian tạo trong quá khứ, không thể tạo lịch hẹn.");
                 }
-                {
-                    appointment.ScheduledTime = appointmentDto.ScheduledTime;
-                }
-                
+
+                appointment.ScheduledTime = appointmentDto.ScheduledTime;
                 appointment.CreatedAt = DateTime.UtcNow;
 
                 await _appointmentRepository.AddAppointmentAsync(appointment);
@@ -98,7 +97,7 @@ namespace Services_BE.Services
             }
             catch (Exception e)
             {
-                throw new Exception("An error occurred while adding appointments", e);
+                throw new Exception($"Lỗi khi tạo lịch hẹn: {e.Message}", e);
             }
         }
 

@@ -47,9 +47,17 @@ namespace WebAPI_BE.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAppointment([FromBody] AppointmentCreateDto appointmentDto)
         {
-            var result = await _appointmentService.CreateAppointmentAsync(appointmentDto);
-            if (!result) return BadRequest("Không thể tạo lịch hẹn.");
-            return Ok("Lịch hẹn đã được tạo thành công.");
+            try
+            {
+                var result = await _appointmentService.CreateAppointmentAsync(appointmentDto);
+                if (!result) return BadRequest("Không thể tạo lịch hẹn.");
+        
+                return Ok("Lịch hẹn đã được tạo thành công.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
         }
 
         [HttpPut("{appointmentId}")]
