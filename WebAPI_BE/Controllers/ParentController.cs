@@ -124,7 +124,7 @@ namespace WebAPI_BE.Controllers
         }
         
         [HttpPost("children")]
-        //[Authorize(Roles = "User,Admin")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> CreateChild([FromBody] ChildDtoCreate childDto)
         {
             try

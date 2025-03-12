@@ -97,13 +97,26 @@ public class ChildService : IChildService
     {
         try
         {
+            DateTime today = DateTime.UtcNow;
+            
+            int age = today.Year - childDto.DOB.Year;
+            
+            if (childDto.DOB > today.AddYears(-age))
+            {
+                age--;
+            }
+            
+            if (age < 1 || age > 18)
+            {
+                throw new ArgumentException("Trẻ phải có độ tuổi từ 1 đến 18.");
+            }
             var child = await _childRepository.GetChildByIdAsync(childId);
             if (child == null) return false;
 
             child.FirstName = childDto.FirstName;
             child.LastName = childDto.LastName;
             child.Gender = childDto.Gender;
-            child.DOB = childDto.DOB;
+            child.DOB = DateTime.SpecifyKind(childDto.DOB, DateTimeKind.Utc);
             child.DateUpdateAt = DateTime.UtcNow;
             child.ImageUrl = childDto.ImageUrl;
 

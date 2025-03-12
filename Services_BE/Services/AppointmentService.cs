@@ -100,9 +100,7 @@ namespace Services_BE.Services
                 throw new Exception($"Lỗi khi tạo lịch hẹn: {e.Message}", e);
             }
         }
-
-
-
+        
         public async Task<bool> UpdateAppointmentAsync(Guid appointmentId, AppointmentUpdateDto appointmentDto)
         {
             try
