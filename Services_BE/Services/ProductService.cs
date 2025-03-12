@@ -162,14 +162,14 @@ namespace Services_BE.Services
     }
     public static class ProductTypes
     {
-        public const string SeverelyUnderweight = "SeverelyUnderweight";
-        public const string ModeratelyUnderweight = "ModeratelyUnderweight";
-        public const string MildlyUnderweight = "MildlyUnderweight";
-        public const string NormalWeight = "NormalWeight";
-        public const string Overweight = "Overweight";
-        public const string ObeseClassI = "ObeseClassI";
-        public const string ObeseClassII = "ObeseClassII";
-        public const string ObeseClassIII = "ObeseClassIII";
+        public const string SeverelyUnderweight = "Gầy độ III (Rất gầy) - Nguy cơ cao";
+        public const string ModeratelyUnderweight = "Gầy độ II - Nguy cơ vừa";
+        public const string MildlyUnderweight = "Gầy độ I - Nguy cơ thấp";
+        public const string NormalWeight = "Cân nặng bình thường - Bình thường";
+        public const string Overweight = "Thừa cân - Nguy cơ tăng nhẹ";
+        public const string ObeseClassI = "Béo phì độ I - Nguy cơ trung bình";
+        public const string ObeseClassII = "Béo phì độ II - Nguy cơ cao";
+        public const string ObeseClassIII = "Béo phì độ III - Nguy cơ rất cao";
 
         public static readonly HashSet<string> All = new HashSet<string>
         {
