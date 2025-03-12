@@ -1,4 +1,6 @@
 using DataObjects_BE.Entities;
+using DTOs_BE.UserDTOs;
+using Repositories_BE.Repositories;
 
 namespace Repositories_BE.Interfaces
 {
@@ -11,5 +13,9 @@ namespace Repositories_BE.Interfaces
         Task<bool> DeleteChildAsync(Guid childId);
         Task<IEnumerable<Child>> SearchChildrenAsync(Guid parentId, string keyword);
         Task<Child> GetChildByIdAndParentAsync(Guid childId, Guid parentId);
+        
+        Task<ParentDto2> GetParentByChildIdAsync1(Guid childId);
+        Task<ChildDto> GetChildByIdAsync1(Guid childId);
+        
     }
 }

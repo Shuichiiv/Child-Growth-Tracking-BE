@@ -1,5 +1,7 @@
 using DataObjects_BE.Entities;
 using DTOs_BE.DoctorDTOs;
+using DTOs_BE.UserDTOs;
+using ParentDto = Services_BE.Services.ParentDto;
 
 namespace Services_BE.Interfaces
 {
@@ -16,6 +18,12 @@ namespace Services_BE.Interfaces
         
         Task<IEnumerable<ReportDto>> GetReportsByStatusAsync(string status);
         Task<bool> UpdateReportStatusAsync(Guid reportId, string newStatus);
+        
+        Task<Account> GetParentByChildIdAsync(Guid childId);
+        
+        Task<ChildDto> GetChildInfoByIdAsync(Guid childId);
+        
+        Task<List<ParentDto>> GetAllParentsAsync();
 
     }
 }

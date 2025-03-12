@@ -37,6 +37,16 @@ public class ParentService :IParentService
         }
     }
 
+    public Task<bool> CreateParentAsync(DTOs_BE.UserDTOs.ParentDto parentDto)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> UpdateParentAsync(Guid parentId, DTOs_BE.UserDTOs.ParentDto parentDto)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<bool> CreateParentAsync(ParentDto parentDto)
     {
         try
