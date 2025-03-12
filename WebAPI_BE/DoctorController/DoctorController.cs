@@ -17,7 +17,7 @@ namespace WebAPI_BE.DoctorController
         {
             _doctorService = doctorService;
         }
-        [Authorize(Roles = "Doctor,Parent")]
+        [Authorize(Roles = "Doctor,Parent,User,Manager")]
         [HttpGet("get-all")]
         public async Task<IActionResult> GetAllDoctors()
         {

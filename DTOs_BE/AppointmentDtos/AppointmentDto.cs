@@ -18,8 +18,9 @@ namespace DTOs_BE.AppointmentDtos
         public Guid DoctorId { get; set; }
         public Guid ParentId { get; set; }
         public Guid ChildId { get; set; }
-        public DateTime AppointmentDate { get; set; }
         public string Status { get; set; } = "Pending";
+        public DateTime AppointmentDate { get; set; } // Ngày hẹn thực tế
+        public DateTime CreatedAt { get; set; } // Ngày tạo do người dùng nhập
     }
     
     public class AppointmentUpdateDto

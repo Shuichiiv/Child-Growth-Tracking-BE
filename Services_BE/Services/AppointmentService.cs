@@ -77,6 +77,16 @@ namespace Services_BE.Services
             try
             {
                 var appointment = _mapper.Map<Appointment>(appointmentDto);
+                
+                if (appointmentDto.CreatedAt == default)
+                {
+                    appointment.CreatedAt = DateTime.UtcNow;
+                }
+                else
+                {
+                    appointment.CreatedAt = appointmentDto.CreatedAt;
+                }
+
                 await _appointmentRepository.AddAppointmentAsync(appointment);
                 return true;
             }
@@ -84,8 +94,8 @@ namespace Services_BE.Services
             {
                 throw new Exception("An error occurred while adding appointments", e);
             }
-           
         }
+
 
         public async Task<bool> UpdateAppointmentAsync(Guid appointmentId, AppointmentUpdateDto appointmentDto)
         {

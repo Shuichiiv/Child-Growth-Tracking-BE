@@ -54,6 +54,10 @@ public class ChildService : IChildService
     {
         try
         {
+            if (childDto.DOB > DateTime.UtcNow)
+            {
+                throw new ArgumentException("Ngày sinh không thể ở tương lai.");
+            }
             var child = new Child
             {
                 ChildId = Guid.NewGuid(),
@@ -61,12 +65,17 @@ public class ChildService : IChildService
                 FirstName = childDto.FirstName,
                 LastName = childDto.LastName,
                 Gender = childDto.Gender,
-                DOB = childDto.DOB,
+                DOB = DateTime.SpecifyKind(childDto.DOB, DateTimeKind.Utc),
                 DateCreateAt = DateTime.UtcNow,
                 DateUpdateAt = DateTime.UtcNow,
                 ImageUrl = childDto.ImageUrl
             };
             return await _childRepository.CreateChildAsync(child);
+        }
+        catch (ArgumentException ex)
+        {
+            Console.WriteLine($"Validation Error: {ex.Message}");
+            return false;
         }
         catch (Exception e)
         {
