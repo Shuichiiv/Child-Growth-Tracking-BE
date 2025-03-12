@@ -4,8 +4,12 @@ namespace Repositories_BE.Interfaces
 {
     public interface IPaymentRepository
     {
-        Task<Payment> CreatePaymentAsync(Payment payment);
-        Task<Payment> GetPaymentByOrderIdAsync(Guid serviceOrderId);
-        Task UpdatePaymentAsync(Payment payment);
+        Task AddAsync(Payment payment);
+        Task<Payment> GetByIdAsync(Guid paymentId);
+        Task UpdateAsync(Payment payment);
+        Task<bool> UpdatePaymentStatusAsync(Guid paymentId, PaymentStatus status, string transactionId);
+        
+        Task<Payment> CreatePaymentAsync(Guid serviceOrderId, decimal amount, string method);
+        Task<bool> UpdatePaymentStatusAsync(Guid paymentId, int status, string transactionId);
     }
 }

@@ -13,14 +13,21 @@ namespace DataObjects_BE.Entities
         [Key]
         public Guid PaymentId { get; set; }
         public Guid ServiceOrderId { get; set; }
-        public string PaymentMethod {  get; set; }
-        public PaymentStatus PaymentStatus {  get; set; } = PaymentStatus.Pending;
-        public DateTime PaymentDate { get; set; } = default;
+        public string PaymentMethod { get; set; }
+        
+        [Column(TypeName = "nvarchar(20)")]
+        public PaymentStatus PaymentStatus { get; set; } = PaymentStatus.Pending;
+        public DateTime PaymentDate { get; set; } = DateTime.UtcNow;
         public decimal Amount { get; set; }
+
         [ForeignKey("ServiceOrderId")]
         public virtual ServiceOrder ServiceOrder { get; set; }
 
+        public string? PaymentUrl { get; set; }
+        public string? TransactionId { get; set; }
+        public string? Signature { get; set; }
     }
+
     public enum PaymentStatus
     {
         Pending = 0,

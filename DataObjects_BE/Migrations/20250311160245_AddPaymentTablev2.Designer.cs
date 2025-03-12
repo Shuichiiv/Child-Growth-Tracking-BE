@@ -4,6 +4,7 @@ using DataObjects_BE;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataObjects_BE.Migrations
 {
     [DbContext(typeof(SWP391G3DbContext))]
-    partial class SWP391G3DbContextModelSnapshot : ModelSnapshot
+    [Migration("20250311160245_AddPaymentTablev2")]
+    partial class AddPaymentTablev2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -507,8 +510,9 @@ namespace DataObjects_BE.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<long?>("OrderCode")
-                        .HasColumnType("bigint");
+                    b.Property<string>("OrderCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("ParentId")
                         .HasColumnType("uniqueidentifier");

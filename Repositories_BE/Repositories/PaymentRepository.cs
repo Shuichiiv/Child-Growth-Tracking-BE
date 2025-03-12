@@ -14,21 +14,61 @@ public class PaymentRepository : IPaymentRepository
         _context = context;
     }
 
-    public async Task<Payment> CreatePaymentAsync(Payment payment)
+    public async Task AddAsync(Payment payment)
     {
+        await _context.Payments.AddAsync(payment);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<Payment> GetByIdAsync(Guid paymentId)
+    {
+        return await _context.Payments.FindAsync(paymentId);
+    }
+
+    public async Task UpdateAsync(Payment payment)
+    {
+        _context.Payments.Update(payment);
+        await _context.SaveChangesAsync();
+    }
+    public async Task<bool> UpdatePaymentStatusAsync(Guid paymentId, PaymentStatus status, string transactionId)
+    {
+        var payment = await _context.Payments.FindAsync(paymentId);
+        if (payment == null)
+        {
+            return false;
+        }
+
+        payment.PaymentStatus = status;
+        payment.TransactionId = transactionId;
+        _context.Payments.Update(payment);
+        await _context.SaveChangesAsync();
+    
+        return true;
+    }
+    public async Task<Payment> CreatePaymentAsync(Guid serviceOrderId, decimal amount, string method)
+    {
+        var payment = new Payment
+        {
+            ServiceOrderId = serviceOrderId,
+            Amount = amount,
+            PaymentMethod = method,
+            PaymentStatus = 0, // Pending
+        };
+
         _context.Payments.Add(payment);
         await _context.SaveChangesAsync();
         return payment;
     }
 
-    public async Task<Payment> GetPaymentByOrderIdAsync(Guid serviceOrderId)
+    public async Task<bool> UpdatePaymentStatusAsync(Guid paymentId, int status, string transactionId)
     {
-        return await _context.Payments.FirstOrDefaultAsync(p => p.ServiceOrderId == serviceOrderId);
+        var payment = await _context.Payments.FindAsync(paymentId);
+        if (payment == null) return false;
+
+        payment.PaymentStatus = (PaymentStatus)status;
+        payment.TransactionId = transactionId;
+        await _context.SaveChangesAsync();
+        return true;
     }
 
-    public async Task UpdatePaymentAsync(Payment payment)
-    {
-        _context.Payments.Update(payment);
-        await _context.SaveChangesAsync();
-    }
 }

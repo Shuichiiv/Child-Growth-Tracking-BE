@@ -17,11 +17,24 @@ namespace DataObjects_BE.Entities
         public int Quantity { get; set; }
         public float UnitPrice { get; set; }
         public float TotalPrice { get; set; }
-        public DateTime  CreateDate { get; set; }
+        public DateTime  CreateDate { get; set; } = DateTime.UtcNow;
+        
+        public string Status { get; set; } = "Pending";
+        
+        public long? OrderCode { get; set; }
+        
         public DateTime EndDate { get; set; }
         [ForeignKey("ParentId")]
         public virtual Parent Parent { get; set; }
         [ForeignKey("ServiceId")]
         public virtual Service Service { get; set; }
+        
+        public void CalculateEndDate()
+        {
+            if (Service != null)
+            {
+                EndDate = CreateDate.AddDays(Service.ServiceDuration);
+            }
+        }
     }
 }
