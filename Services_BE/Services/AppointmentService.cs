@@ -77,18 +77,20 @@ namespace Services_BE.Services
             try
             {
                 var appointment = _mapper.Map<Appointment>(appointmentDto);
-        
-                // Đảm bảo rằng thời gian được người dùng nhập vào sẽ lưu vào ScheduledTime
+                
                 if (appointmentDto.ScheduledTime == default)
                 {
                     throw new Exception("ScheduledTime is required.");
                 }
-                else
+                
+                else if (appointmentDto.ScheduledTime < DateTime.Now)
+                {
+                    throw new Exception("Thoi gian tao trong qua khu, khong the tao");
+                }
                 {
                     appointment.ScheduledTime = appointmentDto.ScheduledTime;
                 }
-
-                // Tạo thời gian CreatedAt nếu chưa có
+                
                 appointment.CreatedAt = DateTime.UtcNow;
 
                 await _appointmentRepository.AddAppointmentAsync(appointment);
