@@ -25,6 +25,9 @@ namespace WebAPI_BE.Injection
             services.AddTransient<PerformanceTimeMiddleware>();
             services.AddScoped<UserStatusMiddleware>();
 
+            services.AddHostedService<ServiceOrderBackgroundService>();
+
+
 
             //Injection currenttime and claims
             services.AddScoped<ICurrentTime, CurrentTime>();

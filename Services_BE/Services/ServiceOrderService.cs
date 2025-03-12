@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using DTOs_BE.ServiceOrderDTOs;
 using DataObjects_BE.Entities;
 using Org.BouncyCastle.Tls;
+using Microsoft.Extensions.Logging;
 
 namespace Services_BE.Services
 {
@@ -19,13 +20,15 @@ namespace Services_BE.Services
         private readonly ICurrentTime _currentTime;
         private readonly IServiceRepositoy _serviceRepositoy;
         private readonly IParentRepository _parentRepository;
-        public ServiceOrderService(IServiceOrderRepository serviceOrderRepository, IMapper mapper, ICurrentTime currentTime, IServiceRepositoy serviceRepositoy, IParentRepository parentRepository)
+        private readonly ILogger<ServiceOrderService> _logger;
+        public ServiceOrderService(IServiceOrderRepository serviceOrderRepository, ILogger<ServiceOrderService> logger, IMapper mapper, ICurrentTime currentTime, IServiceRepositoy serviceRepositoy, IParentRepository parentRepository)
         {
             _serviceOrderRepository = serviceOrderRepository;
             _serviceRepositoy = serviceRepositoy;
             _parentRepository = parentRepository;
             _mapper = mapper;
             _currentTime = currentTime;
+            _logger = logger;
         }
         public async Task<ServiceOrderResponseDTO> GetServiceOrderById(string orderId)
         {
@@ -114,6 +117,7 @@ namespace Services_BE.Services
                     Quantity = model.Quantity,
                     UnitPrice = price,
                     TotalPrice = model.Quantity * price,
+                    Status = model.Status,
                     CreateDate = _currentTime.GetCurrentTime(),
                     EndDate = _currentTime.GetCurrentTime().AddDays(serviceExisting.ServiceDuration*model.Quantity),
                 };
@@ -178,7 +182,7 @@ namespace Services_BE.Services
                 }
                 foreach(var i in list)
                 {
-                    if (i.EndDate > DateTime.UtcNow.AddHours(7))
+                    if (i.Status=="Complete")
                     {
                         check = true;
                         sId = i.ServiceId;
@@ -193,6 +197,28 @@ namespace Services_BE.Services
             }catch(Exception ex)
             {
                 throw ex;
+            }
+        }
+        public async Task UpdateExpiredOrdersAsync()
+        {
+            try
+            {
+                var expiredOrders = await _serviceOrderRepository.GetExpiredOrdersAsync();
+
+                if (expiredOrders.Count > 0)
+                {
+                    foreach (var order in expiredOrders)
+                    {
+                        order.Status = "Cancel";
+                    }
+
+                    await _serviceOrderRepository.UpdateOrdersAsync(expiredOrders);
+                    _logger.LogInformation($"Updated {expiredOrders.Count} service orders to 'Cancel'.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in updating expired service orders: {ex.Message}");
             }
         }
     }
