@@ -45,9 +45,8 @@ namespace WebAPI_BE.Injection
             services.AddScoped<IFeedbackRepository, FeedbackRepository>();
             services.AddScoped<IRatingRepository, RatingRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
-            services.AddScoped<PaymentService>();
+            services.AddScoped<IPaymentRepository, PaymentRepository>();
             
-
 
             //Injection services of project
             services.AddSingleton<IEmailService, EmailService>();
@@ -64,7 +63,11 @@ namespace WebAPI_BE.Injection
             services.AddScoped<IFeedbackService, FeedbackService>();
             services.AddScoped<IRatingService, RatingService>();
             services.AddScoped<IProductService, ProductService>();
-            services.AddScoped<IPaymentRepository, PaymentRepository>();
+            services.AddScoped<IPaymentService, PaymentService>();
+            services.AddScoped<PayOSService>();
+            services.AddScoped<PaymentServicesP>();
+            services.AddScoped<ServiceOrderServiceP>();
+
             return services;
         }
     }
