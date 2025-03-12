@@ -1,5 +1,6 @@
 using DataObjects_BE.Entities;
 using DTOs_BE.DoctorDTOs;
+using DTOs_BE.UserDTOs;
 using Repositories_BE.Interfaces;
 using Services_BE.Interfaces;
 
@@ -8,6 +9,8 @@ namespace Services_BE.Services
     public class ReportService: IReportService
     {
         private readonly IReportRepository _reportRepository;
+        private readonly IChildRepository _childRepository;
+        private readonly IParentRepository _parentRepository;
         
         public ReportService(IReportRepository reportRepository)
         {
@@ -37,6 +40,43 @@ namespace Services_BE.Services
             }
             
         }
+
+        public Task<Account> GetParentByChildIdAsync(Guid childId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<ChildDto> GetChildInfoByIdAsync(Guid childId)
+        {
+            var child = await _childRepository.GetChildByIdAsync(childId);
+            if (child == null) return null;
+
+            return new ChildDto
+            {
+                ChildId = child.ChildId,
+                ParentId = child.ParentId,
+                FirstName = child.FirstName,
+                LastName = child.LastName,
+                Gender = child.Gender,
+                DOB = child.DOB,
+                ImageUrl = child.ImageUrl
+            };
+        }
+
+        public async Task<List<ParentDto>> GetAllParentsAsync()
+        {
+            var parents = await _parentRepository.GetAllParentsAsync();
+
+            return parents.Select(p => new ParentDto
+            {
+                AccountId = p.Account?.AccountId ?? Guid.Empty,
+                FullName = p.Account != null ? $"{p.Account.FirstName} {p.Account.LastName}" : "Unknown",
+                Email = p.Account?.Email ?? "No Email",
+                PhoneNumber = p.Account?.PhoneNumber ?? "No Phone"
+            }).ToList();
+        }
+
+
 
         public async Task<IEnumerable<ReportDto>> GetReportsByChildIdAsync(Guid childId)
         {
@@ -162,4 +202,12 @@ namespace Services_BE.Services
         }
 
         }
+    public class ParentDto
+    {
+        public Guid AccountId { get; set; }
+        public string FullName { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+    }
+
 }

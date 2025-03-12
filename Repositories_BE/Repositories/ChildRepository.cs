@@ -1,5 +1,6 @@
 using DataObjects_BE;
 using DataObjects_BE.Entities;
+using DTOs_BE.UserDTOs;
 using Microsoft.EntityFrameworkCore;
 using Repositories_BE.Interfaces;
 
@@ -13,6 +14,45 @@ namespace Repositories_BE.Repositories
         public ChildRepository(SWP391G3DbContext context) : base(context)
         {
             _context = context;
+        }
+        
+        public async Task<ParentDto2> GetParentByChildIdAsync1(Guid childId)
+        {
+            var child = await _context.Childs
+                .Include(c => c.Parent)
+                .ThenInclude(p => p.Account)
+                .FirstOrDefaultAsync(c => c.ChildId == childId);
+            
+            if (child == null || child.Parent == null) return null;
+
+            return new ParentDto2
+            {
+                ParentId = child.Parent.ParentId,
+                AccountId = child.Parent.AccountId,
+                FirstName = child.Parent.Account.FirstName,
+                LastName = child.Parent.Account.LastName,
+                Email = child.Parent.Account.Email,
+                PhoneNumber = child.Parent.Account.PhoneNumber
+            };
+        }
+
+        public async Task<ChildDto> GetChildByIdAsync1(Guid childId)
+        {
+            var child = await _context.Childs
+                .FirstOrDefaultAsync(c => c.ChildId == childId);
+
+            if (child == null) return null;
+
+            return new ChildDto
+            {
+                ChildId = child.ChildId,
+                ParentId = child.ParentId,
+                FirstName = child.FirstName,
+                LastName = child.LastName,
+                Gender = child.Gender,
+                DOB = child.DOB,
+                ImageUrl = child.ImageUrl
+            };
         }
 
         public async Task<IEnumerable<Child>> GetAllChildrenAsync()
@@ -58,5 +98,15 @@ namespace Repositories_BE.Repositories
             _context.Childs.Remove(child);
             return await _context.SaveChangesAsync() > 0;
         }
+    }
+    
+    public class ParentDto2
+    {
+        public Guid ParentId { get; set; }
+        public Guid AccountId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
     }
 }

@@ -28,6 +28,22 @@ namespace WebAPI_BE.Controllers
             _appointmentService = appointmentService;
         }
         
+        [HttpGet("parent-info/{childId}")]
+        public async Task<IActionResult> GetParentByChildId(Guid childId)
+        {
+            var parent = await _childService.GetParentByChildIdAsync1(childId);
+            if (parent == null) return NotFound("Parent not found");
+            return Ok(parent);
+        }
+
+        [HttpGet("child-info/{childId}")]
+        public async Task<IActionResult> GetChildById(Guid childId)
+        {
+            var child = await _childService.GetChildByIdAsync1(childId);
+            if (child == null) return NotFound("Child not found");
+            return Ok(child);
+        }
+        
         [HttpPut("children/{childId}")]
         [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> UpdateChild(Guid childId, [FromBody] ChildDto childDto)
