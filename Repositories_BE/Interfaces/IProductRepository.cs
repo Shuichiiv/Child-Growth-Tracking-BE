@@ -14,7 +14,7 @@ namespace Repositories_BE.Interfaces
         Task<bool> UpdateProductAsync(ProductList product);
         Task<List<ProductList>> GetAllProductsAsync();
         Task<ProductList> GetProductByIdAsync(Guid productListId);
-
+        Task<List<ProductList>> GetProductsByTypeAsync(string productType);
 
     }
 }

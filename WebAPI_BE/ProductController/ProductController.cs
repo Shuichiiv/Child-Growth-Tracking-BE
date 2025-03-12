@@ -82,6 +82,16 @@ namespace WebAPI_BE.ProductController
             return Ok(result);
         }
 
+        // Lấy sản phẩm theo ProductType
+        [HttpGet("get-by-type/{productType}")]
+        public async Task<IActionResult> GetProductsByType(string productType)
+        {
+            var result = await _productService.GetProductsByTypeAsync(productType);
+            if (result == null)
+                return BadRequest("Không tìm thấy sản phẩm!!!");
+            return Ok(result);
+        }
+
 
     }
 }

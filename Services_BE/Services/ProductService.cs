@@ -135,18 +135,53 @@ namespace Services_BE.Services
             };
         }
 
+        public async Task<List<ProductResponseDto>> GetProductsByTypeAsync(string productType) 
+        {
+            if (!ProductTypes.All.Contains(productType))
+                throw new ArgumentException("ProductType không hợp lệ");
+            var products = await _productRepository.GetProductsByTypeAsync(productType);
+            return products.Select(p => new ProductResponseDto
+            {
+                ProductListId = p.ProductListId,
+                ProductName = p.ProductName,
+                ProductDescription = p.ProductDescription,
+                Price = p.Price,
+                MinAge = p.MinAge,
+                MaxAge = p.MaxAge,
+                SafetyFeature = p.SafetyFeature,
+                Rating = p.Rating,
+                RecommendedBy = p.RecommendedBy,
+                ImageUrl = p.ImageUrl,
+                Brand = p.Brand,
+                IsActive = p.IsActive,
+                ProductType = p.ProductType
+            }).ToList();
+        }
+
+
     }
     public static class ProductTypes
     {
-        public const string Underweight = "Underweight";
-        public const string Balanced = "Balanced";
+        public const string SeverelyUnderweight = "SeverelyUnderweight";
+        public const string ModeratelyUnderweight = "ModeratelyUnderweight";
+        public const string MildlyUnderweight = "MildlyUnderweight";
+        public const string NormalWeight = "NormalWeight";
         public const string Overweight = "Overweight";
+        public const string ObeseClassI = "ObeseClassI";
+        public const string ObeseClassII = "ObeseClassII";
+        public const string ObeseClassIII = "ObeseClassIII";
 
         public static readonly HashSet<string> All = new HashSet<string>
         {
-            Underweight,
-            Balanced,
-            Overweight
+            SeverelyUnderweight,    // (bmi < 16.0) Gầy độ III (Rất gầy) - Nguy cơ cao
+            ModeratelyUnderweight,  // (bmi < 16.9) Gầy độ II - Nguy cơ vừa
+            MildlyUnderweight,      // (bmi < 18.4) Gầy độ I - Nguy cơ thấp
+            NormalWeight,           // (bmi < 24.9) Cân nặng bình thường - Bình thường
+            Overweight,             // (bmi < 29.9) Thừa cân - Nguy cơ tăng nhẹ
+            ObeseClassI,            // (bmi < 34.9) Béo phì độ I - Nguy cơ trung bình
+            ObeseClassII,           // (bmi < 39.9) Béo phì độ II - Nguy cơ cao
+            ObeseClassIII           // (bmi > 39.9) Béo phì độ III - Nguy cơ rất cao
+        
         };
     }
 }
