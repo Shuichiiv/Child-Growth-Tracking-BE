@@ -23,7 +23,8 @@ namespace Services_BE.Services
         private readonly IParentRepository _parentRepository;
         private readonly ILogger<ServiceOrderService> _logger;
         private readonly IPaymentService _paymentService;
-        public ServiceOrderService(IServiceOrderRepository serviceOrderRepository, IPaymentService paymentService, ILogger<ServiceOrderService> logger, IMapper mapper, ICurrentTime currentTime, IServiceRepositoy serviceRepositoy, IParentRepository parentRepository)
+        private readonly IPaymentRepository _paymentRepository;
+        public ServiceOrderService(IServiceOrderRepository serviceOrderRepository, IPaymentRepository paymentRepository, IPaymentService paymentService, ILogger<ServiceOrderService> logger, IMapper mapper, ICurrentTime currentTime, IServiceRepositoy serviceRepositoy, IParentRepository parentRepository)
         {
             _serviceOrderRepository = serviceOrderRepository;
             _serviceRepositoy = serviceRepositoy;
@@ -32,6 +33,7 @@ namespace Services_BE.Services
             _currentTime = currentTime;
             _logger = logger;
             _paymentService = paymentService;
+            _paymentRepository = paymentRepository;
         }
         public async Task<ServiceOrderResponseDTO> GetServiceOrderById(string orderId)
         {
@@ -224,6 +226,30 @@ namespace Services_BE.Services
             catch (Exception ex)
             {
                 _logger.LogError($"Error in updating expired service orders: {ex.Message}");
+            }
+        }
+        public async Task<bool> DeleteServiceOrder(string orderId)
+        {
+            try
+            {
+                var id = Guid.Parse(orderId);
+                var order = _serviceOrderRepository.GetByID(id);
+                if(order == null)
+                {
+                    throw new Exception("Service Order is not existing!!!");
+                }
+                var listPayments = await _paymentRepository.GetPaymentsByOrderId(id);
+                if(listPayments!= null || listPayments.Count > 0)
+                {
+                    foreach (var payment in listPayments)
+                    {
+                        _paymentRepository.DeletePayment(payment);
+                    }
+                }
+                return _serviceOrderRepository.Delete(id);
+            }catch(Exception e)
+            {
+                throw e;
             }
         }
     }

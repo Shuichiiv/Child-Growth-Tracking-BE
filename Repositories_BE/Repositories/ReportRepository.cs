@@ -117,10 +117,10 @@ namespace Repositories_BE.Repositories
         }
 
 
-        public Report GetByID(object id)
+        /*public Report GetByID(object id)
         {
             throw new NotImplementedException();
-        }
+        }*/
 
         public void Insert(Report entity)
         {
@@ -166,5 +166,6 @@ namespace Repositories_BE.Repositories
         {
             throw new NotImplementedException();
         }
+        
     }
 }
