@@ -62,8 +62,8 @@ namespace DataObjects_BE.Migrations
 
                 -- Insert ProductLists
                 INSERT INTO ProductLists (ProductListId, ProductName, ProductDescription, Price, MinAge, MaxAge, SafetyFeature, Rating, RecommendedBy, ImageUrl, Brand, IsActive, ProductType) VALUES
-                (NEWID(), 'Multivitamins', 'Daily vitamins for kids', 1500.0000, 3, 5, 'Feature 1', 4.5, 'Recommender 1', 'url1', 'Brand 1', 1, 'NormalWeight'),
-                (NEWID(), 'Baby Formula', 'Infant milk powder', 3000.0000, 0, 1, 'Feature 2', 4.0, 'Recommender 2', 'url2', 'Brand 2', 1, 'NormalWeight');
+                (NEWID(), 'Multivitamins', 'Daily vitamins for kids', 1500.0000, 3, 5, 'Feature 1', 4.5, 'Recommender 1', 'url1', 'Brand 1', 1, 'Cân nặng bình thường - Bình thường'),
+                (NEWID(), 'Baby Formula', 'Infant milk powder', 3000.0000, 0, 1, 'Feature 2', 4.0, 'Recommender 2', 'url2', 'Brand 2', 1, 'Cân nặng bình thường - Bình thường');
 
                 -- Insert ReportProducts
                 INSERT INTO ReportProducts (ReportProductId, ReportId, ProductListId) VALUES
