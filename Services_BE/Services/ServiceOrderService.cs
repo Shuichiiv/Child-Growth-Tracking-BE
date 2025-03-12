@@ -187,7 +187,7 @@ namespace Services_BE.Services
                 }
                 foreach(var i in list)
                 {
-                    if (i.Status=="Complete")
+                    if (i.Status.IndexOf("Completed", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         check = true;
                         sId = i.ServiceId;
