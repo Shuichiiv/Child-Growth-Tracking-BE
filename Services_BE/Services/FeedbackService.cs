@@ -82,7 +82,7 @@ namespace Services_BE.Services
                     ReportId = model.ReportId,
                     DoctorId = model.DoctorId,
                     FeedbackContentRequest = model.FeedbackContentRequest,
-                    FeedbackCreateDate = _currentTime.GetCurrentTime().Date,
+                    FeedbackCreateDate = _currentTime.GetCurrentTime(),
                     FeedbackName = model.FeedbackName,
                     FeedbackIsActive = model.FeedbackIsActive,
                     FeedbackContentResponse = model.FeedbackContentResponse,
@@ -103,7 +103,7 @@ namespace Services_BE.Services
                 {
                     throw new Exception("Feedback is not existing!!!");
                 }
-                feedbackExisting.FeedbackUpdateDate = _currentTime.GetCurrentTime().Date;
+                feedbackExisting.FeedbackUpdateDate = _currentTime.GetCurrentTime();
                 feedbackExisting.FeedbackContentRequest = model.FeedbackContentRequest;
                 feedbackExisting.FeedbackContentResponse = model.FeedbackContentResponse;
                 feedbackExisting.FeedbackName = model.FeedbackName;

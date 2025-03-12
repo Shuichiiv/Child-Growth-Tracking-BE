@@ -74,5 +74,14 @@ public class PaymentRepository : IPaymentRepository
         await _context.SaveChangesAsync();
         return true;
     }
+    public async Task<List<Payment>> GetPaymentsByOrderId(Guid orderId)
+    {
+        var list = await _context.Payments.Where(x => x.ServiceOrderId == orderId).ToListAsync();
+        return list;
+    }
+    public async Task DeletePayment(Payment payment)
+    {
+         _context.Remove(payment);
+    }
 
 }

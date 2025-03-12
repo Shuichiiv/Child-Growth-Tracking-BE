@@ -96,7 +96,7 @@ namespace Services_BE.Services
                     FeedbackId = model.FeedbackId,
                     ParentId = model.ParentId,
                     RatingValue = model.RatingValue,
-                    RatingDate = _currentTime.GetCurrentTime().Date,
+                    RatingDate = _currentTime.GetCurrentTime(),
                     IsActive = model.IsActive,
                 };
                 _ratingRepository.Insert(newRating);
@@ -119,7 +119,7 @@ namespace Services_BE.Services
                     throw new Exception("Rating is not existing!!!");
                 }
                 ratingExisting.RatingValue = model.RatingValue;
-                ratingExisting.RatingDate = _currentTime.GetCurrentTime().Date;
+                ratingExisting.RatingDate = _currentTime.GetCurrentTime();
                 _ratingRepository.Update(ratingExisting);
                 _ratingRepository.Save();
                 var result = _mapper.Map<RatingResponseDTO>(ratingExisting);

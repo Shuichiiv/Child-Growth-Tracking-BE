@@ -131,6 +131,16 @@ namespace WebAPI_BE.Controllers
                 throw ex;
             }
         }
+        [HttpDelete("DeleteServiceOrder/{orderId}")]
+        public async Task<IActionResult> DeleteServiceOrder(string orderId)
+        {
+            var response = await _serviceOrderService.DeleteServiceOrder(orderId);
+            if (response == null)
+            {
+                return BadRequest();
+            }
+            return Ok(response);
+        }
 
     }
 }

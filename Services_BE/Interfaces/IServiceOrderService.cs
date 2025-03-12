@@ -18,5 +18,6 @@ namespace Services_BE.Interfaces
         Task<List<ServiceOrderResponseDTO>> GetListServiceOrderByParentId(string parentId);
         Task<CheckServiceRightsModel> CheckServiceRightsOfParent(string parentId);
         Task UpdateExpiredOrdersAsync();
+        Task<bool> DeleteServiceOrder(string orderId);
     }
 }
