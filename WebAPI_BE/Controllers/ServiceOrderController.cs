@@ -1,4 +1,5 @@
-﻿using DTOs_BE.ServiceOrderDTOs;
+﻿using DTOs_BE.PaymentDTOs;
+using DTOs_BE.ServiceOrderDTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services_BE.Interfaces;
@@ -129,6 +130,16 @@ namespace WebAPI_BE.Controllers
             {
                 throw ex;
             }
+        }
+        [HttpDelete("DeleteServiceOrder/{orderId}")]
+        public async Task<IActionResult> DeleteServiceOrder(string orderId)
+        {
+            var response = await _serviceOrderService.DeleteServiceOrder(orderId);
+            if (response == null)
+            {
+                return BadRequest();
+            }
+            return Ok(response);
         }
 
     }

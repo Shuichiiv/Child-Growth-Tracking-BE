@@ -1,4 +1,5 @@
-﻿using DTOs_BE.ServiceOrderDTOs;
+﻿using DTOs_BE.PaymentDTOs;
+using DTOs_BE.ServiceOrderDTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,5 +17,7 @@ namespace Services_BE.Interfaces
         Task<ServiceOrderResponseDTO> GetLastestServiceOrderByParentId(string parentId);
         Task<List<ServiceOrderResponseDTO>> GetListServiceOrderByParentId(string parentId);
         Task<CheckServiceRightsModel> CheckServiceRightsOfParent(string parentId);
+        Task UpdateExpiredOrdersAsync();
+        Task<bool> DeleteServiceOrder(string orderId);
     }
 }

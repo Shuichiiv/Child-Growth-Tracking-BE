@@ -11,5 +11,8 @@ namespace Repositories_BE.Interfaces
         
         Task<Payment> CreatePaymentAsync(Guid serviceOrderId, decimal amount, string method);
         Task<bool> UpdatePaymentStatusAsync(Guid paymentId, int status, string transactionId);
+        Task AddPayment(Payment payment);
+        Task<List<Payment>> GetPaymentsByOrderId(Guid orderId);
+        Task DeletePayment(Payment payment);
     }
 }

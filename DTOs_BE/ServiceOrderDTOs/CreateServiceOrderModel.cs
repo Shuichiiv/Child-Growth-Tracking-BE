@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataObjects_BE.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,9 @@ namespace DTOs_BE.ServiceOrderDTOs
         public Guid ParentId { get; set; }
         public int ServiceId { get; set; }
         public int Quantity { get; set; }
-      //  public float UnitPrice { get; set; }
-       // public float TotalPrice { get; set; }
+        public string Status { get; set; }
+        public PaymentStatus PaymentStatus { get; set; }
+        //  public float UnitPrice { get; set; }
+        // public float TotalPrice { get; set; }
     }
 }

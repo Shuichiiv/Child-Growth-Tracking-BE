@@ -15,6 +15,21 @@ namespace WebAPI_BE.Controllers
         {
             _reportService = reportService;
         }
+        
+        [HttpGet("parent-by-child/{childId}")]
+        public async Task<IActionResult> GetParentByChildId(Guid childId)
+        {
+            var parents = await _reportService.GetAllParentsAsync();
+            return Ok(parents);
+        }
+        [HttpGet("childs-info/{childId}")]
+        public async Task<IActionResult> GetChildInfoById(Guid childId)
+        {
+            var child = await _reportService.GetChildInfoByIdAsync(childId);
+            if (child == null) return NotFound("Child not found");
+
+            return Ok(child);
+        }
 
         [HttpPost("calculate-bmi")]
         public async Task<IActionResult> CalculateBMI([FromQuery] Guid childId, [FromQuery] double height, [FromQuery] double weight)

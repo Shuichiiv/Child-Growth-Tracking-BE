@@ -23,10 +23,14 @@ namespace Services_BE.Mapper
             CreateMap<Appointment, AppointmentDto>()
                 .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.Doctor.Account.UserName))
                 .ForMember(dest => dest.ParentName, opt => opt.MapFrom(src => src.Parent.Account.UserName))
-                .ForMember(dest => dest.ChildName, opt => opt.MapFrom(src => src.Child.FirstName + " " + src.Child.LastName));
+                .ForMember(dest => dest.ChildName, opt => opt.MapFrom(src => string.Join(" ", src.Child.FirstName, src.Child.LastName)))
+                .ForMember(dest => dest.AppointmentDate, opt => opt.MapFrom(src => src.ScheduledTime))
+                .ReverseMap();
 
-            CreateMap<AppointmentCreateDto, Appointment>();
-            CreateMap<AppointmentUpdateDto, Appointment>();
+            CreateMap<AppointmentCreateDto, Appointment>().ReverseMap();
+            CreateMap<AppointmentUpdateDto, Appointment>()
+                .ForMember(dest => dest.ScheduledTime, opt => opt.MapFrom(src => src.ScheduledTime))
+                .ReverseMap();
             CreateMap<FeedbackResponseDTO,Feedback>().ReverseMap();
             CreateMap<RatingResponseDTO, Rating>().ReverseMap();
         }

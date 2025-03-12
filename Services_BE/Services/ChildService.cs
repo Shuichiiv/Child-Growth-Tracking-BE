@@ -1,6 +1,7 @@
 using DataObjects_BE.Entities;
 using DTOs_BE.UserDTOs;
 using Repositories_BE.Interfaces;
+using Repositories_BE.Repositories;
 using Services_BE.Interfaces;
 
 namespace Services_BE.Services;
@@ -25,6 +26,16 @@ public class ChildService : IChildService
             throw new Exception("An error occurred while getting reports", e);
         }
     }
+    
+    public async Task<ParentDto2> GetParentByChildIdAsync1(Guid childId)
+    {
+        return await _childRepository.GetParentByChildIdAsync1(childId);
+    }
+        
+    public async Task<ChildDto> GetChildByIdAsync1(Guid childId)
+    {
+        return await _childRepository.GetChildByIdAsync1(childId);
+    }
 
     public async Task<Child> GetChildByIdAsync(Guid childId)
     {
@@ -43,6 +54,20 @@ public class ChildService : IChildService
     {
         try
         {
+            DateTime today = DateTime.UtcNow;
+            
+            int age = today.Year - childDto.DOB.Year;
+            
+            if (childDto.DOB > today.AddYears(-age))
+            {
+                age--;
+            }
+            
+            if (age < 1 || age > 18)
+            {
+                throw new ArgumentException("Trẻ phải có độ tuổi từ 1 đến 18.");
+            }
+            
             var child = new Child
             {
                 ChildId = Guid.NewGuid(),
@@ -50,12 +75,16 @@ public class ChildService : IChildService
                 FirstName = childDto.FirstName,
                 LastName = childDto.LastName,
                 Gender = childDto.Gender,
-                DOB = childDto.DOB,
+                DOB = DateTime.SpecifyKind(childDto.DOB, DateTimeKind.Utc),
                 DateCreateAt = DateTime.UtcNow,
                 DateUpdateAt = DateTime.UtcNow,
                 ImageUrl = childDto.ImageUrl
             };
             return await _childRepository.CreateChildAsync(child);
+        }
+        catch (ArgumentException ex)
+        {
+            throw;
         }
         catch (Exception e)
         {
@@ -68,13 +97,26 @@ public class ChildService : IChildService
     {
         try
         {
+            DateTime today = DateTime.UtcNow;
+            
+            int age = today.Year - childDto.DOB.Year;
+            
+            if (childDto.DOB > today.AddYears(-age))
+            {
+                age--;
+            }
+            
+            if (age < 1 || age > 18)
+            {
+                throw new ArgumentException("Trẻ phải có độ tuổi từ 1 đến 18.");
+            }
             var child = await _childRepository.GetChildByIdAsync(childId);
             if (child == null) return false;
 
             child.FirstName = childDto.FirstName;
             child.LastName = childDto.LastName;
             child.Gender = childDto.Gender;
-            child.DOB = childDto.DOB;
+            child.DOB = DateTime.SpecifyKind(childDto.DOB, DateTimeKind.Utc);
             child.DateUpdateAt = DateTime.UtcNow;
             child.ImageUrl = childDto.ImageUrl;
 

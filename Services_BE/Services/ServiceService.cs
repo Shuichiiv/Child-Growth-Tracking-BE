@@ -57,7 +57,7 @@ namespace Services_BE.Services
                 service.ServicePrice = model.ServicePrice;
                 service.ServiceDescription = model.ServiceDescription;
                 service.ServiceDuration = model.ServiceDuration;
-                service.ServiceCreateDate = _currentTime.GetCurrentTime().Date;
+                service.ServiceCreateDate = _currentTime.GetCurrentTime();
                 service.IsActive = model.IsActive;
                 var result = _mapper.Map<ServiceResponseDTO>(service);
                 await _serviceRepositoy.AddAsync(service);

@@ -95,10 +95,6 @@ public class ServiceOrderServiceP
             Console.WriteLine($"Rows Affected: {rowsAffected}");
         }
     }
-
-
-
-
     public async Task<ServiceOrder> CreateServiceOrderAsync(Guid parentId, int serviceId, int quantity)
     {
         var service = await _context.Services.FindAsync(serviceId);
