@@ -54,10 +54,20 @@ public class ChildService : IChildService
     {
         try
         {
-            if (childDto.DOB > DateTime.UtcNow)
+            DateTime today = DateTime.UtcNow;
+            
+            int age = today.Year - childDto.DOB.Year;
+            
+            if (childDto.DOB > today.AddYears(-age))
             {
-                throw new ArgumentException("Ngày sinh không thể ở tương lai.");
+                age--;
             }
+            
+            if (age < 1 || age > 18)
+            {
+                throw new ArgumentException("Trẻ phải có độ tuổi từ 1 đến 18.");
+            }
+            
             var child = new Child
             {
                 ChildId = Guid.NewGuid(),
@@ -74,8 +84,7 @@ public class ChildService : IChildService
         }
         catch (ArgumentException ex)
         {
-            Console.WriteLine($"Validation Error: {ex.Message}");
-            return false;
+            throw;
         }
         catch (Exception e)
         {
