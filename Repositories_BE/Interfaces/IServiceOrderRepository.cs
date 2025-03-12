@@ -16,5 +16,7 @@ namespace Repositories_BE.Interfaces
         
         Task<ServiceOrder> CreateServiceOrderAsync(float totalAmount);
         Task<bool> UpdateServiceOrderStatusAsync(Guid orderId, int status);
+        Task UpdateOrdersAsync(List<ServiceOrder> orders);
+        Task<List<ServiceOrder>> GetExpiredOrdersAsync();
     }
 }

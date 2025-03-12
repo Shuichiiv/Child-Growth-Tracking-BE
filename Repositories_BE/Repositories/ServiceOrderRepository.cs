@@ -13,10 +13,12 @@ namespace Repositories_BE.Repositories
     public class ServiceOrderRepository: GenericRepository<ServiceOrder>, IServiceOrderRepository
     {
         private readonly SWP391G3DbContext _context;
+        private readonly ICurrentTime _currentTime;
         
-        public ServiceOrderRepository(SWP391G3DbContext context) : base(context)
+        public ServiceOrderRepository(SWP391G3DbContext context, ICurrentTime currentTime) : base(context)
         {
             _context = context;
+            _currentTime = currentTime;
         }
         public ServiceOrder GetOrderById(Guid id)
         {
@@ -70,6 +72,17 @@ namespace Repositories_BE.Repositories
             order.Status = status.ToString();
             await _context.SaveChangesAsync();
             return true;
+        }
+        public async Task<List<ServiceOrder>> GetExpiredOrdersAsync()
+        {
+            return await _context.ServiceOrders
+                .Where(o => o.Status == "Complete" && o.EndDate <= _currentTime.GetCurrentTime())
+                .ToListAsync();
+        }
+        public async Task UpdateOrdersAsync(List<ServiceOrder> orders)
+        {
+            _context.ServiceOrders.UpdateRange(orders);
+            await _context.SaveChangesAsync();
         }
 
     }

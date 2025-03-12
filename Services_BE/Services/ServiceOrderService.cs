@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using DTOs_BE.ServiceOrderDTOs;
 using DataObjects_BE.Entities;
 using Org.BouncyCastle.Tls;
+using Microsoft.Extensions.Logging;
+using DTOs_BE.PaymentDTOs;
 
 namespace Services_BE.Services
 {
@@ -19,13 +21,17 @@ namespace Services_BE.Services
         private readonly ICurrentTime _currentTime;
         private readonly IServiceRepositoy _serviceRepositoy;
         private readonly IParentRepository _parentRepository;
-        public ServiceOrderService(IServiceOrderRepository serviceOrderRepository, IMapper mapper, ICurrentTime currentTime, IServiceRepositoy serviceRepositoy, IParentRepository parentRepository)
+        private readonly ILogger<ServiceOrderService> _logger;
+        private readonly IPaymentService _paymentService;
+        public ServiceOrderService(IServiceOrderRepository serviceOrderRepository, IPaymentService paymentService, ILogger<ServiceOrderService> logger, IMapper mapper, ICurrentTime currentTime, IServiceRepositoy serviceRepositoy, IParentRepository parentRepository)
         {
             _serviceOrderRepository = serviceOrderRepository;
             _serviceRepositoy = serviceRepositoy;
             _parentRepository = parentRepository;
             _mapper = mapper;
             _currentTime = currentTime;
+            _logger = logger;
+            _paymentService = paymentService;
         }
         public async Task<ServiceOrderResponseDTO> GetServiceOrderById(string orderId)
         {
@@ -114,11 +120,14 @@ namespace Services_BE.Services
                     Quantity = model.Quantity,
                     UnitPrice = price,
                     TotalPrice = model.Quantity * price,
-                    CreateDate = _currentTime.GetCurrentTime().Date,
-                    EndDate = _currentTime.GetCurrentTime().Date.AddDays(serviceExisting.ServiceDuration*model.Quantity),
+                    Status = model.Status,
+                    CreateDate = _currentTime.GetCurrentTime(),
+                    EndDate = _currentTime.GetCurrentTime().AddDays(serviceExisting.ServiceDuration*model.Quantity),
                 };
+
                 
                 await _serviceOrderRepository.AddAsync(newOrder);
+                await _paymentService.CreateCashPayment(newOrder, model.PaymentStatus);
                 _serviceOrderRepository.Save();
                 var result = _mapper.Map<ServiceOrderResponseDTO>(newOrder);
                 return result;
@@ -142,7 +151,7 @@ namespace Services_BE.Services
                 {
                     orderExisting.Quantity = orderExisting.Quantity + model.Quantity;
                     orderExisting.TotalPrice = orderExisting.UnitPrice * orderExisting.Quantity;
-                    orderExisting.EndDate = _currentTime.GetCurrentTime().Date.AddDays(orderExisting.Service.ServiceDuration * model.Quantity);
+                    orderExisting.EndDate = _currentTime.GetCurrentTime().AddDays(orderExisting.Service.ServiceDuration * model.Quantity);
                 }
                 else
                 {
@@ -178,7 +187,7 @@ namespace Services_BE.Services
                 }
                 foreach(var i in list)
                 {
-                    if (i.EndDate > DateTime.UtcNow.AddHours(7))
+                    if (i.Status.IndexOf("Completed", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         check = true;
                         sId = i.ServiceId;
@@ -193,6 +202,28 @@ namespace Services_BE.Services
             }catch(Exception ex)
             {
                 throw ex;
+            }
+        }
+        public async Task UpdateExpiredOrdersAsync()
+        {
+            try
+            {
+                var expiredOrders = await _serviceOrderRepository.GetExpiredOrdersAsync();
+
+                if (expiredOrders.Count > 0)
+                {
+                    foreach (var order in expiredOrders)
+                    {
+                        order.Status = "Cancel";
+                    }
+
+                    await _serviceOrderRepository.UpdateOrdersAsync(expiredOrders);
+                    _logger.LogInformation($"Updated {expiredOrders.Count} service orders to 'Cancel'.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in updating expired service orders: {ex.Message}");
             }
         }
     }
