@@ -8,6 +8,7 @@ using DataObjects_BE;
 using DTOs_BE.UserDTOs;
 using Repositories_BE.Interfaces;
 using Services_BE.Interfaces;
+using DTOs_BE.PaymentDTOs;
 
 public class PaymentService : IPaymentService
 {
@@ -82,6 +83,24 @@ public class PaymentService : IPaymentService
         }
 
         return null;
+    }
+    public async Task CreateCashPayment( ServiceOrder order, PaymentStatus paymentStatus)
+    {
+        try
+        {
+            Payment newPayment = new Payment
+            {
+                PaymentId = Guid.NewGuid(),
+                ServiceOrderId = order.ServiceOrderId,
+                PaymentMethod = "Cash",
+                PaymentStatus = paymentStatus,
+                Amount = (decimal)order.TotalPrice,
+            };
+            _paymentRepository.AddPayment(newPayment);
+        }catch(Exception ex)
+        {
+            throw ex;
+        }
     }
 
     public async Task<bool> HandlePaymentCallbackAsync(Guid paymentId, bool success, string transactionId)

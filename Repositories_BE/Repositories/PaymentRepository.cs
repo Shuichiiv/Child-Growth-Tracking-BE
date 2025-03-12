@@ -19,6 +19,10 @@ public class PaymentRepository : IPaymentRepository
         await _context.Payments.AddAsync(payment);
         await _context.SaveChangesAsync();
     }
+    public async Task AddPayment(Payment payment)
+    {
+        await _context.Payments.AddAsync(payment);
+    }
 
     public async Task<Payment> GetByIdAsync(Guid paymentId)
     {
