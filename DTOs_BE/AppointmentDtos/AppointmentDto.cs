@@ -25,7 +25,7 @@ namespace DTOs_BE.AppointmentDtos
     
     public class AppointmentUpdateDto
     {
-        public DateTime AppointmentDate { get; set; }
-        public string Status { get; set; }
+        public DateTime ScheduledTime { get; set; }
+        public int Status { get; set; }
     }
 }

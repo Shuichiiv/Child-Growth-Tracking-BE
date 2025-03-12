@@ -28,7 +28,9 @@ namespace Services_BE.Mapper
                 .ReverseMap();
 
             CreateMap<AppointmentCreateDto, Appointment>().ReverseMap();
-            CreateMap<AppointmentUpdateDto, Appointment>().ReverseMap();
+            CreateMap<AppointmentUpdateDto, Appointment>()
+                .ForMember(dest => dest.ScheduledTime, opt => opt.MapFrom(src => src.ScheduledTime))
+                .ReverseMap();
             CreateMap<FeedbackResponseDTO,Feedback>().ReverseMap();
             CreateMap<RatingResponseDTO, Rating>().ReverseMap();
         }
