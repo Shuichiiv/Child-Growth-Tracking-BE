@@ -37,7 +37,7 @@ namespace WebAPI_BE.Controllers
             return Ok(appointments);
         }
         
-        [HttpGet("parent/{parentId}")]
+        [HttpGet("appoiment-byid/{parentId}")]
         public async Task<IActionResult> GetAppointmentsByParent(Guid parentId)
         {
             var appointments = await _appointmentService.GetAppointmentsByParentIdAsync(parentId);

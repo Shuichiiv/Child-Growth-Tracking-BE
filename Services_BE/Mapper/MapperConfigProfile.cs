@@ -24,7 +24,7 @@ namespace Services_BE.Mapper
                 .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.Doctor.Account.UserName))
                 .ForMember(dest => dest.ParentName, opt => opt.MapFrom(src => src.Parent.Account.UserName))
                 .ForMember(dest => dest.ChildName, opt => opt.MapFrom(src => string.Join(" ", src.Child.FirstName, src.Child.LastName)))
-                .ForMember(dest => dest.AppointmentDate, opt => opt.MapFrom(src => src.CreatedAt))
+                .ForMember(dest => dest.AppointmentDate, opt => opt.MapFrom(src => src.ScheduledTime))
                 .ReverseMap();
 
             CreateMap<AppointmentCreateDto, Appointment>().ReverseMap();
