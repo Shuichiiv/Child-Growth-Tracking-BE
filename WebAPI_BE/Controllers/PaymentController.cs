@@ -76,12 +76,14 @@ namespace PaymentIntegration.Controllers
             }
 
             //Tính tổng tiền của đơn hàng
-            decimal totalAmount = serviceOrders.Sum(so => (decimal)so.TotalPrice);
+            //decimal totalAmount = serviceOrders.Sum(so => (decimal)so.TotalPrice);
+            decimal totalAmount = serviceOrders.Sum(so => (decimal)so.Service.ServicePrice * so.Quantity);
+
 
             //Tạo danh sách các dịch vụ để gửi lên PayOS
             var serviceList = serviceOrders.Select(so => new ItemData(
                 name: so.Service.ServiceName,
-                quantity: so.Quantity,
+                quantity: 1,
                 price: (int)so.TotalPrice
             )).ToList();
 
@@ -119,7 +121,7 @@ namespace PaymentIntegration.Controllers
                     return StatusCode(500, new { message = "Failed to get checkout URL from PayOS" });
                 }
 
-                //Lưu thông tin thanh toán vào DB trước khi trả về URL
+                /*//Lưu thông tin thanh toán vào DB trước khi trả về URL
                 var payment = new Payment
                 {
                     PaymentId = Guid.NewGuid(),
@@ -133,7 +135,7 @@ namespace PaymentIntegration.Controllers
                 };
 
                 _context.Payments.Add(payment);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();*/
 
                 //Trả về URL để người dùng thanh toán
                 return Ok(new { paymentUrl = response.checkoutUrl });

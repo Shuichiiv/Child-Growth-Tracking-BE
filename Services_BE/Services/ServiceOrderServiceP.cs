@@ -113,6 +113,7 @@ public class ServiceOrderServiceP
             UnitPrice = (float)service.ServicePrice,
             TotalPrice = (float)(service.ServicePrice * quantity),
             CreateDate = DateTime.UtcNow,
+            EndDate = DateTime.UtcNow.AddMonths(1),
             OrderCode = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
         };
         serviceOrder.CalculateEndDate();
