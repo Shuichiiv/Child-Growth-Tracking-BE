@@ -158,6 +158,28 @@ namespace Services_BE.Services
             }).ToList();
         }
 
+        // Tìm kiếm sản phẩm theo tên
+        public async Task<List<ProductResponseDto>> SearchProductByNameAsync(string productName)
+        {
+            var products = await _productRepository.SearchProductByNameAsync(productName);
+            return products.Select(p => new ProductResponseDto
+            {
+                ProductListId = p.ProductListId,
+                ProductName = p.ProductName,
+                ProductDescription = p.ProductDescription,
+                Price = p.Price,
+                MinAge = p.MinAge,
+                MaxAge = p.MaxAge,
+                SafetyFeature = p.SafetyFeature,
+                Rating = p.Rating,
+                RecommendedBy = p.RecommendedBy,
+                ImageUrl = p.ImageUrl,
+                Brand = p.Brand,
+                IsActive = p.IsActive,
+                ProductType = p.ProductType
+            }).ToList();
+        }
+
 
     }
     public static class ProductTypes
