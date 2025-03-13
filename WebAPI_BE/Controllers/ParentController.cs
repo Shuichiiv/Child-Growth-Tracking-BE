@@ -182,5 +182,15 @@ namespace WebAPI_BE.Controllers
             if (!result) return NotFound("Không thể xóa phụ huynh.");
             return Ok("Phụ huynh đã được xóa.");
         }
+
+        [HttpDelete("children/{childId}")]
+        [Authorize(Roles = "User,Admin")]
+        public async Task<IActionResult> DeleteChild(Guid childId)
+        {
+            var result = await _parentService.DeleteChildByIdAsync(childId);
+            if (!result) return NotFound("Không thể xóa trẻ.");
+            return Ok("Trẻ đã được xóa.");
+        }
+
     }
 }

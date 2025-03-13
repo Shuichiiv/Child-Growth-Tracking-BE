@@ -66,5 +66,19 @@ namespace Repositories_BE.Repositories
             _context.Parents.Add(parent);
             return await _context.SaveChangesAsync() > 0;
         }
+
+        public async Task<Child> GetChildByIdAsync(Guid childId)
+        {
+            return await _context.Childs.FindAsync(childId);
+        }
+
+        public async Task<bool> DeleteChildByIdAsync(Guid childId)
+        {
+            var child = await _context.Childs.FindAsync(childId);
+            if (child == null) return false;
+            _context.Childs.Remove(child);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
     }
 }
