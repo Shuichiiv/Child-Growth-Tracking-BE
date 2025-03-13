@@ -246,7 +246,9 @@ namespace Services_BE.Services
                         _paymentRepository.DeletePayment(payment);
                     }
                 }
-                return _serviceOrderRepository.Delete(id);
+                 var check = _serviceOrderRepository.Delete(id);
+                 _serviceOrderRepository.Save();
+                return check;
             }catch(Exception e)
             {
                 throw e;
