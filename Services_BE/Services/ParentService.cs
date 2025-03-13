@@ -110,4 +110,13 @@ public class ParentService :IParentService
     {
         return await _parentRepository.GetParentByAccountId(accountId);
     }
+    public async Task<bool> DeleteChildByIdAsync(Guid childId)
+    {
+        var child = await _parentRepository.GetChildByIdAsync(childId);
+        if (child == null)
+        {
+            throw new Exception("Child not found");
+        }
+        return await _parentRepository.DeleteChildByIdAsync(childId);
+    }
 }

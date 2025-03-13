@@ -12,7 +12,9 @@ namespace Repositories_BE.Interfaces
 
         Task<IEnumerable<Child>> GetAllChildrenByParentIdAsync(Guid parentId);
         Task<Parent> GetParentByAccountId(Guid accountId);
-        
+
         Task<bool> CreateParent(Parent parent);
+        Task<Child> GetChildByIdAsync(Guid childId);
+        Task<bool> DeleteChildByIdAsync(Guid childId);
     }
 }
