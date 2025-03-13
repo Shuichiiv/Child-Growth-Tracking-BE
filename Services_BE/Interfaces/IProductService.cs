@@ -17,6 +17,8 @@ namespace Services_BE.Interfaces
         Task<ProductResponseDto> GetProductByIdAsync(Guid productListId);
         Task<List<ProductResponseDto>> GetProductsByTypeAsync(string productType);
 
+        // Tìm kiếm sản phẩm theo tên
+        Task<List<ProductResponseDto>> SearchProductByNameAsync(string productName);
 
     }
 }
