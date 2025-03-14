@@ -20,6 +20,12 @@ namespace Services_BE.Services
         {
             try
             {
+                var latestReport = await _reportRepository.GetLatestReportByIdAsync(childId);
+                
+                if (latestReport != null && latestReport.ReprotCreateDate.Date == DateTime.UtcNow.Date)
+                {
+                    throw new Exception("Bạn đã tạo báo cáo cho trẻ trong ngày hôm nay rồi.");
+                }
                 var report = await _reportRepository.CreateBMIReportAsync(childId, height, weight);
                 return new ReportDto
                 {
@@ -31,7 +37,6 @@ namespace Services_BE.Services
                     ReportContent = report.ReportContent,
                     ReportMark = report.ReportMark,
                     ReportIsActive = "Inactive"
-                    
                 };
             }
             catch (Exception e)
@@ -39,11 +44,6 @@ namespace Services_BE.Services
                 throw new Exception("An error occurred while cancelling appointments", e);
             }
             
-        }
-
-        public Task<Account> GetParentByChildIdAsync(Guid childId)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<ChildDto> GetChildInfoByIdAsync(Guid childId)
@@ -92,7 +92,8 @@ namespace Services_BE.Services
                     BMI = r.BMI,
                     ReportContent = r.ReportContent,
                     ReportMark = r.ReportMark,
-                    ReportIsActive = "Inactive"
+                    ReportIsActive = r.ReportIsActive,
+                    ReportCreateDate = r.ReprotCreateDate
                 }).ToList();
             }
             catch (Exception e)

@@ -106,6 +106,7 @@ namespace Repositories_BE.Repositories
                 .Where(r => r.ReportIsActive == status)
                 .Select(r => new ReportDto
                 {
+                    
                     ReportId = r.ReportId,
                     ChildId = r.ChildId,
                     Height = r.Height,
@@ -114,6 +115,14 @@ namespace Repositories_BE.Repositories
                     ReportIsActive = r.ReportIsActive,
                 })
                 .ToListAsync();
+        }
+
+        public async Task<Report> GetLatestReportByIdAsync(Guid childId)
+        {
+            return await _context.Reports
+                .Where(r => r.ChildId == childId)
+                .OrderByDescending(r => r.ReprotCreateDate)
+                .FirstOrDefaultAsync();
         }
 
     }

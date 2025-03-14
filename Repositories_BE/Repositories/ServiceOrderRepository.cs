@@ -76,7 +76,7 @@ namespace Repositories_BE.Repositories
         public async Task<List<ServiceOrder>> GetExpiredOrdersAsync()
         {
             return await _context.ServiceOrders
-                .Where(o => o.Status == "Complete" && o.EndDate <= _currentTime.GetCurrentTime())
+                .Where(o => o.Status == "Completed" && o.EndDate <= _currentTime.GetCurrentTime())
                 .ToListAsync();
         }
         public async Task UpdateOrdersAsync(List<ServiceOrder> orders)
