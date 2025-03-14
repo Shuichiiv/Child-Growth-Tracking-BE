@@ -92,6 +92,16 @@ namespace WebAPI_BE.ProductController
             return Ok(result);
         }
 
+        // Tìm kiếm sản phẩm theo tên
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchProductByName([FromQuery] string productName)
+        {
+            var result = await _productService.SearchProductByNameAsync(productName);
+            if (result == null)
+                return BadRequest("Không tìm thấy sản phẩm!!!");
+            return Ok(result);
+        }
+
 
     }
 }

@@ -16,5 +16,8 @@ namespace Repositories_BE.Interfaces
         Task<ProductList> GetProductByIdAsync(Guid productListId);
         Task<List<ProductList>> GetProductsByTypeAsync(string productType);
 
+        // Tìm kiếm sản phẩm theo tên
+        Task<List<ProductList>> SearchProductByNameAsync(string productName);
+
     }
 }

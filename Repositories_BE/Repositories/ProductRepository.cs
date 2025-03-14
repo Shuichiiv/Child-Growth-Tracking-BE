@@ -68,5 +68,10 @@ namespace Repositories_BE.Repositories
             return await _context.Set<ProductList>().Where(x => x.ProductType == productType).ToListAsync();
         }
 
+        public async Task<List<ProductList>> SearchProductByNameAsync(string productName)
+        {
+            return await _context.Set<ProductList>().Where(x => x.ProductName.Contains(productName)).ToListAsync();
+        }
+
     }
 }
