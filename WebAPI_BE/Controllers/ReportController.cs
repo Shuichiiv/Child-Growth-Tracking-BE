@@ -1,3 +1,4 @@
+using DataObjects_BE.Entities;
 using DTOs_BE.DoctorDTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -142,9 +143,9 @@ namespace WebAPI_BE.Controllers
         }
         
         [HttpPut("{reportId}/status")]
-        public async Task<IActionResult> UpdateReportStatus(Guid reportId, [FromBody] string newStatus)
+        public async Task<IActionResult> UpdateReportStatus(Guid reportId, [FromBody] String newStatus)
         {
-            if (reportId == Guid.Empty || string.IsNullOrWhiteSpace(newStatus))
+            if (reportId == Guid.Empty || string.IsNullOrWhiteSpace(newStatus.ToString()))
             {
                 return BadRequest("Dữ liệu không hợp lệ.");
             }
