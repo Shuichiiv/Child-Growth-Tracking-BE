@@ -92,7 +92,7 @@ namespace Services_BE.Services
                     BMI = r.BMI,
                     ReportContent = r.ReportContent,
                     ReportMark = r.ReportMark,
-                    ReportIsActive = r.ReportIsActive,
+                    ReportIsActive = r.ReportIsActive.ToString(),
                     ReportCreateDate = r.ReprotCreateDate
                 }).ToList();
             }
@@ -190,7 +190,24 @@ namespace Services_BE.Services
         }
         public async Task<IEnumerable<ReportDto>> GetReportsByStatusAsync(string status)
         {
-            return await _reportRepository.GetReportsByStatusAsync(status);
+
+            var statusMapping = new Dictionary<string, int>
+            {
+                { "Active", 1 },
+                { "Pending", 0 },
+                { "Inactive", 2 }
+            };
+            if (statusMapping.TryGetValue(status, out int statusInt))
+            {
+                return await _reportRepository.GetReportsByStatusAsync(statusInt.ToString());
+            }
+
+            if (int.TryParse(status, out int statusFromInput))
+            {
+                return await _reportRepository.GetReportsByStatusAsync(statusFromInput.ToString());
+            }
+            
+            return new List<ReportDto>();
         }
 
         public async Task<bool> UpdateReportStatusAsync(Guid reportId, string newStatus)

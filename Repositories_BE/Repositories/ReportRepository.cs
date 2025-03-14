@@ -106,7 +106,6 @@ namespace Repositories_BE.Repositories
                 .Where(r => r.ReportIsActive == status)
                 .Select(r => new ReportDto
                 {
-                    
                     ReportId = r.ReportId,
                     ChildId = r.ChildId,
                     Height = r.Height,

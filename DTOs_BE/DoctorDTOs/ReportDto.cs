@@ -1,3 +1,5 @@
+using DataObjects_BE.Entities;
+
 namespace DTOs_BE.DoctorDTOs
 {
     public class ReportDto
