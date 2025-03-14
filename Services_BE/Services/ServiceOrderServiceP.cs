@@ -64,10 +64,36 @@ public class ServiceOrderServiceP
             Console.WriteLine("Order not found or OrderCode is null.");
             return;
         }
-
+        
         string? status = await GetPaymentStatusFromPayOS(serviceOrder.OrderCode.Value);
+        
+        if (status?.ToUpper() == "CANCELLED")
+        {
+            serviceOrder.Status = "Cancelled";
 
-        if (status == "PAID")
+            if (_context.Entry(serviceOrder).State == EntityState.Detached)
+            {
+                _context.ServiceOrders.Attach(serviceOrder);
+            }
+            _context.Entry(serviceOrder).State = EntityState.Modified;
+            
+            var existingPayment = await _context.Payments
+                .FirstOrDefaultAsync(p => p.ServiceOrderId == serviceOrder.ServiceOrderId);
+
+            if (existingPayment != null)
+            {
+                existingPayment.PaymentStatus = PaymentStatus.Cancelled;
+                existingPayment.PaymentDate = DateTime.UtcNow;
+                _context.Entry(existingPayment).State = EntityState.Modified;
+            }
+            else
+            {
+                Console.WriteLine("Payment record not found.");
+            }
+            var rowsAffected = await _context.SaveChangesAsync();
+            Console.WriteLine($"Rows Affected: {rowsAffected}");
+        }
+        else if (status == "PAID")
         {
             serviceOrder.Status = "Completed";
 
@@ -76,24 +102,36 @@ public class ServiceOrderServiceP
                 _context.ServiceOrders.Attach(serviceOrder);
             }
             _context.Entry(serviceOrder).State = EntityState.Modified;
+            
+            var existingPayment = await _context.Payments
+                .FirstOrDefaultAsync(p => p.ServiceOrderId == serviceOrder.ServiceOrderId);
 
-            var payment = new Payment
+            if (existingPayment != null)
+            {
+                existingPayment.PaymentStatus = PaymentStatus.Completed;
+                existingPayment.PaymentDate = DateTime.UtcNow;
+                _context.Entry(existingPayment).State = EntityState.Modified;
+            }
+            else
+            {
+                Console.WriteLine("Payment record not found.");
+            }
+            /*var payment = new Payment
             {
                 PaymentId = Guid.NewGuid(),
                 ServiceOrderId = serviceOrder.ServiceOrderId,
                 PaymentMethod = "PayOS",
                 PaymentStatus = PaymentStatus.Completed,
-                PaymentDate = DateTime.Now,
+                PaymentDate = DateTime.UtcNow,
                 Amount = (decimal)serviceOrder.TotalPrice,
-                TransactionId = serviceOrder.OrderCode.ToString(),
-                PaymentUrl = null,
-                Signature = null
+                TransactionId = serviceOrder.OrderCode.ToString()
             };
 
-            _context.Payments.Add(payment);
+            _context.Payments.Add(payment);*/
             var rowsAffected = await _context.SaveChangesAsync();
             Console.WriteLine($"Rows Affected: {rowsAffected}");
         }
+        
     }
     public async Task<ServiceOrder> CreateServiceOrderAsync(Guid parentId, int serviceId, int quantity)
     {
