@@ -10,5 +10,6 @@ namespace Repositories_BE.Interfaces
     public interface IFeedbackRepository: IGenericRepository<Feedback>
     {
         Feedback GetFeedbackByIdIncludeProperties(Guid id);
+        List<Feedback> GetFeedbacksByChildId(Guid childId);
     }
 }
