@@ -104,7 +104,7 @@ namespace WebAPI_BE.Controllers
         public async Task<IActionResult> UpdateReport(Guid reportId, [FromBody] UpdateReportDto request)
         {
             var updated = await _reportService.UpdateReportAsync(reportId, request);
-            if (!updated) return BadRequest("Không tìm thấy báo cáo để cập nhật.");
+            if (!updated) return Ok("Không tìm thấy báo cáo để cập nhật.");
             return Ok("Cập nhật thành công.");
         }
         [HttpGet("inactive")]
@@ -113,7 +113,7 @@ namespace WebAPI_BE.Controllers
             var reports = await _reportService.GetReportsByStatusAsync("Inactive");
             if (reports == null || !reports.Any())
             {
-                return BadRequest("Không có báo cáo nào ở trạng thái Inactive.");
+                return Ok("Không có báo cáo nào ở trạng thái Inactive.");
             }
 
             return Ok(reports);
@@ -125,7 +125,7 @@ namespace WebAPI_BE.Controllers
             var reports = await _reportService.GetReportsByStatusAsync("Pending");
             if (reports == null || !reports.Any())
             {
-                return BadRequest("Không có báo cáo nào ở trạng thái Pending.");
+                return Ok("Không có báo cáo nào ở trạng thái Pending.");
             }
 
             return Ok(reports);
@@ -135,7 +135,7 @@ namespace WebAPI_BE.Controllers
         public async Task<IActionResult> DeleteReport(Guid reportId)
         {
             var result = await _reportService.DeleteReportByIdAsync(reportId);
-            if (!result) return NotFound("Không có báo cáo nào.");
+            if (!result) return Ok("Không có báo cáo nào.");
     
             return NoContent();
         }
@@ -146,7 +146,7 @@ namespace WebAPI_BE.Controllers
             var reports = await _reportService.GetReportsByStatusAsync("Active");
             if (reports == null || !reports.Any())
             {
-                return BadRequest("Không có báo cáo nào ở trạng thái Active.");
+                return Ok("Không có báo cáo nào ở trạng thái Active.");
             }
 
             return Ok(reports);
@@ -157,7 +157,7 @@ namespace WebAPI_BE.Controllers
         {
             if (reportId == Guid.Empty || string.IsNullOrWhiteSpace(newStatus.ToString()))
             {
-                return BadRequest("Dữ liệu không hợp lệ.");
+                return Ok("Dữ liệu không hợp lệ.");
             }
 
             var updated = await _reportService.UpdateReportStatusAsync(reportId, newStatus);
