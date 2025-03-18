@@ -21,7 +21,6 @@ namespace DTOs_BE.DoctorDTOs
     public class ReportDtoFParents
     {
         public Guid ChildId { get; set; }
-        public Guid DoctorId { get; set; }
         public string ReportMark { get; set; }
         public string ReportContent { get; set; }
         public DateTime ReportCreateDate { get; set; }
