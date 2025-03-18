@@ -14,6 +14,8 @@ namespace Repositories_BE.Interfaces
         Task<IEnumerable<Child>> SearchChildrenAsync(Guid parentId, string keyword);
         Task<Child> GetChildByIdAndParentAsync(Guid childId, Guid parentId);
         
+        Task<DateTime?> GetChildDOB(Guid childId);
+        
         Task<ParentDto2> GetParentByChildIdAsync1(Guid childId);
         Task<ChildDto> GetChildByIdAsync1(Guid childId);
         

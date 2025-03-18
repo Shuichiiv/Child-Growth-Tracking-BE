@@ -11,10 +11,16 @@ namespace Services_BE.Services
         private readonly IReportRepository _reportRepository;
         private readonly IChildRepository _childRepository;
         private readonly IParentRepository _parentRepository;
+        private readonly IFeedbackRepository _feedbackRepository;
+        private readonly IRatingRepository _ratingRepository;
         
-        public ReportService(IReportRepository reportRepository)
+        public ReportService(IReportRepository reportRepository,IRatingRepository ratingRepository, IFeedbackRepository feedbackRepository, IChildRepository childRepository, IParentRepository parentRepository)
         {
             _reportRepository = reportRepository;
+            _feedbackRepository = feedbackRepository;
+            _childRepository = childRepository;
+            _parentRepository = parentRepository;
+            _ratingRepository = ratingRepository;
         }
         public async Task<ReportDto> CreateBMIReportAsync(Guid childId, double height, double weight)
         {
@@ -83,7 +89,9 @@ namespace Services_BE.Services
             try
             {
                 var reports = await _reportRepository.GetReportsByChildIdAsync(childId);
-                return reports.Select(r => new ReportDto
+                return reports
+                    .Where(r => r.ReportIsActive != "3")
+                    .Select(r => new ReportDto
                 {
                     ReportId = r.ReportId,
                     ChildId = r.ChildId,
@@ -105,33 +113,40 @@ namespace Services_BE.Services
 
         public async Task<ReportDto> CreateCustomBMIReportAsync(ReportDtoFParents reportDto)
         {
-            var report = new Report
-            {
-                ReportId = Guid.NewGuid(),
-                ChildId = reportDto.ChildId,
-                Height = reportDto.Height,
-                Weight = reportDto.Weight,
-                BMI = reportDto.Weight / ((reportDto.Height / 100) * (reportDto.Height / 100)), // BMI = W / H^2
-                ReprotCreateDate = reportDto.ReportCreateDate,
-                ReportIsActive = "Inactive",
-                ReportName = "BMI Report",
-                ReportContent = $"BMI calculated on {reportDto.ReportCreateDate:yyyy-MM-dd}",
-                ReportMark = GetBMICategory(reportDto.Weight / ((reportDto.Height / 100) * (reportDto.Height / 100)))
-            };
+             var child = await _childRepository.GetChildByIdAsync(reportDto.ChildId);
+               
+                if (child == null)
+                    throw new KeyNotFoundException("Child not found");
 
-            var createdReport = await _reportRepository.CreateBMIReportAsync(report);
+                if (reportDto.ReportCreateDate < child.DOB)
+                    throw new Exception("Report date cannot be before the child's birth date.");
 
-            return new ReportDto
-            {
-                ReportId = createdReport.ReportId,
-                ChildId = createdReport.ChildId,
-                Height = createdReport.Height,
-                Weight = createdReport.Weight,
-                BMI = createdReport.BMI,
-                ReportContent = createdReport.ReportContent,
-                ReportMark = createdReport.ReportMark,
-                ReportIsActive = "Inactive"
-            };
+                var report = new Report
+                {
+                    ReportId = Guid.NewGuid(),
+                    ChildId = reportDto.ChildId,
+                    Height = reportDto.Height,
+                    Weight = reportDto.Weight,
+                    BMI = reportDto.Weight / ((reportDto.Height / 100) * (reportDto.Height / 100)), // BMI = W / H^2
+                    ReprotCreateDate = reportDto.ReportCreateDate,
+                    ReportIsActive = "Inactive",
+                    ReportName = "BMI Report",
+                    ReportContent = $"BMI calculated on {reportDto.ReportCreateDate:yyyy-MM-dd}",
+                    ReportMark = GetBMICategory(reportDto.Weight / ((reportDto.Height / 100) * (reportDto.Height / 100)))
+                };
+
+                var createdReport = await _reportRepository.CreateBMIReportAsync(report);
+                return new ReportDto
+                {
+                    ReportId = createdReport.ReportId,
+                    ChildId = createdReport.ChildId,
+                    Height = createdReport.Height,
+                    Weight = createdReport.Weight,
+                    BMI = createdReport.BMI,
+                    ReportContent = createdReport.ReportContent,
+                    ReportMark = createdReport.ReportMark,
+                    ReportIsActive = "Inactive"
+                };
         }
         private string GetBMICategory(double bmi)
         {
@@ -188,6 +203,17 @@ namespace Services_BE.Services
 
             return await _reportRepository.UpdateReportAsync(report);           
         }
+        
+        public async Task<bool> DeleteReportByIdAsync(Guid reportId)
+        {
+            var report = await _reportRepository.GetByIDAsync(reportId);
+            if (report == null)
+            {
+                return false;
+            }
+            report.ReportIsActive = "3";
+            return await _reportRepository.UpdateReportAsync(report);
+        }
         public async Task<IEnumerable<ReportDto>> GetReportsByStatusAsync(string status)
         {
 
@@ -195,7 +221,8 @@ namespace Services_BE.Services
             {
                 { "Active", 1 },
                 { "Pending", 0 },
-                { "Inactive", 2 }
+                { "Inactive", 2 },
+                { "Delete", 3 }
             };
             if (statusMapping.TryGetValue(status, out int statusInt))
             {

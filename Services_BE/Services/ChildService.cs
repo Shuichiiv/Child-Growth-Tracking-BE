@@ -27,6 +27,7 @@ public class ChildService : IChildService
         }
     }
     
+
     public async Task<ParentDto2> GetParentByChildIdAsync1(Guid childId)
     {
         return await _childRepository.GetParentByChildIdAsync1(childId);

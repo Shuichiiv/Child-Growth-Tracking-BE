@@ -104,7 +104,7 @@ namespace WebAPI_BE.Controllers
         public async Task<IActionResult> UpdateReport(Guid reportId, [FromBody] UpdateReportDto request)
         {
             var updated = await _reportService.UpdateReportAsync(reportId, request);
-            if (!updated) return NotFound("Không tìm thấy báo cáo để cập nhật.");
+            if (!updated) return BadRequest("Không tìm thấy báo cáo để cập nhật.");
             return Ok("Cập nhật thành công.");
         }
         [HttpGet("inactive")]
@@ -113,7 +113,7 @@ namespace WebAPI_BE.Controllers
             var reports = await _reportService.GetReportsByStatusAsync("Inactive");
             if (reports == null || !reports.Any())
             {
-                return NotFound("Không có báo cáo nào ở trạng thái Inactive.");
+                return BadRequest("Không có báo cáo nào ở trạng thái Inactive.");
             }
 
             return Ok(reports);
@@ -125,18 +125,28 @@ namespace WebAPI_BE.Controllers
             var reports = await _reportService.GetReportsByStatusAsync("Pending");
             if (reports == null || !reports.Any())
             {
-                return NotFound("Không có báo cáo nào ở trạng thái Pending.");
+                return BadRequest("Không có báo cáo nào ở trạng thái Pending.");
             }
 
             return Ok(reports);
         }
+        
+        [HttpDelete("{reportId}")]
+        public async Task<IActionResult> DeleteReport(Guid reportId)
+        {
+            var result = await _reportService.DeleteReportByIdAsync(reportId);
+            if (!result) return NotFound("Không có báo cáo nào.");
+    
+            return NoContent();
+        }
+        
         [HttpGet("active")]
         public async Task<IActionResult> GetPendingReportsActive()
         {
             var reports = await _reportService.GetReportsByStatusAsync("Active");
             if (reports == null || !reports.Any())
             {
-                return NotFound("Không có báo cáo nào ở trạng thái Active.");
+                return BadRequest("Không có báo cáo nào ở trạng thái Active.");
             }
 
             return Ok(reports);
@@ -151,7 +161,7 @@ namespace WebAPI_BE.Controllers
             }
 
             var updated = await _reportService.UpdateReportStatusAsync(reportId, newStatus);
-            if (!updated) return NotFound("Không tìm thấy báo cáo để cập nhật trạng thái.");
+            if (!updated) return BadRequest("Không tìm thấy báo cáo để cập nhật trạng thái.");
 
             return Ok("Cập nhật trạng thái thành công.");
         }
