@@ -16,6 +16,7 @@ namespace DataObjects_BE.Entities
         public DateTime FeedbackCreateDate { get; set; }
         public DateTime FeedbackUpdateDate { get;set; }
         public bool FeedbackIsActive { get; set; } 
+        public bool IsResponsed { get; set; }
         public string FeedbackName { get; set; }
         public string FeedbackContentResponse { get; set; }
         [ForeignKey("ReportId")]
