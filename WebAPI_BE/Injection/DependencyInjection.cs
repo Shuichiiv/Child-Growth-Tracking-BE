@@ -49,7 +49,6 @@ namespace WebAPI_BE.Injection
             services.AddScoped<IRatingRepository, RatingRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IPaymentRepository, PaymentRepository>();
-            
 
             //Injection services of project
             services.AddSingleton<IEmailService, EmailService>();

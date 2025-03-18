@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using AutoMapper;
 using DataObjects_BE;
 using DataObjects_BE.Entities;
 using DTOs_BE.DoctorDTOs;
@@ -11,11 +12,19 @@ namespace Repositories_BE.Repositories
     {
         
         private readonly SWP391G3DbContext _context;
+        private readonly IFeedbackRepository _feedbackRepository;
 
-        public ReportRepository(SWP391G3DbContext context): base(context)
+        public ReportRepository(SWP391G3DbContext context, IFeedbackRepository feedbackRepository): base(context)
         {
             _context = context;
+            _feedbackRepository = feedbackRepository;
         }
+        
+        public async Task<Report> GetByIDAsync(Guid id)
+        {
+            return await _dbSet.FindAsync(id);
+        }
+
         
         public async Task<Report> CreateBMIReportAsync(Guid childId, double height, double weight)
         {
@@ -115,6 +124,13 @@ namespace Repositories_BE.Repositories
                 })
                 .ToListAsync();
         }
+        
+        public async Task<bool> DeleteAsync(Report report)
+        {
+            _context.Reports.Remove(report);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
 
         public async Task<Report> GetLatestReportByIdAsync(Guid childId)
         {

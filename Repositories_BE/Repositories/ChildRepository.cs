@@ -15,7 +15,15 @@ namespace Repositories_BE.Repositories
         {
             _context = context;
         }
-        
+
+        public async Task<DateTime?> GetChildDOB(Guid childId)
+        {
+            return await _context.Childs
+                .Where(c => c.ChildId == childId)
+                .Select(c => (DateTime?)c.DOB)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<ParentDto2> GetParentByChildIdAsync1(Guid childId)
         {
             var child = await _context.Childs

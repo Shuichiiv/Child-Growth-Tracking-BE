@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using DataObjects_BE.Entities;
 using DTOs_BE.DoctorDTOs;
 
@@ -12,9 +13,10 @@ namespace Repositories_BE.Interfaces
         Task<Report> CreateReportAsync2(Guid childId, CreateReportDto dto);
         Task<bool> UpdateReportAsync(Report report);
         Task<IEnumerable<ReportDto>> GetReportsByStatusAsync(string status);
+        Task<bool> DeleteAsync(Report report);
         
         Task<Report> GetLatestReportByIdAsync(Guid childId);
-        
+        Task<Report> GetByIDAsync(Guid id);
     }
 
 }

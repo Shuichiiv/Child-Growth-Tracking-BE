@@ -13,6 +13,8 @@ public interface IChildService
     Task<bool> DeleteChildAsync(Guid childId);
     Task<IEnumerable<ChildDto>> SearchChildrenAsync(Guid parentId, string keyword);
     Task<ChildDto> GetChildByIdAndParentAsync(Guid childId, Guid parentId);
+    
+
 
     Task<ParentDto2> GetParentByChildIdAsync1(Guid childId);
     Task<ChildDto> GetChildByIdAsync1(Guid childId);
