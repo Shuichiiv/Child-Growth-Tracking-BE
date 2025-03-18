@@ -26,5 +26,13 @@ namespace Repositories_BE.Repositories
                 .FirstOrDefault(x=>x.FeedbackId== id);
             return feedback;
         }
+        public List<Feedback> GetFeedbacksByChildId(Guid childId)
+        {
+            return _context.Feedbacks
+                .Include(f => f.Report) 
+                .Where(f => f.Report.ChildId == childId)
+                .OrderByDescending(f => f.FeedbackCreateDate)
+                .ToList();
+        }
     }
 }

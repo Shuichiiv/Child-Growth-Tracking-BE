@@ -18,7 +18,7 @@ namespace WebAPI_BE.Controllers
         public async Task<IActionResult> GetFeedbackById(string id)
         {
           
-            var response = _feedbackService.GetFeedbackById(id);
+            var response = await _feedbackService.GetFeedbackById(id);
             if (response == null)
             {
                 return NotFound();
@@ -29,8 +29,18 @@ namespace WebAPI_BE.Controllers
         [HttpGet("get-list-feedback")]
         public async Task<IActionResult> GetListFeedback()
         {
-            var response = _feedbackService.GetListFeedBack();
+            var response = await _feedbackService.GetListFeedBack();
             if(response == null)
+            {
+                return NotFound();
+            }
+            return Ok(response);
+        }
+        [HttpGet("get-list-feedback-by-childId/{childId}")]
+        public async Task<IActionResult>GetListFeedbackByChildId(string childId)
+        {
+            var response =await _feedbackService.ListFeedbackByChildId(childId);
+            if (response == null)
             {
                 return NotFound();
             }
@@ -65,7 +75,7 @@ namespace WebAPI_BE.Controllers
             }
             try
             {
-                var response = _feedbackService.UpdateFeedback(model, id);
+                var response = await _feedbackService.UpdateFeedback(model, id);
                 if(response == null)
                 {
                     return BadRequest();
@@ -79,12 +89,13 @@ namespace WebAPI_BE.Controllers
         [HttpPut("change-active-feedback/{id}")]
         public async Task<IActionResult> ChangeActiveFeedback(string id)
         {
-            var response = _feedbackService.ChangeActiveOfFeedback(id);
+            var response = await _feedbackService.ChangeActiveOfFeedback(id);
             if(response == null)
             {
                 return BadRequest();
             }
             return Ok(response);
         }
+        
     }
 }

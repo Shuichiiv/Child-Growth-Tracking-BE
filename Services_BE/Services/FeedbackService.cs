@@ -136,5 +136,19 @@ namespace Services_BE.Services
                 return result;
             }catch(Exception ex) { throw ex; }
         }
+        public async Task<List<FeedbackResponseDTO>> ListFeedbackByChildId(string childId)
+        {
+            try
+            {
+                var cId = Guid.Parse(childId);
+                var list = _feedbackRepository.GetFeedbacksByChildId(cId);
+                if (list == null || !list.Any())
+                {
+                    throw new Exception("This child doesn't have any feedback");
+                }
+                var result = _mapper.Map<List<FeedbackResponseDTO>>(list);
+                return result;
+            }catch (Exception ex) { throw ex; }
+        }
     }
 }
