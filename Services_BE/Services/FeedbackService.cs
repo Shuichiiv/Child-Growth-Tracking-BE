@@ -86,6 +86,7 @@ namespace Services_BE.Services
                     FeedbackName = model.FeedbackName,
                     FeedbackIsActive = model.FeedbackIsActive,
                     FeedbackContentResponse = model.FeedbackContentResponse,
+                    IsResponsed = false
                 };
                 _feedbackRepository.Insert(newFeedback);
                 _feedbackRepository.Save();
@@ -107,6 +108,7 @@ namespace Services_BE.Services
                 feedbackExisting.FeedbackContentRequest = model.FeedbackContentRequest;
                 feedbackExisting.FeedbackContentResponse = model.FeedbackContentResponse;
                 feedbackExisting.FeedbackName = model.FeedbackName;
+                feedbackExisting.IsResponsed = true;
                 _feedbackRepository.Update(feedbackExisting);
                 _feedbackRepository.Save();
                 var result = _mapper.Map<FeedbackResponseDTO>(feedbackExisting);
