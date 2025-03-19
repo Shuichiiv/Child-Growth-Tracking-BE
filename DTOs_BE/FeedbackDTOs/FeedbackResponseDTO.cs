@@ -17,6 +17,7 @@ namespace DTOs_BE.FeedbackDTOs
         public DateTime FeedbackCreateDate { get; set; }
         public DateTime FeedbackUpdateDate { get; set; }
         public bool FeedbackIsActive { get; set; }
+        public bool IsResponsed { get; set; }
         public string FeedbackName { get; set; }
         public string FeedbackContentResponse { get; set; }
         public virtual Report Report { get; set; }
