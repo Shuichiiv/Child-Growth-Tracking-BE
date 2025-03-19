@@ -30,7 +30,6 @@ namespace DataObjects_BE.Migrations
                 (NEWID(), 'Ha Anh', 'Kieu', 'Kieu Ha Anh', 'AQAAAAIAAYagAAAAELObGZZG6vqAQaRa1m71QSDs2h1pUHdryohuqFT/OV71Zbq997QA4CJP6i4zzFHeOw==', 'kieuhaanh@root.com', '0987654321', '456 Elm St', 2, CAST('2025-02-27T13:19:53.0300000' AS DateTime2), NULL, 'https://example.com/janesmith.jpg', 1, NULL, NULL, NULL, NULL),
                 (NEWID(), 'Thu Nghiem', 'Tai Khoan', 'nguyenthaitoanphuc2304@gmail.com', 'AQAAAAIAAYagAAAAEK35sPVvQ5NHoD59gZiIX2sS0Wvv+uutFknwPf+lIXa0VB6cW9uXyc9Z7jB+7s3mtg==', 'nguyenthaitoanphuc2304@gmail.com', '0147521478', 'quận 9', 1, CAST('2025-03-13T06:58:39.8475106' AS DateTime2), CAST('2025-03-13T06:58:39.8478221' AS DateTime2), 'abc', 1, NULL, CAST('2025-03-13T06:58:39.9198465' AS DateTime2), NULL, NULL);
 
-
                 -- Insert Managers
                 INSERT INTO Managers (ManagerId, AccountId) VALUES
                 (NEWID(), (SELECT AccountId FROM Accounts WHERE UserName = 'admin'));
@@ -68,30 +67,52 @@ namespace DataObjects_BE.Migrations
 
                 -- Insert Reports
                 INSERT INTO Reports (ReportId, ChildId, ReportMark, ReportContent, ReprotCreateDate, ReportIsActive, ReportName, Height, Weight, BMI) VALUES
-                (NEWID(), (SELECT ChildId FROM Childs WHERE FirstName = 'Duyên'), 'A', 'Healthy', GETUTCDATE(), 1, 'Report 1', 120.5, 30.5, 18.5),
-                (NEWID(), (SELECT ChildId FROM Childs WHERE FirstName = 'Huỳnh Thị Liên'), 'B', 'Needs more vitamins', GETUTCDATE(), 1, 'Report 2', 130.5, 35.5, 20.5);
+                (NEWID(), (SELECT ChildId FROM Childs WHERE FirstName = 'Duyên'), 'A', 'Cân đối', GETUTCDATE(), 1, 'Report 1', 120.5, 30.5, 18.5),
+                (NEWID(), (SELECT ChildId FROM Childs WHERE FirstName = 'Huỳnh Thị Liên'), 'B', 'Cần thêm vitamin', GETUTCDATE(), 1, 'Report 2', 130.5, 35.5, 20.5);
 
                 -- Insert Feedbacks
                 INSERT INTO Feedbacks (FeedbackId, ReportId, DoctorId, FeedbackContentRequest, FeedbackCreateDate, FeedbackUpdateDate, FeedbackIsActive, FeedbackName, FeedbackContentResponse) VALUES
-                (NEWID(), (SELECT ReportId FROM Reports WHERE ReportName = 'Report 1'), (SELECT DoctorId FROM Doctors WHERE AccountId = (SELECT AccountId FROM Accounts WHERE UserName = 'HanaHa')), 'Great consultation!', GETUTCDATE(), GETUTCDATE(), 1, 'Feedback 1', 'Response 1'),
-                (NEWID(), (SELECT ReportId FROM Reports WHERE ReportName = 'Report 2'), (SELECT DoctorId FROM Doctors WHERE AccountId = (SELECT AccountId FROM Accounts WHERE UserName = 'JakeNguyen')), 'Very helpful advice', GETUTCDATE(), GETUTCDATE(), 1, 'Feedback 2', 'Response 2');
+                (NEWID(), (SELECT ReportId FROM Reports WHERE ReportName = 'Report 1'), (SELECT DoctorId FROM Doctors WHERE AccountId = (SELECT AccountId FROM Accounts WHERE UserName = 'HanaHa')), 'Tư vấn tuyệt vời!', GETUTCDATE(), GETUTCDATE(), 1, 'Feedback 1', 'Response 1'),
+                (NEWID(), (SELECT ReportId FROM Reports WHERE ReportName = 'Report 2'), (SELECT DoctorId FROM Doctors WHERE AccountId = (SELECT AccountId FROM Accounts WHERE UserName = 'JakeNguyen')), 'Lời khuyên rất hữu ích', GETUTCDATE(), GETUTCDATE(), 1, 'Feedback 2', 'Response 2');
 
                 -- Insert Ratings
                 INSERT INTO Ratings (RatingId, FeedbackId, ParentId, RatingValue, RatingDate, IsActive) VALUES
                 (NEWID(), (SELECT FeedbackId FROM Feedbacks WHERE FeedbackName = 'Feedback 1'), (SELECT ParentId FROM Parents WHERE AccountId = (SELECT AccountId FROM Accounts WHERE UserName = 'thonglyngocse@gmail.com')), 5, GETUTCDATE(), 1),
                 (NEWID(), (SELECT FeedbackId FROM Feedbacks WHERE FeedbackName = 'Feedback 2'), (SELECT ParentId FROM Parents WHERE AccountId = (SELECT AccountId FROM Accounts WHERE UserName = 'thonglyngocse@gmail.com')), 4, GETUTCDATE(), 1);
 
-            
-
                 -- Insert ProductLists
                 INSERT INTO ProductLists (ProductListId, ProductName, ProductDescription, Price, MinAge, MaxAge, SafetyFeature, Rating, RecommendedBy, ImageUrl, Brand, IsActive, ProductType) VALUES
-                (NEWID(), 'Multivitamins', 'Daily vitamins for kids', 1500.0000, 3, 5, 'Feature 1', 4.5, 'Recommender 1', 'url1', 'Brand 1', 1, 'Cân nặng bình thường - Bình thường'),
-                (NEWID(), 'Baby Formula', 'Infant milk powder', 3000.0000, 0, 1, 'Feature 2', 4.0, 'Recommender 2', 'url2', 'Brand 2', 1, 'Cân nặng bình thường - Bình thường');
+                (NEWID(), 'Multivitamin', 'Siro vitamin tổng hợp hằng ngày cho trẻ', 1500.0000, 3, 5, 'Feature 1', 4.5, 'Recommender 1', 'url1', 'Brand 1', 1, 'Cân nặng bình thường - Bình thường'),
+                (NEWID(), 'Baby Formula', 'Sữa bột dành cho trẻ sơ sinh', 3000.0000, 0, 1, 'Feature 2', 4.0, 'Recommender 2', 'url2', 'Brand 2', 1, 'Cân nặng bình thường - Bình thường'),
+                (NEWID(), 'Rice Cereal', 'Bột ăn dặm giàu dinh dưỡng với hàm lượng béo thấp', 2500.0000, 0, 2, 'Feature 3', 4.2, 'Recommender 3', 'url3', 'Brand 3', 1, 'Thừa cân - Nguy cơ tăng nhẹ'),
+                (NEWID(), 'Fruit Puree', 'Súp trái cây tự nhiên không thêm đường', 1800.0000, 1, 3, 'Feature 4', 4.6, 'Recommender 4', 'url4', 'Brand 4', 1, 'Thừa cân - Nguy cơ tăng nhẹ'),
+                (NEWID(), 'Brain Booster', 'Bổ sung DHA giúp phát triển trí não', 3200.0000, 0, 5, 'Feature 5', 4.8, 'Recommender 5', 'url5', 'Brand 5', 1, 'Béo phì độ I - Nguy cơ trung bình'),
+                (NEWID(), 'Gummies', 'Kẹo dẻo giúp xương chắc khỏe', 2100.0000, 3, 10, 'Feature 6', 4.7, 'Recommender 6', 'url6', 'Brand 6', 1, 'Béo phì độ I - Nguy cơ trung bình'),
+                (NEWID(), 'Probiotic', 'Giúp hỗ trợ tiêu hóa và tăng cường lợi khuẩn', 2900.0000, 0, 3, 'Feature 7', 4.4, 'Recommender 7', 'url7', 'Brand 7', 1, 'Béo phì độ II - Nguy cơ cao'),
+                (NEWID(), 'Iron-Baby', 'Cháo giàu sắt giúp ngăn ngừa thiếu máu', 2600.0000, 0, 2, 'Feature 8', 4.5, 'Recommender 8', 'url8', 'Brand 8', 1, 'Béo phì độ II - Nguy cơ cao'),
+                (NEWID(), 'Toddler Snack', 'Thanh ăn vặt giàu chất xơ từ ngũ cốc nguyên cám', 2000.0000, 1, 5, 'Feature 9', 4.3, 'Recommender 9', 'url9', 'Brand 9', 1, 'Béo phì độ III - Nguy cơ rất cao'),
+                (NEWID(), 'Hypoallergenic', 'Sữa công thức dành cho trẻ không dung nạp lactose', 3100.0000, 0, 1, 'Feature 10', 4.2, 'Recommender 10', 'url10', 'Brand 10', 1, 'Béo phì độ III - Nguy cơ rất cao'),
+                (NEWID(), 'Growth Drink', 'Cung cấp protein và vitamin hỗ trợ phát triển', 3500.0000, 2, 8, 'Feature 11', 4.9, 'Recommender 11', 'url11', 'Brand 11', 1, 'Gầy độ I - Nguy cơ thấp'),
+                (NEWID(), 'Organic Green', 'Súp rau xanh hữu cơ dễ tiêu hóa', 1900.0000, 1, 4, 'Feature 12', 4.6, 'Recommender 12', 'url12', 'Brand 12', 1, 'Gầy độ I - Nguy cơ thấp'),
+                (NEWID(), 'Protein-Boosted', 'Bánh quy bổ sung đạm cho trẻ suy dinh dưỡng', 2300.0000, 3, 6, 'Feature 13', 4.5, 'Recommender 13', 'url13', 'Brand 13', 1, 'Gầy độ II - Nguy cơ vừa'),
+                (NEWID(), 'Powder', 'Hỗ trợ bù nước và điện giải cho trẻ', 2700.0000, 4, 12, 'Feature 14', 4.3, 'Recommender 14', 'url14', 'Brand 14', 1, 'Gầy độ II - Nguy cơ vừa'),
+                (NEWID(), 'Brain Chews', 'Bổ sung Omega-3 giúp tăng cường trí não', 2800.0000, 3, 10, 'Feature 15', 4.7, 'Recommender 15', 'url15', 'Brand 15', 1, 'Gầy độ III (Rất gầy) - Nguy cơ cao'),
+                (NEWID(), 'Grain Cereal', 'Ngũ cốc nguyên cám giúp hỗ trợ tiêu hóa', 2500.0000, 2, 6, 'Feature 16', 4.4, 'Recommender 16', 'url16', 'Brand 16', 1, 'Gầy độ III (Rất gầy) - Nguy cơ cao');
 
                 -- Insert ReportProducts
                 INSERT INTO ReportProducts (ReportProductId, ReportId, ProductListId) VALUES
-                (NEWID(), (SELECT ReportId FROM Reports WHERE ReportName = 'Report 1'), (SELECT ProductListId FROM ProductLists WHERE ProductName = 'Multivitamins')),
+                (NEWID(), (SELECT ReportId FROM Reports WHERE ReportName = 'Report 1'), (SELECT ProductListId FROM ProductLists WHERE ProductName = 'Multivitamin')),
                 (NEWID(), (SELECT ReportId FROM Reports WHERE ReportName = 'Report 2'), (SELECT ProductListId FROM ProductLists WHERE ProductName = 'Baby Formula'));
+
+                -- Insert Services
+                INSERT INTO Services (ServiceName, ServicePrice, ServiceDescription, ServiceDuration, ServiceCreateDate, IsActive) VALUES
+                ('Gói Basic', 5000.00, 'Thời hạn trong vòng 7 ngày', 7, GETUTCDATE(), 1),
+                ('Gói Plus', 10000.00, 'Thời hạn trong vòng 14 ngày', 14, GETUTCDATE(), 1),
+                ('Gói Pro', 15000.00, 'Thời hạn trong vòng 30 ngày', 30, GETUTCDATE(), 1),
+                ('Gói Ultra', 30000.00, 'Thời hạn trong vòng 60 ngày', 60, GETUTCDATE(), 0),
+                ('Gói Đại gia', 60000.00, 'Thời hạn trong vòng 120 ngày', 120, GETUTCDATE(), 0);
+
+
             ");
         }
 
@@ -99,21 +120,19 @@ namespace DataObjects_BE.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.Sql(@"
-            DELETE FROM ReportProducts;
-            DELETE FROM Ratings;
-            DELETE FROM Feedbacks;
-            
-            
-            DELETE FROM Reports;
-            DELETE FROM Appointments;
-            DELETE FROM Childs;
-            DELETE FROM Parents;
-            DELETE FROM Managers;
-            DELETE FROM Doctors;
-            DELETE FROM ProductLists;
-            
-            DELETE FROM Accounts;
-        ");
+                DELETE FROM ReportProducts;
+                DELETE FROM Ratings;
+                DELETE FROM Feedbacks;
+                DELETE FROM Services;
+                DELETE FROM Reports;
+                DELETE FROM Appointments;
+                DELETE FROM Childs;
+                DELETE FROM Parents;
+                DELETE FROM Managers;
+                DELETE FROM Doctors;
+                DELETE FROM ProductLists;
+                DELETE FROM Accounts;
+            ");
         }
     }
 }
