@@ -53,7 +53,6 @@ namespace WebAPI_BE.Injection
             //Injection services of project
             services.AddSingleton<IEmailService, EmailService>();
             services.AddScoped<IReportService, ReportService>();
-            services.AddScoped<IVietQRService, VietQRService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IServiceService, ServiceService>();
             services.AddScoped<IServiceOrderService, ServiceOrderService>();
