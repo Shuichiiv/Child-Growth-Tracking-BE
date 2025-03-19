@@ -79,6 +79,23 @@ namespace Repositories_BE.Repositories
                 .Where(o => o.Status == "Completed" && o.EndDate <= _currentTime.GetCurrentTime())
                 .ToListAsync();
         }
+        public async Task<List<ServiceOrder>> GetServiceOrdersByParentIdAndServiceIds(Guid parentId, List<int> serviceIds)
+        {
+            return await _context.ServiceOrders
+                .Include(so => so.Service)
+                .Where(so => so.ParentId == parentId && serviceIds.Contains(so.ServiceId))
+                .ToListAsync();
+        }
+
+        public async Task<List<ServiceOrder>> GetLatestServiceOrdersByParentId(Guid parentId)
+        {
+            return await _context.ServiceOrders
+                .Where(so => so.ParentId == parentId)
+                .GroupBy(so => so.ServiceId)
+                .Select(g => g.OrderByDescending(so => so.CreateDate).FirstOrDefault())
+                .ToListAsync();
+        }
+
         public async Task UpdateOrdersAsync(List<ServiceOrder> orders)
         {
             _context.ServiceOrders.UpdateRange(orders);
