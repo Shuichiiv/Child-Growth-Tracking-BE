@@ -38,6 +38,7 @@ namespace Repositories_BE.Repositories
         {
             return _context.Feedbacks
                 .Include(f => f.Report)
+                .Include(f => f.Ratings)
                 .Where(f => f.DoctorId == doctorId)
                 .OrderByDescending (f => f.FeedbackCreateDate)
                 .OrderByDescending(f => f.FeedbackUpdateDate)
