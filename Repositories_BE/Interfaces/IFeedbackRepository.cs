@@ -11,5 +11,6 @@ namespace Repositories_BE.Interfaces
     {
         Feedback GetFeedbackByIdIncludeProperties(Guid id);
         List<Feedback> GetFeedbacksByChildId(Guid childId);
+        List<Feedback> GetFeedbackByDoctorId(Guid doctorId);
     }
 }

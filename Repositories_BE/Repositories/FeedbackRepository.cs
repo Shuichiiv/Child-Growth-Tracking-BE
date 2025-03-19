@@ -34,5 +34,15 @@ namespace Repositories_BE.Repositories
                 .OrderByDescending(f => f.FeedbackCreateDate)
                 .ToList();
         }
+        public List<Feedback> GetFeedbackByDoctorId(Guid doctorId)
+        {
+            return _context.Feedbacks
+                .Include(f => f.Report)
+                .Include(f => f.Ratings)
+                .Where(f => f.DoctorId == doctorId)
+                .OrderByDescending (f => f.FeedbackCreateDate)
+                .OrderByDescending(f => f.FeedbackUpdateDate)
+                .ToList();
+        }
     }
 }

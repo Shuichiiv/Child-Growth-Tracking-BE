@@ -15,5 +15,6 @@ namespace Services_BE.Interfaces
         Task<FeedbackResponseDTO> UpdateFeedback(UpdateFeedbackModel model, string id);
         Task<FeedbackResponseDTO> ChangeActiveOfFeedback(string id);
         Task<List<FeedbackResponseDTO>> ListFeedbackByChildId(string childId);
+        Task<List<FeedbackResponseDTO>> ListFeedbackByDoctorId(string doctorId);
     }
 }

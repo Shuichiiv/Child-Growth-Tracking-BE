@@ -1,4 +1,5 @@
-﻿using DTOs_BE.FeedbackDTOs;
+﻿using DataObjects_BE.Entities;
+using DTOs_BE.FeedbackDTOs;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Services_BE.Interfaces;
@@ -45,6 +46,17 @@ namespace WebAPI_BE.Controllers
                 return NotFound();
             }
             return Ok(response);
+        }
+        [HttpGet("get-list-feedback-by-doctorId/{doctorId}")]
+        public async Task<IActionResult>GetListFeedbackByDoctorId(string doctorId) 
+        {
+            var response = await _feedbackService.ListFeedbackByDoctorId(doctorId);
+            if (response == null)
+            {
+                return NotFound();
+            }
+            return Ok(response);
+
         }
         [HttpPost("create-feedback")]
         public async Task<IActionResult> CreateFeedback([FromBody] CreateFeedbackModel model)
