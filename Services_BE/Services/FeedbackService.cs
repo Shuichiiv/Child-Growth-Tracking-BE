@@ -105,9 +105,7 @@ namespace Services_BE.Services
                     throw new Exception("Feedback is not existing!!!");
                 }
                 feedbackExisting.FeedbackUpdateDate = _currentTime.GetCurrentTime();
-                feedbackExisting.FeedbackContentRequest = model.FeedbackContentRequest;
                 feedbackExisting.FeedbackContentResponse = model.FeedbackContentResponse;
-                feedbackExisting.FeedbackName = model.FeedbackName;
                 feedbackExisting.IsResponsed = true;
                 _feedbackRepository.Update(feedbackExisting);
                 _feedbackRepository.Save();
@@ -151,6 +149,21 @@ namespace Services_BE.Services
                 var result = _mapper.Map<List<FeedbackResponseDTO>>(list);
                 return result;
             }catch (Exception ex) { throw ex; }
+        }
+        public async Task<List<FeedbackResponseDTO>> ListFeedbackByDoctorId(string doctorId)
+        {
+            try
+            {
+                var dId = Guid.Parse(doctorId);
+                var list = _feedbackRepository.GetFeedbackByDoctorId(dId);
+                if (list == null || !list.Any())
+                {
+                    throw new Exception("This doctor doesn't have any feedback");
+                }
+                var result = _mapper.Map<List<FeedbackResponseDTO>>(list);
+                return result;
+            }
+            catch (Exception ex) { throw ex; }
         }
     }
 }
