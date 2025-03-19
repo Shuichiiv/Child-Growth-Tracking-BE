@@ -66,7 +66,7 @@ namespace Repositories_BE.Repositories
         public async Task<IEnumerable<Report>> GetReportsByChildIdAsync(Guid childId)
         {
             return await _context.Reports
-                .Where(r => r.ChildId == childId)
+                .Where(r => r.ChildId == childId && r.ReportIsActive != "3")
                 .OrderByDescending(r => r.ReprotCreateDate)
                 .ToListAsync();
         }
@@ -135,7 +135,7 @@ namespace Repositories_BE.Repositories
         public async Task<Report> GetLatestReportByIdAsync(Guid childId)
         {
             return await _context.Reports
-                .Where(r => r.ChildId == childId)
+                .Where(r => r.ChildId == childId && r.ReportIsActive != "3")
                 .OrderByDescending(r => r.ReprotCreateDate)
                 .FirstOrDefaultAsync();
         }

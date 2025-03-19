@@ -5,9 +5,9 @@ using Services_BE.Interfaces;
 namespace Services_BE.Services
 {
 
-    public class VietQRService: IVietQRService
+    public class VietQRService
     {
-        private const string BANK_ID = "970423"; // TPBank
+        /*private const string BANK_ID = "970423"; // TPBank
         private const string CURRENCY = "704"; // VND
 
         private string GenerateVietQRString(string accountNumber, string accountName, decimal amount, string message)
@@ -45,6 +45,6 @@ namespace Services_BE.Services
                 }
             }
             return crc.ToString("X4");
-        }
+        }*/
     }
 }

@@ -98,6 +98,7 @@ namespace Services_BE.Services
                     Height = r.Height,
                     Weight = r.Weight,
                     BMI = r.BMI,
+                    ReportName = r.ReportName,
                     ReportContent = r.ReportContent,
                     ReportMark = r.ReportMark,
                     ReportIsActive = r.ReportIsActive.ToString(),
@@ -116,10 +117,10 @@ namespace Services_BE.Services
              var child = await _childRepository.GetChildByIdAsync(reportDto.ChildId);
                
                 if (child == null)
-                    throw new KeyNotFoundException("Child not found");
+                    throw new KeyNotFoundException("Khong tim thay tre");
 
-                if (reportDto.ReportCreateDate < child.DOB)
-                    throw new Exception("Report date cannot be before the child's birth date.");
+                if (reportDto.ReportCreateDate < child.DOB && reportDto.ReportCreateDate > DateTime.UtcNow)
+                    throw new Exception("Không thể tạo báo cáo vì ngày chưa hợp lệ.");
 
                 var report = new Report
                 {
@@ -129,7 +130,7 @@ namespace Services_BE.Services
                     Weight = reportDto.Weight,
                     BMI = reportDto.Weight / ((reportDto.Height / 100) * (reportDto.Height / 100)), // BMI = W / H^2
                     ReprotCreateDate = reportDto.ReportCreateDate,
-                    ReportIsActive = "Inactive",
+                    ReportIsActive = "0",
                     ReportName = "BMI Report",
                     ReportContent = $"BMI calculated on {reportDto.ReportCreateDate:yyyy-MM-dd}",
                     ReportMark = GetBMICategory(reportDto.Weight / ((reportDto.Height / 100) * (reportDto.Height / 100)))
@@ -143,9 +144,10 @@ namespace Services_BE.Services
                     Height = createdReport.Height,
                     Weight = createdReport.Weight,
                     BMI = createdReport.BMI,
+                    ReportName = createdReport.ReportName,
                     ReportContent = createdReport.ReportContent,
                     ReportMark = createdReport.ReportMark,
-                    ReportIsActive = "Inactive"
+                    ReportIsActive = "0"
                 };
         }
         private string GetBMICategory(double bmi)
@@ -169,7 +171,7 @@ namespace Services_BE.Services
                 Weight = request.Weight,
                 BMI = request.Weight / Math.Pow(request.Height / 100, 2), 
                 ReprotCreateDate = request.Date,
-                ReportIsActive = "Inactive"
+                ReportIsActive = "0"
             };
 
             var createdReport = await _reportRepository.CreateReportAsync(report);
@@ -181,7 +183,7 @@ namespace Services_BE.Services
                 Weight = createdReport.Weight,
                 BMI = createdReport.BMI,
                 ReportCreateDate = createdReport.ReprotCreateDate,
-                ReportIsActive = "Inactive"
+                ReportIsActive = "0"
             };
         }
         public async Task<Report> CreateReportAsync2(Guid childId, CreateReportDto dto)
@@ -191,16 +193,30 @@ namespace Services_BE.Services
 
         public async Task<bool> UpdateReportAsync(Guid reportId, UpdateReportDto request)
         {
+            var child = await _childRepository.GetChildByIdAsync(request.ChildId);
+            if (child == null)
+                throw new KeyNotFoundException("Không tìm thấy thông tin trẻ.");
+             
+            if (request.Date < child.DOB)
+                throw new Exception("Ngày tạo báo cáo không thể nhỏ hơn ngày sinh của trẻ.");
+
+            if (request.Date > DateTime.UtcNow)
+                throw new Exception("Ngày tạo báo cáo không thể ở tương lai.");
+            
             var reports = await _reportRepository.GetReportsByChildIdAsync(request.ChildId);
             var report = reports.FirstOrDefault(r => r.ReportId == reportId);
             if (report == null) return false;
+            
+            bool isDuplicateDate = reports.Any(r => r.ReprotCreateDate.Date == request.Date.Date && r.ReportId != reportId);
+            if (isDuplicateDate)
+                throw new Exception("Đã tồn tại báo cáo vào ngày này.");
 
             report.Height = request.Height;
             report.Weight = request.Weight;
             report.ReprotCreateDate = request.Date;
             report.BMI = request.Weight / Math.Pow(request.Height / 100, 2);
             report.ReportMark = GetBMICategory(report.BMI);
-
+            
             return await _reportRepository.UpdateReportAsync(report);           
         }
         
