@@ -60,12 +60,12 @@ namespace DataObjects_BE
                 .HasOne(r => r.Parent)
                 .WithMany(p => p.Ratings)
                 .HasForeignKey(r => r.ParentId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Rating>()
                 .HasOne(r => r.Feedback)
                 .WithMany(f => f.Ratings)
                 .HasForeignKey(r => r.FeedbackId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Child>()
                 .HasOne(c => c.Parent)
                 .WithMany(p => p.Childs)
@@ -121,6 +121,7 @@ namespace DataObjects_BE
                 .WithMany(p => p.ReportProducts)
                 .HasForeignKey(rp => rp.ProductListId)
                 .OnDelete(DeleteBehavior.Restrict);
+            
         }
     }
 }
