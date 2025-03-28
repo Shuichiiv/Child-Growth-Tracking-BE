@@ -651,7 +651,7 @@ namespace DataObjects_BE.Migrations
                     b.HasOne("DataObjects_BE.Entities.Parent", "Parent")
                         .WithMany("Ratings")
                         .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Feedback");

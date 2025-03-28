@@ -231,10 +231,6 @@ namespace Services_BE.Services
             var reports = await _reportRepository.GetReportsByChildIdAsync(request.ChildId);
             var report = reports.FirstOrDefault(r => r.ReportId == reportId);
             if (report == null) return false;
-            
-            bool isDuplicateDate = reports.Any(r => r.ReprotCreateDate.Date == request.Date.Date && r.ReportId != reportId);
-            if (isDuplicateDate)
-                throw new Exception("Đã tồn tại báo cáo vào ngày này.");
 
             report.Height = request.Height;
             report.Weight = request.Weight;

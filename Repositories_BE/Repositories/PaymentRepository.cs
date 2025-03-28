@@ -13,10 +13,9 @@ public class PaymentRepository : IPaymentRepository
     {
         _context = context;
     }
-
-    public async Task AddAsync(Payment payment)
+    public async Task AddPaymentAsync(Payment payment)
     {
-        await _context.Payments.AddAsync(payment);
+        _context.Payments.AddAsync(payment);
         await _context.SaveChangesAsync();
     }
     public async Task AddPayment(Payment payment)
@@ -24,6 +23,7 @@ public class PaymentRepository : IPaymentRepository
         await _context.Payments.AddAsync(payment);
     }
 
+    /*
     public async Task<Payment> GetByIdAsync(Guid paymentId)
     {
         return await _context.Payments.FindAsync(paymentId);
@@ -73,7 +73,7 @@ public class PaymentRepository : IPaymentRepository
         payment.TransactionId = transactionId;
         await _context.SaveChangesAsync();
         return true;
-    }
+    }*/
     public async Task<List<Payment>> GetPaymentsByOrderId(Guid orderId)
     {
         var list = await _context.Payments.Where(x => x.ServiceOrderId == orderId).ToListAsync();

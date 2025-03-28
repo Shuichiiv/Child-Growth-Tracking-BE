@@ -5,8 +5,7 @@ namespace Services_BE.Interfaces;
 
 public interface IPaymentService
 {
-    Task<string> CreatePaymentAsync(Guid parentId, int serviceId, int quantity, string paymentMethod);
-    Task<bool> HandlePaymentCallbackAsync(Guid paymentId, bool success, string transactionId);
+    Task<(bool Success, string Message, string PaymentUrl)> CreatePaymentAsync(PaymentRequestModel request);
     Task CreateCashPayment(ServiceOrder order, PaymentStatus paymentStatus);
 
 

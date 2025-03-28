@@ -81,6 +81,9 @@ namespace Services_BE.Services
             try
             {
                 var appointment = _mapper.Map<Appointment>(appointmentDto);
+                
+                var vietNamTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+                var nowUtc7 = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, vietNamTimeZone);
 
                 if (appointmentDto.ScheduledTime == default)
                 {
@@ -92,7 +95,7 @@ namespace Services_BE.Services
                 }
 
                 appointment.ScheduledTime = appointmentDto.ScheduledTime;
-                appointment.CreatedAt = DateTime.UtcNow;
+                appointment.CreatedAt = nowUtc7;
 
                 await _appointmentRepository.AddAppointmentAsync(appointment);
                 return true;

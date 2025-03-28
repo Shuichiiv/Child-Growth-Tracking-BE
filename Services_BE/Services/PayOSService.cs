@@ -11,7 +11,7 @@ namespace Services_BE.Services
 
     public class PayOSService
     {
-        private readonly string _clientId;
+        /*private readonly string _clientId;
         private readonly string _apiKey;
         private readonly string _checksumKey;
         private readonly SWP391G3DbContext _dbContext;
@@ -81,6 +81,6 @@ namespace Services_BE.Services
                 var hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(data));
                 return BitConverter.ToString(hash).Replace("-", "").ToLower();
             }
-        }
+        }*/
     }
 }

@@ -1,50 +1,40 @@
-using System;
-using System.Net.Http;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 using DataObjects_BE;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using DataObjects_BE.Entities;
+using DTOs_BE.PaymentDTOs;
 using Microsoft.EntityFrameworkCore;
 using Net.payOS;
 using Net.payOS.Types;
-using Repositories_BE.Interfaces;
+using Services_BE.Interfaces;
 using Services_BE.Services;
 
 
-namespace PaymentIntegration.Controllers
+namespace WebAPI_BE.Controllers
 {
     [ApiController]
     [Route("api/payments")]
     public class PaymentController : ControllerBase
     {
         private readonly ServiceOrderServiceP _serviceOrderService;
-        private readonly PaymentServicesP _paymentService;
-        private readonly PayOS _payOS;
-        private readonly ILogger<PaymentController> _logger;
-        private readonly IConfiguration _config;
-        private readonly SWP391G3DbContext _context;
-        //private readonly string _checksumKey = "9b109c4b0cb43ef7ecef7ded712d21e056062355891228932016380fd4c947a7";
+        private readonly IPaymentService _paymentService1;
 
-        public PaymentController(ServiceOrderServiceP serviceOrderService, PaymentServicesP paymentService,
-            IConfiguration config, SWP391G3DbContext context, ILogger<PaymentController> logger)
+        public PaymentController(ServiceOrderServiceP serviceOrderService,
+             IPaymentService paymentService1)
         {
             _serviceOrderService = serviceOrderService;
-            _paymentService = paymentService;
-            _context = context;
-            _logger = logger;
-            _config = config;
-            var clientId = _config["PayOS:ClientId"];
-            var apiKey = _config["PayOS:ApiKey"];
-            var checksumKey = _config["PayOS:ChecksumKey"];
-
-            _payOS = new PayOS(clientId, apiKey, checksumKey);
+            _paymentService1 = paymentService1;
         }
-
         [HttpPost("create")]
+        public async Task<IActionResult> CreatePayment([FromBody] PaymentRequestModel request)
+        {
+            var (success, message, paymentUrl) = await _paymentService1.CreatePaymentAsync(request);
+            if (!success)
+            {
+                return BadRequest(new { message });
+            }
+            return Ok(new { paymentUrl });
+        }
+        /*[HttpPost("create")]
         public async Task<IActionResult> CreatePayment([FromBody] PaymentRequestModel request)
         {
             // Kiểm tra dữ liệu đầu vào
@@ -144,7 +134,8 @@ namespace PaymentIntegration.Controllers
             {
                 return StatusCode(500, new { message = "Failed to create payment", error = ex.Message });
             }
-        }
+        }*/
+
         /// <summary>
         /// Lấy đơn hàng theo ParentId
         /// </summary>
@@ -156,6 +147,7 @@ namespace PaymentIntegration.Controllers
 
             return Ok(serviceOrder);
         }
+
         /// <summary>
         /// Kiểm tra trạng thái thanh toán từ PayOS bằng OrderCode
         /// </summary>
@@ -185,48 +177,7 @@ namespace PaymentIntegration.Controllers
             }
         }
 
-        
-    }
-    public class Item
-    {
-        public string Name { get; set; }
-        public int Quantity { get; set; }
-        public long Price { get; set; } // PayOS yêu cầu kiểu long
 
-        public Item(string name, int quantity, long price)
-        {
-            Name = name;
-            Quantity = quantity;
-            Price = price;
-        }
-    }
-    public class CreateServiceOrderRequest
-    {
-        public Guid ParentId { get; set; }
-        public int ServiceId { get; set; }
-        public int Quantity { get; set; }
-    }
-
-    public class CreatePaymentRequest
-    {
-        public Guid ServiceOrderId { get; set; }
-        public string PaymentMethod { get; set; }
-    }
-
-    public class PaymentRequestModel
-    {
-        public Guid ParentId { get; set; } // Để xác định người đặt hàng
-        public string Description { get; set; }
-        public string ReturnUrl { get; set; }
-        public string CancelUrl { get; set; }
-        public List<ServiceOrderModel> Services { get; set; }
-    }
-
-    public class ServiceOrderModel
-    {
-        public int ServiceId { get; set; }
-        public int Quantity { get; set; }
-        public float TotalPrice { get; set; }
     }
 
 

@@ -6,7 +6,7 @@ using DataObjects_BE.Entities;
 namespace Services_BE.Services;
 
 public class PaymentServicesP
-{
+{/*
     private readonly SWP391G3DbContext _context;
     private readonly HttpClient _httpClient;
 
@@ -53,7 +53,7 @@ public class PaymentServicesP
             return_url = "https://localhost:7190/payment-success",
             cancel_url = "https://localhost:7190/payment-failed",
             /*merchant_id = "YOUR_MERCHANT_ID_HERE", // ⚠️ Thêm Merchant ID
-            public_key = "YOUR_PUBLIC_KEY_HERE"    // ⚠️ Thêm Public Key*/
+            public_key = "YOUR_PUBLIC_KEY_HERE"    // ⚠️ Thêm Public Key#1#
         };
 
         var httpClient = new HttpClient();
@@ -101,6 +101,6 @@ public class PaymentServicesP
     public class PayOSResponse
     {
         public string payment_url { get; set; }
-    }
+    }*/
 
 }
