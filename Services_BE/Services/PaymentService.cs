@@ -64,7 +64,10 @@ public class PaymentService : IPaymentService
                 await _serviceOrderService
                     .CreateServiceOrderAsync(request.ParentId, service.ServiceId,
                     service.Quantity);
-            createdServiceOrders.Add(serviceOrder);
+            if (serviceOrder.Status.Equals("Pending", StringComparison.OrdinalIgnoreCase))
+            {
+                createdServiceOrders.Add(serviceOrder);
+            }
         }
         //truy van vao db
         var serviceOrders = await _serviceOrderRepository
