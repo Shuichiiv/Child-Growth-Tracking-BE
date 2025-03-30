@@ -10,5 +10,6 @@ namespace Repositories_BE.Interfaces
     public interface IServiceRepositoy: IGenericRepository<Service>
     {
         Task<Service> GetByIdAsync(int serviceId);
+        Task<Service?> GetServiceByIdAsync(int serviceId);
     }
 }

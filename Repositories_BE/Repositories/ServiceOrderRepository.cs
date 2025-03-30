@@ -73,6 +73,13 @@ namespace Repositories_BE.Repositories
             await _context.SaveChangesAsync();
             return true;
         }
+        public async Task<List<ServiceOrder>> GetServiceOrdersByParentIdAsync(Guid parentId)
+        {
+            return await _context.ServiceOrders
+                .Where(so => so.ParentId == parentId)
+                .OrderByDescending(so => so.CreateDate)
+                .ToListAsync();
+        }
         public async Task<List<ServiceOrder>> GetExpiredOrdersAsync()
         {
             return await _context.ServiceOrders
@@ -102,5 +109,34 @@ namespace Repositories_BE.Repositories
             await _context.SaveChangesAsync();
         }
 
+        
+        public async Task<ServiceOrder?> GetLatestServiceOrderByParentIdAsync(Guid parentId)
+        {
+            return await _context.ServiceOrders
+                .Where(so => so.ParentId == parentId)
+                .OrderByDescending(so => so.CreateDate)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<ServiceOrder?> GetServiceOrderByIdAsync(Guid serviceOrderId)
+        {
+            return await _context.ServiceOrders
+                .FirstOrDefaultAsync(so => so.ServiceOrderId == serviceOrderId);
+        }
+
+        public async Task AddServiceOrderAsync(ServiceOrder serviceOrder)
+        {
+            await _context.ServiceOrders.AddAsync(serviceOrder);
+        }
+
+        public async Task UpdateServiceOrderAsync(ServiceOrder serviceOrder)
+        {
+            _context.ServiceOrders.Update(serviceOrder);
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
     }
 }
