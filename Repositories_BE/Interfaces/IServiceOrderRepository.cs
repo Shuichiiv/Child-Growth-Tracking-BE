@@ -21,6 +21,14 @@ namespace Repositories_BE.Interfaces
 
         Task<List<ServiceOrder>> GetServiceOrdersByParentIdAndServiceIds(Guid parentId, List<int> serviceIds);
         Task<List<ServiceOrder>> GetLatestServiceOrdersByParentId(Guid parentId);
+        
+        //New
+        Task<List<ServiceOrder>> GetServiceOrdersByParentIdAsync(Guid parentId);
+        Task<ServiceOrder?> GetLatestServiceOrderByParentIdAsync(Guid parentId);
+        Task<ServiceOrder?> GetServiceOrderByIdAsync(Guid serviceOrderId);
+        Task AddServiceOrderAsync(ServiceOrder serviceOrder);
+        Task UpdateServiceOrderAsync(ServiceOrder serviceOrder);
+        Task SaveChangesAsync();
     }
     
 }

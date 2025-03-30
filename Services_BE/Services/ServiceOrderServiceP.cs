@@ -1,23 +1,27 @@
+using AutoMapper;
 using DataObjects_BE;
 using DataObjects_BE.Entities;
 using DTOs_BE.UserDTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Repositories_BE.Interfaces;
 
 namespace Services_BE.Services;
 
 public class ServiceOrderServiceP
 {
-    private readonly SWP391G3DbContext _context;
+    private readonly IServiceOrderRepository _serviceOrderRepository;
+    private readonly IServiceRepositoy _serviceRepositoy;
     private readonly HttpClient _httpClient;
     private readonly string _clientId = "9248e8d9-9110-4c4d-96e1-f61cec695c91";
     private readonly string _apiKey = "6fda83ce-45f3-4071-a327-7ed27f5e3fca";
 
-    public ServiceOrderServiceP(SWP391G3DbContext context,HttpClient httpClient)
+    public ServiceOrderServiceP(IServiceOrderRepository serviceOrderRepository,HttpClient httpClient, IServiceRepositoy serviceRepositoy)
     {
-        _context = context;
+        _serviceOrderRepository = serviceOrderRepository;
         _httpClient = httpClient;
+        _serviceRepositoy = serviceRepositoy;
     }
     
     /// <summary>
@@ -25,10 +29,7 @@ public class ServiceOrderServiceP
     /// </summary>
     public async Task<ServiceOrder?> GetServiceOrderByParentId(Guid parentId)
     {
-        return await _context.ServiceOrders
-            .AsNoTracking()
-            .Where(so => so.ParentId == parentId)
-            .FirstOrDefaultAsync();
+        return await _serviceOrderRepository.GetLatestServiceOrderByParentIdAsync(parentId);
     }
     
     /// <summary>
@@ -54,7 +55,7 @@ public class ServiceOrderServiceP
     /// <summary>
     /// Cập nhật trạng thái ServiceOrder nếu thanh toán thành công
     /// </summary>
-    public async Task UpdateServiceOrderStatus(Guid parentId)
+    /*public async Task UpdateServiceOrderStatus(Guid parentId)
     {
         var serviceOrder = await _context.ServiceOrders
             .FirstOrDefaultAsync(so => so.ParentId == parentId);
@@ -93,6 +94,7 @@ public class ServiceOrderServiceP
             var rowsAffected = await _context.SaveChangesAsync();
             Console.WriteLine($"Rows Affected: {rowsAffected}");
         }
+        
         else if (status == "PAID")
         {
             serviceOrder.Status = "Completed";
@@ -127,15 +129,50 @@ public class ServiceOrderServiceP
                 TransactionId = serviceOrder.OrderCode.ToString()
             };
 
-            _context.Payments.Add(payment);*/
+            _context.Payments.Add(payment);#1#
             var rowsAffected = await _context.SaveChangesAsync();
             Console.WriteLine($"Rows Affected: {rowsAffected}");
         }
         
+    }*/
+    public async Task UpdateServiceOrderStatus(Guid parentId)
+    {
+        /*var serviceOrders = await _context.ServiceOrders
+            .Where(so => so.ParentId == parentId)
+            .OrderByDescending(so => so.CreateDate) // Lấy đơn mới nhất trước
+            .ToListAsync();*/
+        var serviceOrders = await _serviceOrderRepository.GetServiceOrdersByParentIdAsync(parentId);
+
+        if (!serviceOrders.Any())
+        {
+            Console.WriteLine("No service orders found.");
+            return;
+        }
+
+        foreach (var serviceOrder in serviceOrders)
+        {
+            if (serviceOrder.OrderCode == null)
+            {
+                Console.WriteLine($"OrderCode is null for ServiceOrderId: {serviceOrder.ServiceOrderId}");
+                continue;
+            }
+
+            // Gọi API để lấy trạng thái mới nhất
+            string? status = (await GetPaymentStatusFromPayOS(serviceOrder.OrderCode.Value))?.ToUpper();
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                serviceOrder.Status = status; // Cập nhật đúng trạng thái trả về
+            }
+        }
+
+        await _serviceOrderRepository.SaveChangesAsync();
+        Console.WriteLine("Service order statuses updated.");
     }
+
     public async Task<ServiceOrder> CreateServiceOrderAsync(Guid parentId, int serviceId, int quantity)
     {
-        var service = await _context.Services.FindAsync(serviceId);
+        var service = await _serviceRepositoy.GetServiceByIdAsync(serviceId);
         if (service == null) throw new Exception("Service not found");
 
         var serviceOrder = new ServiceOrder
@@ -152,10 +189,11 @@ public class ServiceOrderServiceP
         };
         serviceOrder.CalculateEndDate();
 
-        _context.ServiceOrders.Add(serviceOrder);
-        await _context.SaveChangesAsync();
+        await _serviceOrderRepository.AddServiceOrderAsync(serviceOrder);
+        await _serviceOrderRepository.SaveChangesAsync();
         return serviceOrder;
     }
+
     /// <summary>
     /// Model JSON trả về từ API PayOS
     /// </summary>

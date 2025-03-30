@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repositories_BE.Repositories
 {
@@ -15,6 +16,11 @@ namespace Repositories_BE.Repositories
         public ServiceRepository(SWP391G3DbContext context) : base(context)
         {
             _context = context;
+        }
+        
+        public async Task<Service?> GetServiceByIdAsync(int serviceId)
+        {
+            return await _context.Services.FirstOrDefaultAsync(s => s.ServiceId == serviceId);
         }
 
         public async Task<Service> GetByIdAsync(int serviceId)
