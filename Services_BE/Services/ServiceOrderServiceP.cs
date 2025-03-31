@@ -160,9 +160,16 @@ public class ServiceOrderServiceP
             // Gọi API để lấy trạng thái mới nhất
             string? status = (await GetPaymentStatusFromPayOS(serviceOrder.OrderCode.Value))?.ToUpper();
 
-            if (!string.IsNullOrEmpty(status))
+            
+            if (string.IsNullOrEmpty(status)) continue; // Không cập nhật nếu trạng thái không hợp lệ
+
+            if (status == "CANCELLED")
             {
-                serviceOrder.Status = status; // Cập nhật đúng trạng thái trả về
+                serviceOrder.Status = "Cancelled";
+            }
+            else if (status == "PAID")
+            {
+                serviceOrder.Status = "Completed";
             }
         }
 

@@ -138,5 +138,18 @@ namespace Repositories_BE.Repositories
         {
             await _context.SaveChangesAsync();
         }
+        
+        public async Task<ServiceOrder?> GetLatestServiceOrderByParentIdAndServiceId(Guid parentId, int serviceId)
+        {
+            var serviceIdInt = Convert.ToInt32(serviceId);
+            return await _context.ServiceOrders
+                .Where(so => so.ParentId == parentId && so.ServiceId == serviceIdInt && 
+                             (so.Status == "Pending" || so.Status == "Active"))
+                .OrderByDescending(so => so.CreateDate)
+                .FirstOrDefaultAsync();
+
+        }
+
+
     }
 }
