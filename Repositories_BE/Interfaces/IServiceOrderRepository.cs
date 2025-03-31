@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,6 +30,10 @@ namespace Repositories_BE.Interfaces
         Task AddServiceOrderAsync(ServiceOrder serviceOrder);
         Task UpdateServiceOrderAsync(ServiceOrder serviceOrder);
         Task SaveChangesAsync();
+        
+        //Fix
+        Task<ServiceOrder?> GetLatestServiceOrderByParentIdAndServiceId(Guid parentId, int serviceId);
+
     }
     
 }

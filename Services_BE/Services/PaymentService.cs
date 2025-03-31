@@ -47,6 +47,8 @@ public class PaymentService : IPaymentService
         {
             return (false, "Invalid request data", null);
         }
+        
+        
 
         //Tao
         /*var createdServiceOrders = await _serviceOrderRepository
@@ -60,13 +62,31 @@ public class PaymentService : IPaymentService
         var createdServiceOrders = new List<ServiceOrder>();
         foreach (var service in request.Services)
         {
-            var serviceOrder =
-                await _serviceOrderService
-                    .CreateServiceOrderAsync(request.ParentId, service.ServiceId,
-                    service.Quantity);
-            if (serviceOrder.Status.Equals("Pending", StringComparison.OrdinalIgnoreCase))
+            // Lấy đơn hàng mới nhất cho dịch vụ này
+            var existingOrder = await _serviceOrderRepository
+                .GetLatestServiceOrderByParentIdAndServiceId(request.ParentId, service.ServiceId);
+
+            if (existingOrder != null)
             {
-                createdServiceOrders.Add(serviceOrder);
+                // Nếu đơn hàng có trạng thái Cancelled, tạo đơn hàng mới
+                if (existingOrder.Status.Equals("Cancelled", StringComparison.OrdinalIgnoreCase))
+                {
+                    var newOrder = await _serviceOrderService
+                        .CreateServiceOrderAsync(request.ParentId, service.ServiceId, service.Quantity);
+                    createdServiceOrders.Add(newOrder);
+                }
+                else
+                {
+                    // Nếu đơn hàng còn hiệu lực (Pending hoặc Active), dùng lại đơn đó
+                    createdServiceOrders.Add(existingOrder);
+                }
+            }
+            else
+            {
+                // Nếu chưa có đơn hàng nào, tạo mới
+                var newOrder = await _serviceOrderService
+                    .CreateServiceOrderAsync(request.ParentId, service.ServiceId, service.Quantity);
+                createdServiceOrders.Add(newOrder);
             }
         }
         //truy van vao db
