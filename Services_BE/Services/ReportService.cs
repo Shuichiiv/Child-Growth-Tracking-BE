@@ -121,6 +121,10 @@ namespace Services_BE.Services
             if (child == null)
                 throw new KeyNotFoundException("Không tìm thấy trẻ.");
             
+            var ageInYears = (DateTime.UtcNow - child.DOB).TotalDays / 365;
+            if (ageInYears < 1)
+                throw new InvalidOperationException("Trẻ chưa đủ 1 tuổi, không thể tạo báo cáo BMI.");
+
             var reports = await _reportRepository.GetReportsByChildIdAsync(reportDto.ChildId) ?? new List<Report>();
             
             bool isDuplicateDate = reports.Any(r => r.ReprotCreateDate.Date == reportDto.ReportCreateDate.Date);
