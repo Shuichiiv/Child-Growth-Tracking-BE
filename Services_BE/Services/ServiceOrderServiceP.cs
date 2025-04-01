@@ -52,89 +52,6 @@ public class ServiceOrderServiceP
 
         return null;
     }
-    /// <summary>
-    /// Cập nhật trạng thái ServiceOrder nếu thanh toán thành công
-    /// </summary>
-    /*public async Task UpdateServiceOrderStatus(Guid parentId)
-    {
-        var serviceOrder = await _context.ServiceOrders
-            .FirstOrDefaultAsync(so => so.ParentId == parentId);
-
-        if (serviceOrder == null || serviceOrder.OrderCode == null)
-        {
-            Console.WriteLine("Order not found or OrderCode is null.");
-            return;
-        }
-        
-        string? status = await GetPaymentStatusFromPayOS(serviceOrder.OrderCode.Value);
-        
-        if (status?.ToUpper() == "CANCELLED")
-        {
-            serviceOrder.Status = "Cancelled";
-
-            if (_context.Entry(serviceOrder).State == EntityState.Detached)
-            {
-                _context.ServiceOrders.Attach(serviceOrder);
-            }
-            _context.Entry(serviceOrder).State = EntityState.Modified;
-            
-            var existingPayment = await _context.Payments
-                .FirstOrDefaultAsync(p => p.ServiceOrderId == serviceOrder.ServiceOrderId);
-
-            if (existingPayment != null)
-            {
-                existingPayment.PaymentStatus = PaymentStatus.Cancelled;
-                existingPayment.PaymentDate = DateTime.UtcNow;
-                _context.Entry(existingPayment).State = EntityState.Modified;
-            }
-            else
-            {
-                Console.WriteLine("Payment record not found.");
-            }
-            var rowsAffected = await _context.SaveChangesAsync();
-            Console.WriteLine($"Rows Affected: {rowsAffected}");
-        }
-        
-        else if (status == "PAID")
-        {
-            serviceOrder.Status = "Completed";
-
-            if (_context.Entry(serviceOrder).State == EntityState.Detached)
-            {
-                _context.ServiceOrders.Attach(serviceOrder);
-            }
-            _context.Entry(serviceOrder).State = EntityState.Modified;
-            
-            var existingPayment = await _context.Payments
-                .FirstOrDefaultAsync(p => p.ServiceOrderId == serviceOrder.ServiceOrderId);
-
-            if (existingPayment != null)
-            {
-                existingPayment.PaymentStatus = PaymentStatus.Completed;
-                existingPayment.PaymentDate = DateTime.UtcNow;
-                _context.Entry(existingPayment).State = EntityState.Modified;
-            }
-            else
-            {
-                Console.WriteLine("Payment record not found.");
-            }
-            /*var payment = new Payment
-            {
-                PaymentId = Guid.NewGuid(),
-                ServiceOrderId = serviceOrder.ServiceOrderId,
-                PaymentMethod = "PayOS",
-                PaymentStatus = PaymentStatus.Completed,
-                PaymentDate = DateTime.UtcNow,
-                Amount = (decimal)serviceOrder.TotalPrice,
-                TransactionId = serviceOrder.OrderCode.ToString()
-            };
-
-            _context.Payments.Add(payment);#1#
-            var rowsAffected = await _context.SaveChangesAsync();
-            Console.WriteLine($"Rows Affected: {rowsAffected}");
-        }
-        
-    }*/
     public async Task UpdateServiceOrderStatus(Guid parentId)
     {
         /*var serviceOrders = await _context.ServiceOrders
@@ -156,12 +73,11 @@ public class ServiceOrderServiceP
                 Console.WriteLine($"OrderCode is null for ServiceOrderId: {serviceOrder.ServiceOrderId}");
                 continue;
             }
-
-            // Gọi API để lấy trạng thái mới nhất
+            
             string? status = (await GetPaymentStatusFromPayOS(serviceOrder.OrderCode.Value))?.ToUpper();
 
             
-            if (string.IsNullOrEmpty(status)) continue; // Không cập nhật nếu trạng thái không hợp lệ
+            if (string.IsNullOrEmpty(status)) continue;
 
             if (status == "CANCELLED")
             {

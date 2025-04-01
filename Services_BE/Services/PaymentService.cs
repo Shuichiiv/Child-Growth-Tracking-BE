@@ -49,16 +49,6 @@ public class PaymentService : IPaymentService
         }
         
         
-
-        //Tao
-        /*var createdServiceOrders = await _serviceOrderRepository
-            .GetServiceOrdersByParentIdAndServiceIds(request.ParentId, request.Services.Select(s => s.ServiceId).ToList());
-
-        var latestServiceOrders1 = createdServiceOrders
-            .GroupBy(so => so.ServiceId)
-            .Select(g => g.OrderByDescending(so => so.CreateDate).FirstOrDefault())
-            .ToList();*/
-
         var createdServiceOrders = new List<ServiceOrder>();
         foreach (var service in request.Services)
         {
@@ -89,25 +79,16 @@ public class PaymentService : IPaymentService
                 createdServiceOrders.Add(newOrder);
             }
         }
-        //truy van vao db
-        var serviceOrders = await _serviceOrderRepository
-            .GetServiceOrdersByParentIdAndServiceIds(request.ParentId, request.Services.Select(s => s.ServiceId).ToList());
+
+        /*var serviceOrders = await _serviceOrderRepository
+            .GetServiceOrdersByParentIdAndServiceIds(request.ParentId, request.Services.Select(s => s.ServiceId).ToList());*/
+        var serviceOrders = (await _serviceOrderRepository
+                .GetServiceOrdersByParentIdAndServiceIds(request.ParentId, request.Services.Select(s => s.ServiceId).ToList()))
+            .Where(so => !so.Status.Equals("Cancelled", StringComparison.OrdinalIgnoreCase))
+            .ToList();
 
         var latestServiceOrders = await _serviceOrderRepository
             .GetLatestServiceOrdersByParentId(request.ParentId);
-        /*var serviceOrders = await _context.ServiceOrders
-            .Include(so => so.Service)
-            .Where(so =>
-                so.ParentId == request.ParentId && request.Services.Select(s => s.ServiceId).Contains(so.ServiceId))
-            .ToListAsync();
-        
-    
-        var latestServiceOrders = _context.ServiceOrders
-            .Where(so => so.ParentId == request.ParentId)
-            .GroupBy(so => so.ServiceId)
-            .Select(g => g.OrderByDescending(so => so.CreateDate).FirstOrDefault())
-            .ToList();*/
-        
         //tinh tong tien don hang
         decimal totalAmount1 = serviceOrders.Sum(so => (decimal)so.TotalPrice);
         
@@ -164,101 +145,6 @@ public class PaymentService : IPaymentService
         }
     }
      
-    /*
-    public async Task<(bool Success, string Message, string PaymentUrl)> CreatePaymentAsync(PaymentRequestModel request)
-{
-    if (request == null || request.Services == null || !request.Services.Any())
-    {
-        return (false, "Invalid request data", null);
-    }
-
-    // Truy vấn ServiceOrder từ DB (chỉ lấy các đơn hợp lệ)
-    var serviceOrders = await _serviceOrderRepository
-        .GetServiceOrdersByParentIdAndServiceIds(request.ParentId, request.Services
-            .Select(s => s.ServiceId).ToList());
-
-    // Loại bỏ các đơn hàng đã bị Cancelled
-    serviceOrders = serviceOrders.Where(so => so.Status != "Cancelled").ToList();
-
-    // Nếu tất cả đơn hàng bị hủy => Không thể thanh toán
-    if (!serviceOrders.Any())
-    {
-        return (false, "No valid orders to process", null);
-    }
-
-    // Tính tổng tiền
-    decimal totalAmount = serviceOrders.Sum(so => (decimal)so.TotalPrice);
-
-    // Lấy orderCode từ DB
-    long orderCode = (long)serviceOrders.First().OrderCode;
-
-    // 📌 **Kiểm tra xem đã có thanh toán nào cho orderCode này chưa**
-    var existingPayment = await _paymentRepository.GetPaymentByOrderCodeAsync(orderCode);
-    if (existingPayment != null)
-    {
-        return (true, "Payment already exists", existingPayment.PaymentUrl);
-    }
-
-    // Tạo danh sách dịch vụ để gửi lên PayOS
-    var serviceList = serviceOrders.Select(so => new ItemData(
-        name: so.Service.ServiceName,
-        quantity: 1,
-        price: (int)so.TotalPrice
-    )).ToList();
-
-    // Lấy thông tin từ appsettings
-    var clientId = _config["PayOS:ClientId"];
-    var apiKey = _config["PayOS:ApiKey"];
-    var checksumKey = _config["PayOS:ChecksumKey"];
-
-    // Tạo data gửi lên PayOS
-    var paymentRequest = new PaymentData(
-        orderCode: orderCode,
-        amount: (int)totalAmount,
-        description: request.Description,
-        items: serviceList,
-        returnUrl: request.ReturnUrl,
-        cancelUrl: request.CancelUrl
-    );
-
-    try
-    {
-        var response = await _payOS.createPaymentLink(paymentRequest);
-        if (response == null || string.IsNullOrEmpty(response.checkoutUrl))
-        {
-            return (false, "Failed to get checkout URL from PayOS", null);
-        }
-
-        // Lưu thông tin thanh toán vào DB
-        var latestServiceOrders = await _serviceOrderRepository
-            .GetLatestServiceOrdersByParentId(request.ParentId);
-
-        var payment = new Payment
-        {
-            PaymentId = Guid.NewGuid(),
-            Amount = totalAmount,
-            PaymentDate = DateTime.UtcNow,
-            PaymentMethod = "PayOS",
-            PaymentStatus = PaymentStatus.Pending,
-            PaymentUrl = response.checkoutUrl,
-            ServiceOrderId = latestServiceOrders.First().ServiceOrderId,
-            TransactionId = orderCode.ToString()
-        };
-
-        await _paymentRepository.AddPaymentAsync(payment);
-        return (true, "Payment created successfully", response.checkoutUrl);
-    }
-    catch (Exception ex)
-    {
-        _logger.LogError(ex, "Error while creating payment");
-        return (false, "Failed to create payment", null);
-    }
-}
-*/
-
-     
-     
-    
     public async Task CreateCashPayment( ServiceOrder order, PaymentStatus paymentStatus)
     {
         try
